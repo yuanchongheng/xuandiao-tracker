@@ -3,12 +3,17 @@
     "https://www.beijing.gov.cn/cs/gncs/zcwj/202609/t20260910_4858513.html": "0bfda82e087b60566fcf94ffc31398240d09d1f7a86f738f1fe07fa850ed320c",
     "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=a4e2b5a3d3bd497bb276fe770accefc5": "118d9b03cb1280d034cbf4ebc215bd6aceadc4602fb7bff2c9f4bb7773c20b65",
     "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=058c8c90ce8a4515869929f638739fee": "2898a1f51552378881ba7750e0e4342132370c6672dc8cdf353b7de964bfd69e",
-    "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f7d2f": "94e2796d48b059f1786e710f2fe837e6b1c89dbdf5fd023bb1dec345a7ddce70"
+    "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f7d2f": "94e2796d48b059f1786e710f2fe837e6b1c89dbdf5fd023bb1dec345a7ddce70",
+    "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=9e01bc05e8bc4b3a8efdaf650667f0c0": "8510e3ab400a8615b1de9d834b74634d26e2d55fb71e079140a28b0a288fffe8"
   },
   "listings": {
     "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c": [
       "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=058c8c90ce8a4515869929f638739fee",
       "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=604bcd12dc48405a9b8c1c36901fde04"
+    ],
+    "https://jdjyw.jlu.edu.cn/portal/article/list?cid=8cd0593255b342a7b1912bd3484bf95c": [
+      "https://jdjyw.jlu.edu.cn/portal/article/details?id=058c8c90ce8a4515869929f638739fee",
+      "https://jdjyw.jlu.edu.cn/portal/article/details?id=604bcd12dc48405a9b8c1c36901fde04"
     ]
   },
   "search": {
