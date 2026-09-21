@@ -3,7 +3,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import monitor
@@ -49,6 +49,45 @@ class ParsingTests(unittest.TestCase):
         self.assertFalse(monitor.acceptable_page('', b''))
         self.assertFalse(monitor.acceptable_page('', b'{"error":"blocked"}'))
         self.assertFalse(monitor.acceptable_page('application/json', b'<html>not a response</html>'))
+
+    def test_bing_rss_transport_does_not_get_rejected_as_an_announcement_host(self):
+        session = MagicMock()
+        session.__enter__.return_value = session
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.url = 'https://www.bing.com/search?format=rss&q=test'
+        response.headers = {'Content-Type': 'application/rss+xml'}
+        response.iter_content.return_value = [b'<rss><channel></channel></rss>']
+        session.get.return_value = response
+        with patch.object(monitor, 'make_session', return_value=session):
+            result = monitor.fetch_bytes('https://www.bing.com/search?format=rss&q=test')
+        self.assertTrue(result.startswith(b'<rss>'))
+
+    def test_bing_search_redirect_outside_bing_is_rejected(self):
+        session = MagicMock()
+        session.__enter__.return_value = session
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.url = 'https://untrusted.example/search'
+        response.headers = {'Content-Type': 'application/rss+xml'}
+        response.iter_content.return_value = [b'<rss></rss>']
+        session.get.return_value = response
+        with patch.object(monitor, 'make_session', return_value=session):
+            with self.assertRaisesRegex(ValueError, 'Search feed redirected'):
+                monitor.fetch_bytes('https://www.bing.com/search?format=rss&q=test')
+
+    def test_government_page_redirect_outside_allowed_hosts_is_rejected(self):
+        session = MagicMock()
+        session.__enter__.return_value = session
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.url = 'https://untrusted.example/notice'
+        response.headers = {'Content-Type': 'text/html'}
+        response.iter_content.return_value = [b'<html>notice</html>']
+        session.get.return_value = response
+        with patch.object(monitor, 'make_session', return_value=session):
+            with self.assertRaisesRegex(ValueError, 'Source redirected outside'):
+                monitor.fetch_bytes('https://rst.hunan.gov.cn/notice.html')
 
     def test_guizhou_uses_jlu_section_url(self):
         config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
