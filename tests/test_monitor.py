@@ -44,6 +44,17 @@ class ParsingTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(ValueError):
                 monitor.canonical_url(url)
 
+    def test_missing_content_type_accepts_only_actual_markup(self):
+        self.assertTrue(monitor.acceptable_page('', b'<!doctype html><html><body>notice</body></html>'))
+        self.assertFalse(monitor.acceptable_page('', b''))
+        self.assertFalse(monitor.acceptable_page('', b'{"error":"blocked"}'))
+        self.assertFalse(monitor.acceptable_page('application/json', b'<html>not a response</html>'))
+
+    def test_guizhou_uses_jlu_section_url(self):
+        config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
+        gz = next(x for x in config['monitors'] if x['province'] == '贵州')
+        self.assertIn('/portal/xdsgz/article/details', gz['url'])
+
     def test_article_strips_navigation(self):
         html = '<nav>random number 123</nav><article>' + ('定向选调 公告 资格条件 ' * 10) + '</article>'
         self.assertNotIn('random number', monitor.article_text(html.encode()))
@@ -126,7 +137,8 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(status['monitorsSucceeded'], 7)
         self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(status['sourceHealth'][5]['state'], 'failed')
-        self.assertEqual(len(status['errors']), 2)
+        # Primary and both configured backups must each be recorded.
+        self.assertEqual(len(status['errors']), 3)
 
     def test_search_discovers_official_link_without_publishing(self):
         conf = json.loads((self.root / 'sources.json').read_text(encoding='utf8'))
