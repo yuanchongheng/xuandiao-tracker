@@ -99,13 +99,13 @@
     {
       "province": "贵州",
       "kind": "article",
-      "name": "吉林大学选调专栏：贵州2027公告（备用来源）",
-      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+      "name": "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
       "fallbacks": [
         {
           "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
           "kind": "article",
-          "name": "吉林大学就业网：贵州公告通用入口（第二备用）"
+          "name": "吉林大学选调专栏：贵州2027同篇公告（第二入口）"
         }
       ]
     },
@@ -116,9 +116,9 @@
       "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
       "fallbacks": [
         {
-          "url": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+          "url": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
           "kind": "listing",
-          "name": "吉林大学就业网招聘信息列表备用站点"
+          "name": "吉林大学就业网选调生工作列表（备用入口）"
         }
       ]
     }
