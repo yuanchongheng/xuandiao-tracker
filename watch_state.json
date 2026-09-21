@@ -5,7 +5,12 @@
     "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=058c8c90ce8a4515869929f638739fee": "2898a1f51552378881ba7750e0e4342132370c6672dc8cdf353b7de964bfd69e",
     "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f7d2f": "94e2796d48b059f1786e710f2fe837e6b1c89dbdf5fd023bb1dec345a7ddce70"
   },
-  "listings": {},
+  "listings": {
+    "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c": [
+      "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=058c8c90ce8a4515869929f638739fee",
+      "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=604bcd12dc48405a9b8c1c36901fde04"
+    ]
+  },
   "search": {
     "北京": [],
     "天津": [],
