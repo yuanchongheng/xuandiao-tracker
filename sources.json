@@ -88,19 +88,24 @@
           "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=9e01bc05e8bc4b3a8efdaf650667f0c0",
           "kind": "article",
           "name": "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）"
+        },
+        {
+          "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=9e01bc05e8bc4b3a8efdaf650667f0c0",
+          "kind": "article",
+          "name": "吉林大学选调专栏：甘肃2027同篇公告（第二备用入口）"
         }
       ]
     },
     {
       "province": "贵州",
       "kind": "article",
-      "name": "吉林大学备用：贵州2027定向选调公告",
-      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+      "name": "吉林大学选调专栏：贵州2027公告（备用来源）",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
       "fallbacks": [
         {
           "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
           "kind": "article",
-          "name": "吉林大学就业网：贵州同篇公告备用站点"
+          "name": "吉林大学就业网：贵州公告通用入口（第二备用）"
         }
       ]
     },

@@ -87,14 +87,25 @@ def make_session():
     return session
 
 
+def acceptable_page(content_type, content):
+    # A missing MIME header is not itself an error when a genuine markup
+    # document was returned; keep JSON, PDF, empty and arbitrary binaries out.
+    if not content:
+        return False
+    if any(x in content_type for x in ("text/html", "application/xhtml+xml", "text/xml", "application/xml", "application/rss+xml")):
+        return True
+    if content_type and not any(x in content_type for x in ("application/octet-stream", "text/plain")):
+        return False
+    prefix = content[:2048].lstrip(b"\xef\xbb\xbf \t\r\n").lower()
+    return any(x in prefix for x in (b"<!doctype html", b"<html", b"<body", b"<article", b"<?xml", b"<rss"))
+
+
 def fetch_bytes(url):
     # Sources are explicitly configured. Candidate RSS links are never fetched automatically.
     with make_session() as session, session.get(url, headers=HEADERS, timeout=(9, 16), stream=True, allow_redirects=True, verify=True) as response:
         response.raise_for_status()
         canonical_url(response.url)
         content_type = response.headers.get("Content-Type", "").lower()
-        if not any(t in content_type for t in ("text", "html", "xml", "rss", "application/octet-stream")):
-            raise ValueError("unsupported content-type: " + content_type[:75])
         chunks = []
         size = 0
         for chunk in response.iter_content(chunk_size=32768):
@@ -102,7 +113,13 @@ def fetch_bytes(url):
             if size > MAX_BYTES:
                 raise ValueError("response too large")
             chunks.append(chunk)
-        return b"".join(chunks)
+        content = b"".join(chunks)
+        # Some public sites omit Content-Type. Only permit headerless responses
+        # when the bytes actually look like an HTML/XML document, not JSON or
+        # a binary login/error response. This does not bypass TLS verification.
+        if not acceptable_page(content_type, content):
+            raise ValueError("unsupported content-type: " + (content_type[:75] or "(missing)") + "; bytes=" + str(len(content)))
+        return content
 
 
 def soup_for(content):
