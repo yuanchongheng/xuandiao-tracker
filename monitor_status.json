@@ -1,11 +1,16 @@
 {
-  "checkedAt": "",
+  "checkedAt": "2026-09-21T23:10:51+08:00",
   "monitorsConfigured": 8,
-  "monitorsSucceeded": 0,
+  "monitorsSucceeded": 4,
   "provincesConfigured": 31,
-  "searchesSucceeded": 0,
+  "searchesSucceeded": 31,
   "newCandidates": 0,
   "pendingCandidates": 0,
-  "errors": [],
-  "warning": "尚未执行线上监测；仅政府官网及吉林大学备选来源被采纳；并非实时官方信息。"
+  "errors": [
+    "湖南省人事考试机构2027选调公告: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html (Caused by SSLError(SSLError(1, '",
+    "甘肃组工网2027选调公告: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Caused by ConnectTimeoutError(<HTTPSConnect",
+    "吉林大学备用：贵州2027定向选调公告: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00 (Caused by SSLError(SSLEOFError(8",
+    "吉林大学选调生招聘信息索引（仅备用）: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c (Caused by SSLError(SSLEOFE"
+  ],
+  "warning": "自动检测只能发现线索，非实时、非完整覆盖；招聘条件和日期仅在人工核对后更新。"
 }
