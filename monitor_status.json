@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-22T00:26:32+08:00",
+  "checkedAt": "2026-09-22T00:38:07+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -11,7 +11,7 @@
     "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
     "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，官方原文仍未成功检查",
     "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0",
-    "吉林大学选调专栏：贵州2027同篇公告（第二入口）: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=1f6b210e15d944a698"
+    "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0"
   ],
   "fallbacksUsed": 1,
   "fallbackDetails": [
@@ -59,7 +59,7 @@
       },
       "failures": [
         "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau",
-        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: SSLError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=9e01bc05e8bc4b3a8efdaf6506"
+        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: ValueError: article text too short; baseline not changed"
       ]
     },
     {
@@ -68,7 +68,7 @@
       "primaryUrl": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
       "failures": [
         "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0",
-        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=1f6b210e15d944a698"
+        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0"
       ]
     },
     {
