@@ -1,0 +1,99 @@
+{
+  "edition": "2027届",
+  "year": "2027",
+  "discovery": {
+    "enabled": true,
+    "provider": "Bing RSS 搜索线索（仅政府官网及吉林大学就业网；第三方搜索结果不等于内容核验）",
+    "url_template": "https://www.bing.com/search?format=rss&q={query}",
+    "query_template": "{province} 2027 定向选调 公告 site:gov.cn OR site:jdjywpt.jlu.edu.cn OR site:jdjyw.jlu.edu.cn",
+    "provinces": [
+      "北京",
+      "天津",
+      "河北",
+      "山西",
+      "内蒙古",
+      "辽宁",
+      "吉林",
+      "黑龙江",
+      "上海",
+      "江苏",
+      "浙江",
+      "安徽",
+      "福建",
+      "江西",
+      "山东",
+      "河南",
+      "湖北",
+      "湖南",
+      "广东",
+      "广西",
+      "海南",
+      "重庆",
+      "四川",
+      "贵州",
+      "云南",
+      "西藏",
+      "陕西",
+      "甘肃",
+      "青海",
+      "宁夏",
+      "新疆"
+    ]
+  },
+  "monitors": [
+    {
+      "province": "北京",
+      "kind": "article",
+      "name": "北京市政府2027选调公告",
+      "url": "https://www.beijing.gov.cn/cs/gncs/zcwj/202609/t20260910_4858513.html"
+    },
+    {
+      "province": "上海",
+      "kind": "article",
+      "name": "吉林大学备用：上海市2027选调公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=a4e2b5a3d3bd497bb276fe770accefc5"
+    },
+    {
+      "province": "湖北",
+      "kind": "article",
+      "name": "吉林大学备用：湖北面向吉林大学2027定向选调公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=058c8c90ce8a4515869929f638739fee"
+    },
+    {
+      "province": "湖南",
+      "kind": "article",
+      "name": "湖南省人事考试机构2027选调公告",
+      "url": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html"
+    },
+    {
+      "province": "四川",
+      "kind": "article",
+      "name": "吉林大学备用：四川面向吉林大学2027选调公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f7d2f"
+    },
+    {
+      "province": "甘肃",
+      "kind": "article",
+      "name": "甘肃组工网2027选调公告",
+      "url": "https://www.gszg.gov.cn/20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html"
+    },
+    {
+      "province": "贵州",
+      "kind": "article",
+      "name": "吉林大学备用：贵州2027定向选调公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00"
+    },
+    {
+      "province": "全国",
+      "kind": "listing",
+      "name": "吉林大学选调生招聘信息索引（仅备用）",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c"
+    }
+  ],
+  "sourcePolicy": {
+    "primary": "省委组织部、各省政府和人社/人事考试机构的 .gov.cn 官方页面",
+    "universityFallback": "仅吉林大学就业网 jdjywpt.jlu.edu.cn 或 jdjyw.jlu.edu.cn",
+    "excluded": "其他高校公告、培训机构、媒体转载均不作为发布源或自动候选源",
+    "review": "链接所在域名符合政策不等于内容已核验；报名条件和日期必须人工比对原文及附件"
+  }
+}

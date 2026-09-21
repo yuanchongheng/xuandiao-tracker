@@ -1,0 +1,6 @@
+__pycache__/
+.pytest_cache/
+_site/
+monitor_report.md
+new_candidate_count.txt
+*.tmp

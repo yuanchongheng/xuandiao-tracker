@@ -1,0 +1,11 @@
+{
+  "checkedAt": "",
+  "monitorsConfigured": 8,
+  "monitorsSucceeded": 0,
+  "provincesConfigured": 31,
+  "searchesSucceeded": 0,
+  "newCandidates": 0,
+  "pendingCandidates": 0,
+  "errors": [],
+  "warning": "尚未执行线上监测；仅政府官网及吉林大学备选来源被采纳；并非实时官方信息。"
+}
