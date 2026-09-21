@@ -53,7 +53,10 @@ class ParsingTests(unittest.TestCase):
     def test_guizhou_uses_jlu_section_url(self):
         config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
         gz = next(x for x in config['monitors'] if x['province'] == '贵州')
-        self.assertIn('/portal/xdsgz/article/details', gz['url'])
+        self.assertEqual(gz['url'], 'https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00')
+        self.assertEqual(len({gz['url'], *(x['url'] for x in gz['fallbacks'])}), 2)
+        listing = next(x for x in config['monitors'] if x['province'] == '全国')
+        self.assertEqual(listing['fallbacks'][0]['url'], 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441')
 
     def test_article_strips_navigation(self):
         html = '<nav>random number 123</nav><article>' + ('定向选调 公告 资格条件 ' * 10) + '</article>'
