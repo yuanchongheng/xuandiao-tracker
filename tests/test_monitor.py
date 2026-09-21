@@ -54,7 +54,9 @@ class ParsingTests(unittest.TestCase):
         config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
         gz = next(x for x in config['monitors'] if x['province'] == '贵州')
         self.assertEqual(gz['url'], 'https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00')
-        self.assertEqual(len({gz['url'], *(x['url'] for x in gz['fallbacks'])}), 2)
+        self.assertEqual(len({gz['url'], *(x['url'] for x in gz['fallbacks'])}), 3)
+        self.assertEqual(gz['fallbacks'][-1]['kind'], 'listing')
+        self.assertEqual(gz['fallbacks'][-1]['url'], 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441')
         listing = next(x for x in config['monitors'] if x['province'] == '全国')
         self.assertEqual(listing['fallbacks'][0]['url'], 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441')
 
@@ -141,6 +143,39 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(status['sourceHealth'][5]['state'], 'failed')
         # Primary and both configured backups must each be recorded.
+        self.assertEqual(len(status['errors']), 3)
+
+    def test_guizhou_article_failure_uses_index_as_degraded_fallback(self):
+        list_url = 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441'
+        html = ('<article>' + '2027年定向选调公告报名资格 ' * 12 + '</article>').encode()
+        listing = ('<html><a href="/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00">'
+                   '贵州省2027年度定向部分高校选调优秀毕业生公告</a></html>').encode()
+        def stub(url):
+            if 'id=1f6b210e15d944a6988d7af33b88cc00' in url:
+                raise ValueError('unsupported content-type: (missing); bytes=0')
+            return listing if url == list_url else html
+        with patch.object(monitor, 'fetch_bytes', side_effect=stub):
+            status = monitor.run(discovery=False)
+        self.assertEqual(status['sourceHealth'][6]['state'], 'fallback')
+        self.assertEqual(status['sourceHealth'][6]['used']['kind'], 'listing')
+        self.assertEqual(status['fallbacksUsed'], 1)
+        self.assertIn('公告正文及附件仍未读取', status['errors'][-1])
+        self.assertNotIn('https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00',
+                         json.loads((self.root / 'watch_state.json').read_text())['articles'])
+
+    def test_guizhou_empty_index_does_not_hide_failure(self):
+        list_url = 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441'
+        html = ('<article>' + '2027定向选调信息 ' * 12 + '</article>').encode()
+        def stub(url):
+            if 'id=1f6b210e15d944a6988d7af33b88cc00' in url:
+                raise ValueError('empty article')
+            if url == list_url:
+                return '<html><body><a href="/notice">2027四川选调公告</a></body></html>'.encode()
+            return html
+        with patch.object(monitor, 'fetch_bytes', side_effect=stub):
+            status = monitor.run(discovery=False)
+        self.assertEqual(status['sourceHealth'][6]['state'], 'failed')
+        self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(len(status['errors']), 3)
 
     def test_search_discovers_official_link_without_publishing(self):
