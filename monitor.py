@@ -105,6 +105,8 @@ def fetch_bytes(url):
     with make_session() as session, session.get(url, headers=HEADERS, timeout=(9, 16), stream=True, allow_redirects=True, verify=True) as response:
         response.raise_for_status()
         canonical_url(response.url)
+        if not approved_candidate(response.url):
+            raise ValueError("Source redirected outside government/JLU-approved domains")
         content_type = response.headers.get("Content-Type", "").lower()
         chunks = []
         size = 0
@@ -147,6 +149,9 @@ def listing_links(content, base_url, province, year):
         if not KEYWORD.search(title + " " + parent_text):
             continue
         if year not in title + " " + parent_text:
+            continue
+        # Provincial backup indexes must not treat other regions as coverage.
+        if province != '全国' and province not in title + " " + parent_text:
             continue
         try:
             url = canonical_url(urljoin(base_url, link.get("href", "")))
@@ -256,6 +261,8 @@ def run(discovery=True, fixture_dir=None):
                     state["articles"][url] = digest
                 else:
                     links = listing_links(content, url, source['province'], config['year'])
+                    if j and source['kind'] == 'article' and not links:
+                        raise ValueError('backup index contains no matching province/year notices; article not checked')
                     existing = set(state['listings'].get(url, []))
                     if url in state['listings']:
                         for entry in links:
@@ -275,7 +282,8 @@ def run(discovery=True, fixture_dir=None):
             source_health.append({"name": source['name'], "state": "failed", "primaryUrl": primary_url, "failures": failure_details})
         elif not selected['primary']:
             # A fallback is genuinely degraded: never count it as a successful official source.
-            errors.append(failure_details[0] + '；已启用备用来源，官方原文仍未成功检查')
+            limitation = ('；仅监测公告索引，公告正文及附件仍未读取' if selected['kind'] == 'listing' and source['kind'] == 'article' else '')
+            errors.append(failure_details[0] + '；已启用备用来源，原定页面仍未成功检查' + limitation)
             source_health.append({"name": source['name'], "state": "fallback", "primaryUrl": primary_url,
                                   "used": selected, "failures": failure_details})
         else:
