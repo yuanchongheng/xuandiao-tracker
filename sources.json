@@ -63,7 +63,14 @@
       "province": "湖南",
       "kind": "article",
       "name": "湖南省人事考试机构2027选调公告",
-      "url": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html"
+      "url": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html",
+      "fallbacks": [
+        {
+          "url": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/rskswlist.html",
+          "kind": "listing",
+          "name": "湖南人事考试网考试通知目录（仅政府官方索引）"
+        }
+      ]
     },
     {
       "province": "四川",
@@ -75,19 +82,40 @@
       "province": "甘肃",
       "kind": "article",
       "name": "甘肃组工网2027选调公告",
-      "url": "https://www.gszg.gov.cn/20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html"
+      "url": "https://www.gszg.gov.cn/20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html",
+      "fallbacks": [
+        {
+          "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=9e01bc05e8bc4b3a8efdaf650667f0c0",
+          "kind": "article",
+          "name": "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）"
+        }
+      ]
     },
     {
       "province": "贵州",
       "kind": "article",
       "name": "吉林大学备用：贵州2027定向选调公告",
-      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00"
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+      "fallbacks": [
+        {
+          "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+          "kind": "article",
+          "name": "吉林大学就业网：贵州同篇公告备用站点"
+        }
+      ]
     },
     {
       "province": "全国",
       "kind": "listing",
       "name": "吉林大学选调生招聘信息索引（仅备用）",
-      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c"
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "fallbacks": [
+        {
+          "url": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+          "kind": "listing",
+          "name": "吉林大学就业网招聘信息列表备用站点"
+        }
+      ]
     }
   ],
   "sourcePolicy": {

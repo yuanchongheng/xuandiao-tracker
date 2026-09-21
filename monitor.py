@@ -19,6 +19,8 @@ from urllib.parse import quote, urljoin, urlsplit, urlunsplit, parse_qsl, urlenc
 from xml.etree import ElementTree
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from source_policy import source_label, source_tier
 
@@ -75,9 +77,19 @@ def approved_candidate(url):
     return source_tier(url) is not None
 
 
+def make_session():
+    # Retry temporary transport errors and 429/5xx, never disable certificate checks.
+    retry = Retry(total=2, connect=2, read=1, backoff_factor=0.7,
+                  status_forcelist=[429, 500, 502, 503, 504],
+                  allowed_methods=frozenset(["GET"]), respect_retry_after_header=True)
+    session = requests.Session()
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    return session
+
+
 def fetch_bytes(url):
     # Sources are explicitly configured. Candidate RSS links are never fetched automatically.
-    with requests.get(url, headers=HEADERS, timeout=TIMEOUT, stream=True, allow_redirects=True) as response:
+    with make_session() as session, session.get(url, headers=HEADERS, timeout=(9, 16), stream=True, allow_redirects=True, verify=True) as response:
         response.raise_for_status()
         canonical_url(response.url)
         content_type = response.headers.get("Content-Type", "").lower()
@@ -178,8 +190,11 @@ def run(discovery=True, fixture_dir=None):
     if not config.get("monitors") or not vetted.get("records"):
         raise ValueError("Missing source configuration or curated records")
     for item in config['monitors']:
-        if not approved_candidate(item['url']):
-            raise ValueError('Configured source disallowed by government/JLU-only policy: ' + item['url'])
+        for endpoint in [item] + item.get('fallbacks', []):
+            if not approved_candidate(endpoint['url']):
+                raise ValueError('Configured source disallowed by government/JLU-only policy: ' + endpoint['url'])
+            if endpoint.get('kind', item['kind']) not in ('article', 'listing'):
+                raise ValueError('Invalid source kind')
     state = read_json("watch_state.json", {"articles": {}, "listings": {}, "search": {}})
     for k in ("articles", "listings", "search"):
         state.setdefault(k, {})
@@ -195,33 +210,59 @@ def run(discovery=True, fixture_dir=None):
             return (Path(fixture_dir) / fixture_name).read_bytes()
         return fetch_bytes(url)
 
+    degraded = []
+    source_health = []
     for i, source in enumerate(config["monitors"]):
-        name, url, kind = source["name"], canonical_url(source["url"]), source["kind"]
-        if kind not in ("article", "listing"):
-            raise ValueError("Invalid monitor kind " + kind)
-        try:
-            content = content_at(url, f"monitor-{i}.html")
-            if kind == "article":
-                text = article_text(content)
-                digest = hashlib.sha256(text.encode()).hexdigest()
-                old = state["articles"].get(url)
-                if old and digest != old:
-                    entry = {"province": source["province"], "title": "已收录公告原文内容变化：" + name,
-                             "url": url, "kind": "article_change", "source": name}
-                    if queue_candidate(queue, known, entry, stamp, fingerprint=digest): new.append(entry)
-                state["articles"][url] = digest
-            else:
-                links = listing_links(content, url, source["province"], config["year"])
-                existing = set(state["listings"].get(url, []))
-                # A first scan establishes baseline: existing archive links do not flood queue.
-                if url in state["listings"]:
-                    for entry in links:
-                        if entry["url"] not in existing and queue_candidate(queue, known, entry, stamp):
+        primary_url = canonical_url(source['url'])
+        attempts = [source] + source.get('fallbacks', [])
+        failure_details = []
+        selected = None
+        for j, endpoint in enumerate(attempts):
+            name = endpoint.get('name', source['name'])
+            url = canonical_url(endpoint['url'])
+            kind = endpoint.get('kind', source['kind'])
+            try:
+                # Fixtures may model a failing primary and successful backup independently.
+                if fixture_dir and j:
+                    content = content_at(url, f"monitor-{i}-fallback-{j}.html")
+                else:
+                    content = content_at(url, f"monitor-{i}.html")
+                if kind == "article":
+                    text = article_text(content)
+                    digest = hashlib.sha256(text.encode()).hexdigest()
+                    old = state["articles"].get(url)
+                    if old and digest != old:
+                        entry = {"province": source['province'], "title": "已收录公告原文内容变化：" + name,
+                                 "url": url, "kind": "article_change", "source": name}
+                        if queue_candidate(queue, known, entry, stamp, fingerprint=digest):
                             new.append(entry)
-                state["listings"][url] = sorted(existing | {link["url"] for link in links})
-            successes += 1
-        except Exception as exc:
-            errors.append(f"{name}: {str(exc)[:180]}")
+                    state["articles"][url] = digest
+                else:
+                    links = listing_links(content, url, source['province'], config['year'])
+                    existing = set(state['listings'].get(url, []))
+                    if url in state['listings']:
+                        for entry in links:
+                            if entry['url'] not in existing and queue_candidate(queue, known, entry, stamp):
+                                new.append(entry)
+                    state['listings'][url] = sorted(existing | {link['url'] for link in links})
+                selected = {"name": name, "url": url, "kind": kind, "primary": j == 0}
+                if j == 0:
+                    successes += 1
+                else:
+                    degraded.append(source['name'] + ' → ' + name + ('（目录覆盖，非原文）' if kind != source['kind'] else ''))
+                break
+            except Exception as exc:
+                failure_details.append(f"{name}: {type(exc).__name__}: {str(exc)[:140]}")
+        if selected is None:
+            errors.extend(failure_details)
+            source_health.append({"name": source['name'], "state": "failed", "primaryUrl": primary_url, "failures": failure_details})
+        elif not selected['primary']:
+            # A fallback is genuinely degraded: never count it as a successful official source.
+            errors.append(failure_details[0] + '；已启用备用来源，官方原文仍未成功检查')
+            source_health.append({"name": source['name'], "state": "fallback", "primaryUrl": primary_url,
+                                  "used": selected, "failures": failure_details})
+        else:
+            source_health.append({"name": source['name'], "state": "ok", "primaryUrl": primary_url})
 
     discovery_count = 0
     if discovery and config.get("discovery", {}).get("enabled"):
@@ -254,10 +295,11 @@ def run(discovery=True, fixture_dir=None):
               "provincesConfigured": len(config["discovery"]["provinces"]) if discovery else 0,
               "searchesSucceeded": discovery_count, "newCandidates": len(new),
               "pendingCandidates": sum(x["status"] == "pending" for x in queue), "errors": errors[:80],
+              "fallbacksUsed": len(degraded), "fallbackDetails": degraded, "sourceHealth": source_health,
               "warning": "自动检测只能发现线索，非实时、非完整覆盖；招聘条件和日期仅在人工核对后更新。"}
     write_json("monitor_status.json", status)
     report = [f"# 选调雷达监测报告 · {stamp}", "", f"新增待核验线索：{len(new)}；当前待核验总数：{status['pendingCandidates']}。",
-              f"已检查既有来源：{successes}/{len(config['monitors'])}；省份搜索成功：{discovery_count}/{status['provincesConfigured']}。", "",
+              f"原定来源成功：{successes}/{len(config['monitors'])}；备用启用：{len(degraded)}；省份搜索成功：{discovery_count}/{status['provincesConfigured']}。", "",
               "## 本轮新增（不得视为已核验公告）", ""]
     if not new: report.append("无。")
     for entry in new[:100]:
@@ -265,8 +307,8 @@ def run(discovery=True, fixture_dir=None):
     report += ["", "## 抓取错误", ""] + (["- " + e for e in errors] if errors else ["无。"])
     (ROOT / "monitor_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     (ROOT / "new_candidate_count.txt").write_text(str(len(new)), encoding="utf-8")
-    print(f"OK: {successes}/{len(config['monitors'])} source pages; {discovery_count} province searches; "
-          f"new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
+    print(f"Primary sources: {successes}/{len(config['monitors'])}; backups used={len(degraded)}; "
+          f"regional searches={discovery_count}; new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
     if errors:
         print("Errors (sources may block automation; not interpreted as no announcements):", *errors[:5], sep="\n - ")
     return status
