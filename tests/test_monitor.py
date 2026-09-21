@@ -97,6 +97,37 @@ class MonitorOfflineTests(unittest.TestCase):
         original = json.loads((Path(monitor.__file__).resolve().parent / 'data.json').read_text(encoding='utf8'))
         self.assertEqual(json.loads((self.root / 'data.json').read_text(encoding='utf8')), original)
 
+    def test_primary_failure_fallback_does_not_masquerade_as_primary_success(self):
+        original = monitor.fetch_bytes
+        official = 'https://www.gszg.gov.cn/20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html'
+        backup = 'https://jdjyw.jlu.edu.cn/portal/article/details?id=9e01bc05e8bc4b3a8efdaf650667f0c0'
+        html = ('<article>' + '2027甘肃定向选调公告报名办法 ' * 12 + '</article>').encode()
+        def stub(url):
+            if url == official:
+                raise ConnectionError('simulated official timeout')
+            return html
+        with patch.object(monitor, 'fetch_bytes', side_effect=stub):
+            status = monitor.run(discovery=False)
+        self.assertEqual(status['monitorsSucceeded'], 7)
+        self.assertEqual(status['fallbacksUsed'], 1)
+        self.assertEqual(status['sourceHealth'][5]['state'], 'fallback')
+        self.assertEqual(status['sourceHealth'][5]['used']['url'], backup)
+        self.assertEqual(len(status['errors']), 1)
+        self.assertEqual(status['newCandidates'], 0)
+        self.assertEqual(json.loads((self.root / 'watch_state.json').read_text())['articles'].get(official), None)
+
+    def test_unavailable_primary_and_fallback_are_reported(self):
+        def stub(url):
+            if 'gszg.gov.cn' in url or 'id=9e01bc05e8bc4b3a8efdaf650667f0c0' in url:
+                raise ConnectionError('simulated network refusal')
+            return ('<article>' + '2027选调公告及报名条件 ' * 12 + '</article>').encode()
+        with patch.object(monitor, 'fetch_bytes', side_effect=stub):
+            status = monitor.run(discovery=False)
+        self.assertEqual(status['monitorsSucceeded'], 7)
+        self.assertEqual(status['fallbacksUsed'], 0)
+        self.assertEqual(status['sourceHealth'][5]['state'], 'failed')
+        self.assertEqual(len(status['errors']), 2)
+
     def test_search_discovers_official_link_without_publishing(self):
         conf = json.loads((self.root / 'sources.json').read_text(encoding='utf8'))
         for i, _ in enumerate(conf['discovery']['provinces']):
@@ -111,4 +142,3 @@ class MonitorOfflineTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
