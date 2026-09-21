@@ -104,8 +104,14 @@ def fetch_bytes(url):
     # Sources are explicitly configured. Candidate RSS links are never fetched automatically.
     with make_session() as session, session.get(url, headers=HEADERS, timeout=(9, 16), stream=True, allow_redirects=True, verify=True) as response:
         response.raise_for_status()
-        canonical_url(response.url)
-        if not approved_candidate(response.url):
+        # The RSS *search provider* is separate from candidate announcement hosts.
+        # A former unconditional source-domain check rejected all 31 Bing RSS feeds.
+        original_host = urlsplit(canonical_url(url)).hostname
+        final_host = urlsplit(canonical_url(response.url)).hostname
+        if original_host in ("www.bing.com", "bing.com"):
+            if final_host not in ("www.bing.com", "bing.com"):
+                raise ValueError("Search feed redirected outside approved Bing domains")
+        elif not approved_candidate(response.url):
             raise ValueError("Source redirected outside government/JLU-approved domains")
         content_type = response.headers.get("Content-Type", "").lower()
         chunks = []
@@ -336,6 +342,9 @@ def run(discovery=True, fixture_dir=None):
           f"regional searches={discovery_count}; new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
     if errors:
         print("Errors (sources may block automation; not interpreted as no announcements):", *errors[:5], sep="\n - ")
+        search_errors = [err for err in errors if "搜索:" in err]
+        if search_errors:
+            print(f"Regional search failures: {len(search_errors)}; examples:", *search_errors[:2], sep="\n - ")
     return status
 
 
