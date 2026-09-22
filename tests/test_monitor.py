@@ -27,7 +27,7 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(source_tier('https://jdjyw.jlu.edu.cn/portal/article/notice'), 'jlu_fallback')
         for host in ('jiuye.uestc.edu.cn', 'www.job.ustc.edu.cn', 'job.hust.edu.cn', 'career.csu.edu.cn'):
             self.assertEqual(source_tier(f'https://{host}/notice'), 'university_third')
-        for url in ('https://xds.nankai.edu.cn/a', 'https://job.sdu.edu.cn/a', 'https://fakejiuye.uestc.edu.cn/a', 'https://jiuye.uestc.edu.cn.evil.test/a', 'https://www.gzastv.cn/a', 'https://fakegov.cn/a'):
+        for url in ('https://xds.nankai.edu.cn/a', 'https://example-unknown.edu.cn/a', 'https://fakejiuye.uestc.edu.cn/a', 'https://jiuye.uestc.edu.cn.evil.test/a', 'https://www.gzastv.cn/a', 'https://fakegov.cn/a'):
             self.assertIsNone(source_tier(url), url)
 
     def test_rss_jlu_only_if_no_government_match(self):
@@ -105,6 +105,29 @@ class ParsingTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Source redirected outside'):
                 monitor.fetch_bytes('https://rst.hunan.gov.cn/notice.html')
 
+    def test_third_batches_cover_every_school_in_four_scheduled_windows(self):
+        cfg=json.loads((Path(monitor.__file__).resolve().parent/'sources.json').read_text(encoding='utf8'))['discovery']['third_source']
+        self.assertEqual(len(cfg['hosts']), 17)
+        self.assertEqual(len(cfg['query_batches']), 4)
+        found=set()
+        for hour in (2, 8, 14, 20):
+            query, batch=monitor.third_query_for_batch(cfg, '湖南', f'2026-09-22T{hour:02d}:17:00+08:00')
+            self.assertIn('湖南', query)
+            self.assertIn('2027', query)
+            self.assertEqual(batch, hour//6)
+            hosts=cfg['query_batches'][batch]
+            self.assertFalse(found.intersection(hosts))
+            found.update(hosts)
+            for host in hosts:
+                self.assertIn('site:' + host, query)
+        self.assertEqual(found, set(cfg['hosts']))
+
+    def test_expanded_university_host_not_arbitrary_subdomain(self):
+        self.assertEqual(source_tier('https://career.tsinghua.edu.cn/tzgg.htm'), 'university_third')
+        self.assertEqual(source_tier('https://job.sdu.edu.cn/xdgk.htm'), 'university_third')
+        self.assertIsNone(source_tier('https://fakecareer.tsinghua.edu.cn/a'))
+        self.assertIsNone(source_tier('https://job.sdu.edu.cn.evil.example/a'))
+
     def test_guizhou_uses_jlu_section_url(self):
         config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
         gz = next(x for x in config['monitors'] if x['province'] == '贵州')
@@ -140,7 +163,8 @@ class MonitorOfflineTests(unittest.TestCase):
         (self.root / 'watch_state.json').write_text(json.dumps({'articles':{},'listings':{},'search':{}}), encoding='utf8')
         self.fixture = self.root / 'fixtures'
         self.fixture.mkdir()
-        for i in range(4):
+        index_total = len(json.loads((old_root / 'sources.json').read_text(encoding='utf8'))['discovery']['third_source']['indexes'])
+        for i in range(index_total):
             (self.fixture / f'third-index-{i}.html').write_text('<html><body>没有符合条件的公告</body></html>', encoding='utf8')
         for i in range(8):
             if i == 7:
@@ -294,8 +318,9 @@ class MonitorOfflineTests(unittest.TestCase):
         (self.fixture/'third-index-0.html').write_text(
             '<a href="/career/news/recruitment/test">云南省2027年定向选调公告</a>',encoding='utf8')
         status=monitor.run(discovery=True,fixture_dir=self.fixture)
-        self.assertEqual(status['thirdIndexesSucceeded'],4)
-        self.assertEqual(status['thirdIndexesAttempted'],4)
+        index_total = len(config['discovery']['third_source']['indexes'])
+        self.assertEqual(status['thirdIndexesSucceeded'], index_total)
+        self.assertEqual(status['thirdIndexesAttempted'], index_total)
         self.assertEqual(status['newCandidates'],0)
         self.assertEqual(status['supplementalNew'],1)
         self.assertEqual(json.loads((self.root/'review_queue.json').read_text(encoding='utf8'))['candidates'],[])
