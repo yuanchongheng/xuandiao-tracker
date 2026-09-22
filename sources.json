@@ -42,14 +42,27 @@
     "third_source": {
       "enabled": true,
       "trigger": "Only when current primary search has no government/JLU notice and no healthy monitored government/JLU notice for the province; transport errors are NOT proof that a notice does not exist.",
-      "query_template": "{province} 2027 定向选调 公告 site:jiuye.uestc.edu.cn OR site:www.job.ustc.edu.cn OR site:job.hust.edu.cn OR site:career.csu.edu.cn",
+      "query_template": "{province} 2027 定向选调 公告 ({sites})",
       "hosts": [
         "jiuye.uestc.edu.cn",
         "www.job.ustc.edu.cn",
         "job.hust.edu.cn",
-        "career.csu.edu.cn"
+        "career.csu.edu.cn",
+        "scc.pku.edu.cn",
+        "career.tsinghua.edu.cn",
+        "career.ruc.edu.cn",
+        "career.fudan.edu.cn",
+        "www.job.sjtu.edu.cn",
+        "www.career.zju.edu.cn",
+        "career.nankai.edu.cn",
+        "job.sdu.edu.cn",
+        "job.hit.edu.cn",
+        "jy.xmu.edu.cn",
+        "jy.scu.edu.cn",
+        "job.lzu.edu.cn",
+        "xsjy.whu.edu.cn"
       ],
-      "note": "Third-tier search is a discovery lead only; never auto-publish university-specific deadlines or requirements.",
+      "note": "其他高校只作为独立补充参考，网站域名不代表原公告内容已核验；禁止自动更新报名/笔试日期。",
       "indexes": [
         {
           "name": "电子科技大学就业网选调专栏",
@@ -66,8 +79,122 @@
         {
           "name": "中南大学就业信息网选调公告入口",
           "url": "https://career.csu.edu.cn/default/"
+        },
+        {
+          "name": "清华大学学生职业发展指导中心通知公告",
+          "url": "https://career.tsinghua.edu.cn/tzgg.htm"
+        },
+        {
+          "name": "南开大学学生就业指导中心选调信息入口",
+          "url": "https://career.nankai.edu.cn/"
+        },
+        {
+          "name": "山东大学学生就业创业指导中心选调公考",
+          "url": "https://job.sdu.edu.cn/xdgk.htm"
+        },
+        {
+          "name": "上海交通大学学生就业服务和职业发展中心",
+          "url": "https://www.job.sjtu.edu.cn/career/index"
         }
-      ]
+      ],
+      "universities": [
+        {
+          "name": "电子科技大学",
+          "host": "jiuye.uestc.edu.cn"
+        },
+        {
+          "name": "中国科学技术大学",
+          "host": "www.job.ustc.edu.cn"
+        },
+        {
+          "name": "华中科技大学",
+          "host": "job.hust.edu.cn"
+        },
+        {
+          "name": "中南大学",
+          "host": "career.csu.edu.cn"
+        },
+        {
+          "name": "北京大学",
+          "host": "scc.pku.edu.cn"
+        },
+        {
+          "name": "清华大学",
+          "host": "career.tsinghua.edu.cn"
+        },
+        {
+          "name": "中国人民大学",
+          "host": "career.ruc.edu.cn"
+        },
+        {
+          "name": "复旦大学",
+          "host": "career.fudan.edu.cn"
+        },
+        {
+          "name": "上海交通大学",
+          "host": "www.job.sjtu.edu.cn"
+        },
+        {
+          "name": "浙江大学",
+          "host": "www.career.zju.edu.cn"
+        },
+        {
+          "name": "南开大学",
+          "host": "career.nankai.edu.cn"
+        },
+        {
+          "name": "山东大学",
+          "host": "job.sdu.edu.cn"
+        },
+        {
+          "name": "哈尔滨工业大学",
+          "host": "job.hit.edu.cn"
+        },
+        {
+          "name": "厦门大学",
+          "host": "jy.xmu.edu.cn"
+        },
+        {
+          "name": "四川大学",
+          "host": "jy.scu.edu.cn"
+        },
+        {
+          "name": "兰州大学",
+          "host": "job.lzu.edu.cn"
+        },
+        {
+          "name": "武汉大学",
+          "host": "xsjy.whu.edu.cn"
+        }
+      ],
+      "query_batches": [
+        [
+          "jiuye.uestc.edu.cn",
+          "scc.pku.edu.cn",
+          "www.job.sjtu.edu.cn",
+          "job.hit.edu.cn",
+          "xsjy.whu.edu.cn"
+        ],
+        [
+          "www.job.ustc.edu.cn",
+          "career.tsinghua.edu.cn",
+          "www.career.zju.edu.cn",
+          "jy.xmu.edu.cn"
+        ],
+        [
+          "job.hust.edu.cn",
+          "career.ruc.edu.cn",
+          "career.nankai.edu.cn",
+          "jy.scu.edu.cn"
+        ],
+        [
+          "career.csu.edu.cn",
+          "career.fudan.edu.cn",
+          "job.sdu.edu.cn",
+          "job.lzu.edu.cn"
+        ]
+      ],
+      "batch_policy": "每次仅检索一个批次，每6小时轮换，共4个批次；单轮覆盖部分学校，不宣称每轮检索全部高校；直连索引单独运行。"
     }
   },
   "monitors": [
@@ -161,12 +288,27 @@
   "sourcePolicy": {
     "first": "政府部门官网 *.gov.cn，优先原始公告及附件",
     "second": "吉林大学官方就业站 jdjywpt.jlu.edu.cn / jdjyw.jlu.edu.cn",
-    "third": "仅批准的其他高校官方就业站；只发现线索，核实公告适用学校、批次、附件、报名/笔试时间后才能正式发布",
+    "third": "限定明确核对过的其他高校官方就业站（17校分4批轮换搜索，8个索引单独检查）；线索独立展示，不自动发布。",
     "otherUniversityHosts": [
       "career.csu.edu.cn",
+      "career.fudan.edu.cn",
+      "career.nankai.edu.cn",
+      "career.ruc.edu.cn",
+      "career.tsinghua.edu.cn",
       "jiuye.uestc.edu.cn",
+      "job.hit.edu.cn",
       "job.hust.edu.cn",
-      "www.job.ustc.edu.cn"
+      "job.lzu.edu.cn",
+      "job.sdu.edu.cn",
+      "job.ustc.edu.cn",
+      "jy.scu.edu.cn",
+      "jy.xmu.edu.cn",
+      "scc.pku.edu.cn",
+      "www.career.zju.edu.cn",
+      "www.job.sdu.edu.cn",
+      "www.job.sjtu.edu.cn",
+      "www.job.ustc.edu.cn",
+      "xsjy.whu.edu.cn"
     ],
     "excluded": "其他未核实高校域名、自媒体、商业转载/培训机构不能作为直接候选或正式发布来源",
     "review": "官网抓取失败不等于未发布；第三来源必须单独标记，不能将一所高校的校内报名或推荐截止冒充全省截止。"

@@ -247,6 +247,15 @@ def store_supplement(items, urls, entry, timestamp):
     return True
 
 
+def third_query_for_batch(third_config, province, timestamp):
+    """Cycle through exact-host groups every six hours, avoiding oversized Bing queries."""
+    groups = third_config['query_batches']
+    hour = datetime.fromisoformat(timestamp).hour
+    batch_index = (hour // 6) % len(groups)
+    sites = ' OR '.join('site:' + host for host in groups[batch_index])
+    return third_config['query_template'].format(province=province, sites=sites), batch_index
+
+
 def run(discovery=True, fixture_dir=None):
     config = read_json("sources.json", {})
     vetted = read_json("data.json", {})
@@ -258,6 +267,19 @@ def run(discovery=True, fixture_dir=None):
                 raise ValueError('Configured source disallowed by three-tier policy: ' + endpoint['url'])
             if endpoint.get('kind', item['kind']) not in ('article', 'listing'):
                 raise ValueError('Invalid source kind')
+    third_config = config.get('discovery', {}).get('third_source', {})
+    if third_config.get('enabled'):
+        hosts = third_config.get('hosts', [])
+        batches = third_config.get('query_batches', [])
+        if (not hosts or not batches or len(set(hosts)) != len(hosts) or
+                sorted(host for batch in batches for host in batch) != sorted(hosts)):
+            raise ValueError('Third-tier hosts and query batches must match without duplicates')
+        if any(source_tier('https://' + host + '/') != 'university_third' for host in hosts):
+            raise ValueError('Third-tier search host is not on the reviewed allowlist')
+        if any(source_tier(index['url']) != 'university_third' or
+               urlsplit(index['url']).hostname not in config.get('sourcePolicy', {}).get('otherUniversityHosts', [])
+               for index in third_config.get('indexes', [])):
+            raise ValueError('Third-tier index host is not on the approved host list')
     state = read_json("watch_state.json", {"articles": {}, "listings": {}, "search": {}})
     for k in ("articles", "listings", "search"):
         state.setdefault(k, {})
@@ -350,6 +372,8 @@ def run(discovery=True, fixture_dir=None):
     third_index_success = 0
     third_index_attempted = 0
     third_index_links_found = 0
+    third_active_batch = None
+    third_batch_hosts = []
     eligible_for_index = set()
     # A listing backup does not prove the article was retrieved. When a source
     # is failed or only covered by a listing, third-tier search may provide a
@@ -369,6 +393,9 @@ def run(discovery=True, fixture_dir=None):
     if discovery and config.get('discovery', {}).get('enabled'):
         details = config['discovery']
         third = details.get('third_source', {})
+        if third.get('enabled'):
+            _, third_active_batch = third_query_for_batch(third, '全国', stamp)
+            third_batch_hosts = third['query_batches'][third_active_batch]
         vetted_urls = {canonical_url(r['source']) for r in vetted['records'] if r.get('source', '').startswith('https://')}
         for i, province in enumerate(details['provinces']):
             query = details['query_template'].format(province=province)
@@ -401,7 +428,7 @@ def run(discovery=True, fixture_dir=None):
             if not primary_search_ok:
                 continue  # Don't call the same broken Bing endpoint twice.
             third_attempted += 1
-            alt_query = third['query_template'].format(province=province)
+            alt_query, _ = third_query_for_batch(third, province, stamp)
             alt_url = details['url_template'].format(query=quote(alt_query))
             try:
                 alt_content = content_at(alt_url, f'third-search-{i}.xml')
@@ -457,6 +484,10 @@ def run(discovery=True, fixture_dir=None):
               "thirdSearchesSucceeded": third_succeeded, "thirdLinksFound": third_found,
               "thirdIndexesSucceeded": third_index_success, "thirdIndexesAttempted": third_index_attempted,
               "thirdIndexLinksFound": third_index_links_found,
+              "thirdSchoolsConfigured": len(config.get("discovery", {}).get("third_source", {}).get("hosts", [])),
+              "thirdBatchCount": len(config.get("discovery", {}).get("third_source", {}).get("query_batches", [])),
+              "thirdBatchActive": third_active_batch + 1 if third_active_batch is not None else None,
+              "thirdHostsInThisRun": third_batch_hosts,
               "newCandidates": len(new), "supplementalNew": len(supplement_new),
               "supplementalTotal": len(supplements),
               "pendingCandidates": sum(x["status"] == "pending" for x in queue), "errors": errors[:80],
@@ -478,7 +509,7 @@ def run(discovery=True, fixture_dir=None):
     (ROOT / "monitor_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     (ROOT / "new_candidate_count.txt").write_text(str(len(new)), encoding="utf-8")
     print(f"Primary sources: {successes}/{len(config['monitors'])}; backups used={len(degraded)}; "
-          f"regional searches={discovery_count}; third searches={third_succeeded}/{third_attempted} "
+          f"regional searches={discovery_count}; third batch={third_active_batch + 1 if third_active_batch is not None else 0}/{len(config.get('discovery', {}).get('third_source', {}).get('query_batches', []))}; third searches={third_succeeded}/{third_attempted} "
           f"third leads={third_found + third_index_links_found}; third indexes={third_index_success}/{third_index_attempted}; "
           f"supplemental new={len(supplement_new)} total={len(supplements)}; new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
     if errors:

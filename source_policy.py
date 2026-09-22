@@ -8,11 +8,25 @@ from urllib.parse import urlsplit
 
 JLU_HOSTS = frozenset({'jdjywpt.jlu.edu.cn', 'jdjyw.jlu.edu.cn'})
 OTHER_UNIVERSITY_HOSTS = frozenset({
-    'jiuye.uestc.edu.cn',    # University of Electronic Science and Technology of China
-    'www.job.ustc.edu.cn',  # University of Science and Technology of China
+    'career.csu.edu.cn',
+    'career.fudan.edu.cn',
+    'career.nankai.edu.cn',
+    'career.ruc.edu.cn',
+    'career.tsinghua.edu.cn',
+    'jiuye.uestc.edu.cn',
+    'job.hit.edu.cn',
+    'job.hust.edu.cn',
+    'job.lzu.edu.cn',
+    'job.sdu.edu.cn',
     'job.ustc.edu.cn',
-    'job.hust.edu.cn',      # Huazhong University of Science and Technology
-    'career.csu.edu.cn',   # Central South University
+    'jy.scu.edu.cn',
+    'jy.xmu.edu.cn',
+    'scc.pku.edu.cn',
+    'www.career.zju.edu.cn',
+    'www.job.sdu.edu.cn',
+    'www.job.sjtu.edu.cn',
+    'www.job.ustc.edu.cn',
+    'xsjy.whu.edu.cn',
 })
 
 
