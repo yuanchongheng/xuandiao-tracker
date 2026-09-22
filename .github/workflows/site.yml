@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add watch_state.json review_queue.json monitor_status.json
+          git add watch_state.json review_queue.json third_sources.json monitor_status.json
           if ! git diff --cached --quiet; then
             git commit -m 'chore: update announcement monitoring status and review queue'
             git push origin HEAD:main
@@ -64,7 +64,7 @@ jobs:
       - name: Prepare public site
         run: |
           mkdir -p _site
-          cp index.html data.json review_queue.json monitor_status.json _site/
+          cp index.html data.json review_queue.json third_sources.json monitor_status.json _site/
           touch _site/.nojekyll
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
