@@ -69,7 +69,7 @@ def canonical_url(url):
 
 
 def approved_candidate(url):
-    """Only government or Jilin University fallback URLs; never asserts article authenticity."""
+    """Exact allowlist for three tiers; a host is never evidence of article authenticity."""
     try:
         canonical_url(url)
     except ValueError:
@@ -112,7 +112,7 @@ def fetch_bytes(url):
             if final_host not in ("www.bing.com", "bing.com"):
                 raise ValueError("Search feed redirected outside approved Bing domains")
         elif not approved_candidate(response.url):
-            raise ValueError("Source redirected outside government/JLU-approved domains")
+            raise ValueError("Source redirected outside approved government/university domains")
         content_type = response.headers.get("Content-Type", "").lower()
         chunks = []
         size = 0
@@ -175,15 +175,23 @@ def listing_links(content, base_url, province, year):
     return list(out.values())
 
 
-def parse_rss(content, province, year):
-    """Only discover likely official-host links, no scraping candidate pages or extracting conditions."""
+def parse_rss(content, province, year, *, allowed_tiers=("government", "jlu_fallback")):
+    """Search matches are leads only; prefer government > JLU > selected other universities.
+
+    Third-tier links require province, year and recruitment keyword IN THE TITLE:
+    an unrelated page mentioning another province in a sidebar is not a notice.
+    """
     root = ElementTree.fromstring(content)
     results = []
     for item in root.findall(".//item"):
-        title = re.sub(r"\s+", " ", "".join(item.findtext("title", default=""))).strip()[:160]
+        title = re.sub(r"\s+", " ", item.findtext("title") or "").strip()[:160]
         url = (item.findtext("link") or "").strip()
         summary = BeautifulSoup(item.findtext("description") or "", "html.parser").get_text(" ", strip=True)[:300]
-        if year not in title + summary or province not in title + summary or not KEYWORD.search(title + " " + summary):
+        tier = source_tier(url)
+        if tier not in allowed_tiers:
+            continue
+        relevant = title if tier == 'university_third' else title + ' ' + summary
+        if year not in relevant or province not in relevant or not KEYWORD.search(relevant):
             continue
         if not approved_candidate(url):
             continue
@@ -191,15 +199,20 @@ def parse_rss(content, province, year):
             url = canonical_url(url)
         except ValueError:
             continue
-        results.append({"title": title, "province": province, "url": url, "kind": "search", "source": "Bing RSS（搜索线索，未经人工核验）"})
-    # If the search finds a government document, the university fallback is not needed.
-    if any(source_tier(e['url']) == 'government' for e in results):
-        return [e for e in results if source_tier(e['url']) == 'government']
-    return results
+        results.append({"title": title, "province": province, "url": url, "kind": "search",
+                        "source": "Bing RSS（搜索线索，未经人工核验）"})
+    priority = ('government', 'jlu_fallback', 'university_third')
+    for tier in priority:
+        selected = [e for e in results if source_tier(e['url']) == tier]
+        if selected:
+            return list({e['url']: e for e in selected}.values())
+    return []
 
 
 def queue_candidate(queue, known, entry, timestamp, *, fingerprint=""):
     url = canonical_url(entry["url"])
+    if source_tier(url) == "university_third":
+        raise ValueError("Third-tier leads belong to third_sources.json, not review_queue.json")
     # One entry per announcement; a source-page revision gets a distinct hash.
     identifier = hashlib.sha256((entry["kind"] + "|" + url + "|" + fingerprint).encode()).hexdigest()[:20]
     if identifier in known:
@@ -212,6 +225,28 @@ def queue_candidate(queue, known, entry, timestamp, *, fingerprint=""):
     return True
 
 
+def supplement_item(entry, timestamp):
+    """A third-tier search hit is a separately displayed reference, not a review item."""
+    url = canonical_url(entry['url'])
+    if source_tier(url) != 'university_third':
+        raise ValueError('Supplement must originate from an approved third-tier host')
+    return {'id': hashlib.sha256(url.encode()).hexdigest()[:20],
+            'province': entry['province'], 'title': entry['title'], 'url': url,
+            'source': entry.get('source', ''), 'kind': entry.get('kind', 'search'),
+            'discovered': entry.get('discovered') or timestamp,
+            'sourceTier': 'university_third', 'sourceLabel': '其他高校官方就业网 · 补充参考（未核实）',
+            'note': '其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。'}
+
+
+def store_supplement(items, urls, entry, timestamp):
+    item = supplement_item(entry, timestamp)
+    if item['url'] in urls:
+        return False
+    urls.add(item['url'])
+    items.append(item)
+    return True
+
+
 def run(discovery=True, fixture_dir=None):
     config = read_json("sources.json", {})
     vetted = read_json("data.json", {})
@@ -220,7 +255,7 @@ def run(discovery=True, fixture_dir=None):
     for item in config['monitors']:
         for endpoint in [item] + item.get('fallbacks', []):
             if not approved_candidate(endpoint['url']):
-                raise ValueError('Configured source disallowed by government/JLU-only policy: ' + endpoint['url'])
+                raise ValueError('Configured source disallowed by three-tier policy: ' + endpoint['url'])
             if endpoint.get('kind', item['kind']) not in ('article', 'listing'):
                 raise ValueError('Invalid source kind')
     state = read_json("watch_state.json", {"articles": {}, "listings": {}, "search": {}})
@@ -228,9 +263,22 @@ def run(discovery=True, fixture_dir=None):
         state.setdefault(k, {})
     queued = read_json("review_queue.json", {"updated": "", "candidates": []})
     queue = queued.setdefault("candidates", [])
-    known = {c["id"] for c in queue}
+    third_feed = read_json("third_sources.json", {"updated": "", "items": []})
+    supplements = third_feed.setdefault("items", [])
     stamp = now_iso()
-    errors, new = [], []
+    supplement_urls = {c['url'] for c in supplements if source_tier(c.get('url', '')) == 'university_third'}
+    # Migrate historical third-tier records from older review_queue.json versions.
+    # This is safe to repeat, preserves the original discovery time and never
+    # presents migrated school announcements as verified official dates.
+    remaining = []
+    for entry in queue:
+        if source_tier(entry.get('url', '')) == 'university_third':
+            store_supplement(supplements, supplement_urls, entry, stamp)
+        else:
+            remaining.append(entry)
+    queue[:] = remaining
+    known = {c["id"] for c in queue}
+    errors, new, supplement_new = [], [], []
     successes = 0
 
     def content_at(url, fixture_name):
@@ -296,50 +344,143 @@ def run(discovery=True, fixture_dir=None):
             source_health.append({"name": source['name'], "state": "ok", "primaryUrl": primary_url})
 
     discovery_count = 0
-    if discovery and config.get("discovery", {}).get("enabled"):
-        details = config["discovery"]
-        for i, province in enumerate(details["provinces"]):
-            query = details["query_template"].format(province=province)
-            url = details["url_template"].format(query=quote(query))
+    third_attempted = 0
+    third_succeeded = 0
+    third_found = 0
+    third_index_success = 0
+    third_index_attempted = 0
+    third_index_links_found = 0
+    eligible_for_index = set()
+    # A listing backup does not prove the article was retrieved. When a source
+    # is failed or only covered by a listing, third-tier search may provide a
+    # lead even if Bing lists the inaccessible government original.
+    healthy_by_province = set()
+    deficient_provinces = set()
+    for source, health in zip(config['monitors'], source_health):
+        province = source['province']
+        if province == '全国':
+            continue
+        if health['state'] == 'ok' or (
+            health['state'] == 'fallback' and health.get('used', {}).get('kind') == 'article'
+        ):
+            healthy_by_province.add(province)
+        else:
+            deficient_provinces.add(province)
+    if discovery and config.get('discovery', {}).get('enabled'):
+        details = config['discovery']
+        third = details.get('third_source', {})
+        vetted_urls = {canonical_url(r['source']) for r in vetted['records'] if r.get('source', '').startswith('https://')}
+        for i, province in enumerate(details['provinces']):
+            query = details['query_template'].format(province=province)
+            url = details['url_template'].format(query=quote(query))
+            primary_results = []
+            primary_search_ok = False
             try:
-                content = content_at(url, f"search-{i}.xml")
-                results = parse_rss(content, province, config["year"])
-                previous = set(state["search"].get(province, []))
-                vetted_urls = {canonical_url(r["source"]) for r in vetted["records"] if r.get("source", "").startswith("https://")}
-                has_government_record = any(r['province'] == province and source_tier(r['source']) == 'government' for r in vetted['records'])
-                for entry in results:
-                    # Search results are surfaced as unverified even on the first scan, except already published URLs.
-                    if has_government_record and source_tier(entry['url']) == 'jlu_fallback':
+                content = content_at(url, f'search-{i}.xml')
+                primary_results = parse_rss(content, province, config['year'])
+                primary_search_ok = True
+                previous = set(state['search'].get(province, []))
+                has_gov = any(r['province'] == province and source_tier(r['source']) == 'government' for r in vetted['records'])
+                for entry in primary_results:
+                    if has_gov and source_tier(entry['url']) == 'jlu_fallback':
                         continue
-                    if entry["url"] not in vetted_urls and queue_candidate(queue, known, entry, stamp):
+                    if entry['url'] not in vetted_urls and queue_candidate(queue, known, entry, stamp):
                         new.append(entry)
-                state["search"][province] = sorted(previous | {entry["url"] for entry in results})
+                state['search'][province] = sorted(previous | {entry['url'] for entry in primary_results})
                 discovery_count += 1
             except Exception as exc:
-                errors.append(f"{province}搜索: {str(exc)[:180]}")
+                errors.append(f'{province}一级/二级搜索: {str(exc)[:180]}')
+            # An index may still surface leads when Bing itself is unavailable;
+            # neither an inaccessible government site nor a search error means
+            # that the official announcement does not exist.
+            eligible = (third.get('enabled') and province not in healthy_by_province
+                        and (not primary_results or province in deficient_provinces))
+            if not eligible:
+                continue
+            eligible_for_index.add(province)
+            if not primary_search_ok:
+                continue  # Don't call the same broken Bing endpoint twice.
+            third_attempted += 1
+            alt_query = third['query_template'].format(province=province)
+            alt_url = details['url_template'].format(query=quote(alt_query))
+            try:
+                alt_content = content_at(alt_url, f'third-search-{i}.xml')
+                alt_results = parse_rss(alt_content, province, config['year'],
+                                        allowed_tiers=('university_third',))
+                third_succeeded += 1
+                third_found += len(alt_results)
+                state.setdefault('third_search', {})[province] = sorted(
+                    set(state.get('third_search', {}).get(province, [])) | {entry['url'] for entry in alt_results})
+                for entry in alt_results:
+                    if entry['url'] not in vetted_urls and store_supplement(supplements, supplement_urls, entry, stamp):
+                        supplement_new.append(entry)
+            except Exception as exc:
+                errors.append(f'{province}第三来源搜索: {str(exc)[:180]}')
+
+        # Directly check a small, vetted set of university recruitment indexes
+        # ONCE per run (not once per province). This supplements RSS without
+        # crawling the candidate articles or guessing their registration dates.
+        if eligible_for_index:
+            for j, index in enumerate(third.get('indexes', [])):
+                third_index_attempted += 1
+                try:
+                    index_url = canonical_url(index['url'])
+                    if source_tier(index_url) != 'university_third':
+                        raise ValueError('Index is not an approved third-tier university site')
+                    raw = content_at(index_url, f'third-index-{j}.html')
+                    links = listing_links(raw, index_url, '全国', config['year'])
+                    third_index_success += 1
+                    third_index_links_found += len([entry for entry in links if entry['province'] in eligible_for_index])
+                    # Titles found on an index are leads, not proof that the
+                    # underlying article or attachment is accessible or valid.
+                    for entry in links:
+                        if entry['province'] not in eligible_for_index:
+                            continue
+                        if entry['url'] in vetted_urls:
+                            continue
+                        entry['source'] = index['name'] + '（高校公告索引，仅供补充参考）'
+                        if store_supplement(supplements, supplement_urls, entry, stamp):
+                            supplement_new.append(entry)
+                except Exception as exc:
+                    errors.append(f"第三来源目录 {index.get('name',j)}: {str(exc)[:180]}")
 
     queue.sort(key=lambda item: item["discovered"], reverse=True)
+    supplements.sort(key=lambda item: item.get('discovered', ''), reverse=True)
     queued["updated"] = stamp
+    third_feed['updated'] = stamp
     write_json("watch_state.json", state)
     write_json("review_queue.json", queued)
+    write_json("third_sources.json", third_feed)
     status = {"checkedAt": stamp, "monitorsConfigured": len(config["monitors"]), "monitorsSucceeded": successes,
               "provincesConfigured": len(config["discovery"]["provinces"]) if discovery else 0,
-              "searchesSucceeded": discovery_count, "newCandidates": len(new),
+              "searchesSucceeded": discovery_count, "thirdSearchesAttempted": third_attempted,
+              "thirdSearchesSucceeded": third_succeeded, "thirdLinksFound": third_found,
+              "thirdIndexesSucceeded": third_index_success, "thirdIndexesAttempted": third_index_attempted,
+              "thirdIndexLinksFound": third_index_links_found,
+              "newCandidates": len(new), "supplementalNew": len(supplement_new),
+              "supplementalTotal": len(supplements),
               "pendingCandidates": sum(x["status"] == "pending" for x in queue), "errors": errors[:80],
               "fallbacksUsed": len(degraded), "fallbackDetails": degraded, "sourceHealth": source_health,
               "warning": "自动检测只能发现线索，非实时、非完整覆盖；招聘条件和日期仅在人工核对后更新。"}
     write_json("monitor_status.json", status)
     report = [f"# 选调雷达监测报告 · {stamp}", "", f"新增待核验线索：{len(new)}；当前待核验总数：{status['pendingCandidates']}。",
               f"原定来源成功：{successes}/{len(config['monitors'])}；备用启用：{len(degraded)}；省份搜索成功：{discovery_count}/{status['provincesConfigured']}。", "",
-              "## 本轮新增（不得视为已核验公告）", ""]
+              f"第三来源检索：{third_succeeded}/{third_attempted}；公告目录：{third_index_success}/{third_index_attempted}；RSS匹配：{third_found}（只作补充参考）", "",
+              "## 本轮政府/吉林大学新增待核验线索", ""]
     if not new: report.append("无。")
     for entry in new[:100]:
+        report.append(f"- [{entry['province']}] {entry['title']} — {entry['url']}")
+    report += ["", "## 本轮其他高校补充来源（独立展示，未核验）", ""]
+    if not supplement_new: report.append("无。")
+    for entry in supplement_new[:100]:
         report.append(f"- [{entry['province']}] {entry['title']} — {entry['url']}")
     report += ["", "## 抓取错误", ""] + (["- " + e for e in errors] if errors else ["无。"])
     (ROOT / "monitor_report.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     (ROOT / "new_candidate_count.txt").write_text(str(len(new)), encoding="utf-8")
     print(f"Primary sources: {successes}/{len(config['monitors'])}; backups used={len(degraded)}; "
-          f"regional searches={discovery_count}; new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
+          f"regional searches={discovery_count}; third searches={third_succeeded}/{third_attempted} "
+          f"third leads={third_found + third_index_links_found}; third indexes={third_index_success}/{third_index_attempted}; "
+          f"supplemental new={len(supplement_new)} total={len(supplements)}; new={len(new)} pending={status['pendingCandidates']} errors={len(errors)}")
     if errors:
         print("Errors (sources may block automation; not interpreted as no announcements):", *errors[:5], sep="\n - ")
         search_errors = [err for err in errors if "搜索:" in err]
