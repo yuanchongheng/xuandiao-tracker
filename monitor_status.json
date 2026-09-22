@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-22T12:44:47+08:00",
+  "checkedAt": "2026-09-22T12:57:03+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -7,12 +7,21 @@
   "thirdSearchesAttempted": 26,
   "thirdSearchesSucceeded": 26,
   "thirdLinksFound": 0,
-  "thirdIndexesSucceeded": 4,
-  "thirdIndexesAttempted": 4,
-  "thirdIndexLinksFound": 10,
-  "newCandidates": 1,
-  "supplementalNew": 10,
-  "supplementalTotal": 10,
+  "thirdIndexesSucceeded": 8,
+  "thirdIndexesAttempted": 8,
+  "thirdIndexLinksFound": 13,
+  "thirdSchoolsConfigured": 17,
+  "thirdBatchCount": 4,
+  "thirdBatchActive": 3,
+  "thirdHostsInThisRun": [
+    "job.hust.edu.cn",
+    "career.ruc.edu.cn",
+    "career.nankai.edu.cn",
+    "jy.scu.edu.cn"
+  ],
+  "newCandidates": 0,
+  "supplementalNew": 13,
+  "supplementalTotal": 13,
   "pendingCandidates": 1,
   "errors": [
     "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
@@ -67,7 +76,7 @@
       },
       "failures": [
         "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau",
-        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: ValueError: article text too short; baseline not changed"
+        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: SSLError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=9e01bc05e8bc4b3a8efdaf6506"
       ]
     },
     {
