@@ -104,12 +104,73 @@ html{scroll-padding-top:95px}
 .back-to-top:hover{background:#276b77;color:#fff}
 @media(max-width:740px){html{scroll-padding-top:74px}#overview,#watchlist,#schedule,#province-section,#announcements,#supplement,#review-queue,#site-guide{scroll-margin-top:78px}.quick-directory{border-radius:12px;margin-bottom:18px}.quick-directory-inner{min-height:54px;justify-content:space-between;padding:7px 11px}.quick-directory-title{border:0;padding:0;font-size:13px}.quick-directory-links{display:none}.quick-directory-mobile{display:block;position:relative}.quick-directory-mobile summary{list-style:none;cursor:pointer;background:#e7f3ef;border:1px solid #d1e8e0;color:#236e61;border-radius:9px;font-size:12px;font-weight:800;padding:8px 12px}.quick-directory-mobile summary::-webkit-details-marker{display:none}.quick-directory-mobile summary:after{content:'  ▾'}.quick-directory-mobile[open] summary:after{content:'  ▴'}.quick-directory-popover{position:absolute;right:-1px;top:calc(100% + 10px);width:min(330px,calc(100vw - 28px));background:#fff;border:1px solid #dce6ee;border-radius:14px;padding:10px;box-shadow:0 18px 45px #15345333;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.quick-directory-mobile a{justify-content:flex-start;padding:11px 10px;background:#f7f9fc}.back-to-top{right:13px;bottom:16px;padding:10px 12px}}
 @media(prefers-reduced-motion:reduce){.back-to-top{transition:none}}
+
+/* Permanent navigation rail on desktop; collapsible drawer on mobile. */
+:root{--xd-sidebar:244px;--xd-sidebar-mini:64px}
+html{scroll-padding-top:18px}
+#overview,#watchlist,#schedule,#province-section,#announcements,#supplement,#review-queue,#site-guide{scroll-margin-top:24px}
+body{padding-left:var(--xd-sidebar);transition:padding-left .22s ease}
+body.xd-collapsed{padding-left:var(--xd-sidebar-mini)}
+.xd-sidebar{position:fixed;z-index:60;inset:0 auto 0 0;width:var(--xd-sidebar);background:#17283e;color:#e7eef8;border:0;display:flex;flex-direction:column;box-shadow:7px 0 26px #1a30451b;overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#52637c transparent;transition:width .22s ease,transform .22s ease}
+.xd-sidebar-head{min-height:96px;padding:22px 16px 17px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ffffff14}
+.xd-brand{min-width:0;flex:1;display:flex;align-items:center;gap:11px;color:#fff;font-size:17px;font-weight:850;white-space:nowrap}.xd-brand:hover{color:#fff}
+.xd-brand-mark{width:39px;height:39px;border-radius:12px;flex:0 0 39px;display:grid;place-items:center;background:#b5e9db;color:#163a42;font-size:23px}
+.xd-brand-word{display:flex;flex-direction:column;line-height:1.3}.xd-brand-word small{font-size:9px;letter-spacing:.12em;color:#a0b4c9;font-weight:550;margin-top:3px}
+.xd-sidebar-toggle{border:1px solid #ffffff29;border-radius:9px;background:#ffffff14;color:#eaf3fc;min-width:30px;height:32px;display:grid;place-items:center;padding:0;font-size:21px;line-height:1}
+.xd-sidebar-toggle:hover{background:#ffffff28}.xd-sidebar-toggle:focus-visible,.xd-mobile-menu:focus-visible,.xd-sidebar-links a:focus-visible{outline:3px solid #b2e5de;outline-offset:2px}
+.xd-nav-label{padding:25px 20px 12px;font-size:11px;font-weight:800;letter-spacing:.13em;color:#a6b7cd;white-space:nowrap}.xd-nav-label span{font-size:9px;letter-spacing:.06em;display:block;font-weight:450;margin-top:2px}
+.xd-sidebar-links{display:flex;flex-direction:column;gap:5px;padding:0 10px;flex:1}
+.xd-sidebar-links a{display:flex;align-items:center;min-height:47px;gap:12px;padding:8px 12px;color:#c2d1e4;border-radius:10px;font-size:13px;font-weight:690;white-space:nowrap;border:1px solid transparent;transition:background .15s,color .15s}
+.xd-sidebar-links a:hover{color:white;background:#ffffff12}.xd-sidebar-links a.is-active{color:#fff;background:#3c4e69;border-color:#ffffff10;font-weight:800}
+.xd-nav-icon{font-size:19px;display:grid;place-items:center;width:21px;height:26px;flex:0 0 21px;color:#b1dace}.xd-nav-text{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.xd-sidebar-bottom{margin:22px 16px 24px;padding:15px 12px;border:1px solid #ffffff32;border-radius:14px;color:#e5eef9;font-weight:700;font-size:12px;line-height:1.7}.xd-sidebar-bottom small{display:block;color:#a9c1d4;font-size:10px;font-weight:400}
+body.xd-collapsed .xd-sidebar{width:var(--xd-sidebar-mini)}body.xd-collapsed .xd-sidebar-head{padding:15px 10px;display:flex;flex-direction:column-reverse;gap:12px;min-height:105px}body.xd-collapsed .xd-brand{flex:none}body.xd-collapsed .xd-brand-word,body.xd-collapsed .xd-nav-label,body.xd-collapsed .xd-nav-text,body.xd-collapsed .xd-sidebar-bottom{display:none}body.xd-collapsed .xd-sidebar-links{padding:9px 8px;gap:7px}body.xd-collapsed .xd-sidebar-links a{justify-content:center;padding:8px 0;min-height:45px}body.xd-collapsed .xd-nav-icon{width:25px;flex-basis:25px;font-size:21px}
+.xd-sidebar-backdrop,.xd-mobile-menu{display:none}
+/* The previous horizontal directory is removed; these overrides protect the rest of the layout. */
+@media(max-width:900px){
+ body,body.xd-collapsed{padding-left:0!important}
+ .xd-sidebar,body.xd-collapsed .xd-sidebar{width:min(292px,85vw);transform:translateX(-105%);box-shadow:12px 0 35px #0a183850}
+ body.xd-mobile-open .xd-sidebar{transform:translateX(0)}
+ body.xd-collapsed .xd-sidebar-head{padding:22px 16px 17px;display:flex;flex-direction:row;min-height:96px}
+ body.xd-collapsed .xd-brand{flex:1}body.xd-collapsed .xd-brand-word,body.xd-collapsed .xd-nav-label,body.xd-collapsed .xd-nav-text,body.xd-collapsed .xd-sidebar-bottom{display:flex}
+ body.xd-collapsed .xd-nav-label{display:block}body.xd-collapsed .xd-sidebar-bottom{display:block}
+ body.xd-collapsed .xd-sidebar-links{padding:0 10px;gap:5px}body.xd-collapsed .xd-sidebar-links a{justify-content:flex-start;padding:8px 12px;min-height:47px}body.xd-collapsed .xd-nav-icon{width:21px;flex-basis:21px;font-size:19px}
+ .xd-sidebar-backdrop{display:block;position:fixed;z-index:59;inset:0;background:#09152890;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,visibility .2s}
+ body.xd-mobile-open .xd-sidebar-backdrop{opacity:1;visibility:visible;pointer-events:auto}
+ .xd-mobile-menu{position:fixed;z-index:58;top:13px;left:13px;display:flex;align-items:center;gap:7px;background:#b8eddf;color:#173946;font-weight:850;padding:9px 12px;border:1px solid #c4f2e7;border-radius:12px;box-shadow:0 5px 20px #071c3540;font-size:14px}
+ body.xd-mobile-open .xd-mobile-menu{visibility:hidden}
+ .mast .topline{padding-left:104px}
+ .back-to-top{z-index:40}
+}
+@media(max-width:480px){.mast .topline{padding-left:94px}.xd-mobile-menu{top:11px;left:9px;padding:8px 10px}.xd-brand{font-size:15px}}
+@media(prefers-reduced-motion:reduce){body,.xd-sidebar,.xd-sidebar-backdrop{transition:none}}
+
 </style>
 </head>
 <body>
+<nav id="quick-directory" class="xd-sidebar" aria-label="页面快速目录">
+  <div class="xd-sidebar-head">
+    <a class="xd-brand" href="#page-top" aria-label="选调雷达：返回顶部"><span class="xd-brand-mark">◈</span><span class="xd-brand-word">选调雷达<small>XUANDIAO RADAR</small></span></a>
+    <button id="sidebarToggle" class="xd-sidebar-toggle" type="button" aria-label="收起侧边栏" aria-controls="quick-directory" aria-expanded="true" title="收起侧边栏">«</button>
+  </div>
+  <div class="xd-nav-label">快速前往 <span>QUICK ACCESS</span></div>
+  <div class="xd-sidebar-links" aria-label="页面章节">
+    <a class="jump-link is-active" href="#overview" title="首页概览" aria-label="首页概览" aria-current="location"><span class="xd-nav-icon" aria-hidden="true">⌂</span><span class="xd-nav-text">首页概览</span></a>
+    <a class="jump-link" href="#watchlist" title="我的关注" aria-label="我的关注"><span class="xd-nav-icon" aria-hidden="true">★</span><span class="xd-nav-text">我的关注</span></a>
+    <a class="jump-link" href="#schedule" title="时间轴 / 日历" aria-label="时间轴 / 日历"><span class="xd-nav-icon" aria-hidden="true">▦</span><span class="xd-nav-text">时间轴 / 日历</span></a>
+    <a class="jump-link" href="#province-section" title="省份进度" aria-label="省份进度"><span class="xd-nav-icon" aria-hidden="true">▥</span><span class="xd-nav-text">省份进度</span></a>
+    <a class="jump-link" href="#announcements" title="公告与条件" aria-label="公告与条件"><span class="xd-nav-icon" aria-hidden="true">≡</span><span class="xd-nav-text">公告与条件</span></a>
+    <a class="jump-link" href="#supplement" title="高校补充" aria-label="高校补充"><span class="xd-nav-icon" aria-hidden="true">◇</span><span class="xd-nav-text">高校补充</span></a>
+    <a class="jump-link" href="#review-queue" title="监测与待核验" aria-label="监测与待核验"><span class="xd-nav-icon" aria-hidden="true">◎</span><span class="xd-nav-text">监测与待核验</span></a>
+    <a class="jump-link" href="#site-guide" title="使用说明" aria-label="使用说明"><span class="xd-nav-icon" aria-hidden="true">ⓘ</span><span class="xd-nav-text">使用说明</span></a>
+  </div>
+  <div class="xd-sidebar-bottom"><span class="xd-bottom-line">31个地区 · 关键时间</span><small>官方信息优先，补充来源单列</small></div>
+</nav>
+<div id="sidebarBackdrop" class="xd-sidebar-backdrop" aria-hidden="true"></div>
+<button id="sidebarMobileButton" class="xd-mobile-menu" type="button" aria-label="打开页面目录" aria-controls="quick-directory" aria-expanded="false">☰ <span>目录</span></button>
 <header class="mast" id="page-top"><div class="shell"><div class="topline"><div class="logo"><span class="logoicon">◈</span><span>选调雷达<small> XUANDIAO RADAR</small></span></div><div class="top-actions"><span>2027 届</span><span>待核验线索与正式数据分离</span></div></div><div class="hero"><div class="eyebrow"><span class="eyebrow-dot"></span> 2027 届 · 全国定向选调信息汇总</div><h1>关键时间，<br><span>集中看更清晰。</span></h1><p>报名开放、截止日期与笔试安排清晰排布。政府官网优先，吉林大学其次，其他高校官方就业网仅作第三补充；未核实信息不进入日历。</p><div class="hero-actions"><a href="#schedule" class="hero-cta">查看时间安排 <span aria-hidden="true">↗</span></a><a href="#province-section" class="hero-sub">按省份查找 →</a></div><div class="asof" id="asof">资料核验：2026年9月21日 ｜ 仅展示已核对信息</div></div></div></header>
 <main class="shell"><section class="stats" id="overview" aria-label="统计概览"><div class="stat"><span>覆盖省级地区</span><b id="provinceTotal">31</b><em>省、自治区、直辖市</em></div><div class="stat"><span>已录入地区</span><b id="releasedTotal">—</b><em>附有公开信息链接</em></div><div class="stat"><span>正在报名</span><b id="openTotal">—</b><em>按当前设备时间计算</em></div><div class="stat"><span>即将开放</span><b id="upcomingTotal">—</b><em>已知未来报名时段</em></div></section>
-<nav id="quick-directory" class="quick-directory" aria-label="页面快速目录"><div class="quick-directory-inner"><div class="quick-directory-title"><span aria-hidden="true">☷</span>快速目录</div><div class="quick-directory-links" aria-label="页面章节"><a class="jump-link is-active" href="#overview" aria-current="location">首页概览</a><a class="jump-link" href="#watchlist">★ 我的关注</a><a class="jump-link" href="#schedule">时间轴 / 日历</a><a class="jump-link" href="#province-section">省份进度</a><a class="jump-link" href="#announcements">公告与条件</a><a class="jump-link" href="#supplement">高校补充</a><a class="jump-link" href="#review-queue">监测与待核验</a><a class="jump-link" href="#site-guide">使用说明</a></div><details class="quick-directory-mobile" id="mobileDirectory"><summary aria-label="展开页面目录">跳转到…</summary><div class="quick-directory-popover"><a class="jump-link is-active" href="#overview" aria-current="location">首页概览</a><a class="jump-link" href="#watchlist">★ 我的关注</a><a class="jump-link" href="#schedule">时间轴 / 日历</a><a class="jump-link" href="#province-section">省份进度</a><a class="jump-link" href="#announcements">公告与条件</a><a class="jump-link" href="#supplement">高校补充</a><a class="jump-link" href="#review-queue">监测与待核验</a><a class="jump-link" href="#site-guide">使用说明</a></div></details></div></nav>
+
 <div class="notice"><strong>ⓘ</strong><div><b>时间提醒：</b>日历仅展示已录入的明确日期，尚未查全的地区不会自动补写；报名与考试安排以公告原文及准考证为准。<details class="notice-more"><summary>查看信息来源和更新方式</summary><p>来源三级顺序：政府官网优先，吉林大学就业网其次；前两者无可用公告时，检索经过域名核对的其他高校官方就业网作第三来源。第三来源必须逐条核验适用学校、原文与附件，不采用商业转载。自动发现与正式数据分开，监测失败不等于没有公告；管理员核验后才更新日历。部分省份按高校、岗位和批次发布不同公告，时间及资格须按对应公告、岗位表核对。倒计时按设备时间计算。<span id="dataNotice"></span></p></details></div></div>
 <section class="watch-section" id="watchlist" aria-label="我的关注与报考清单"><div class="sectionhead"><div><span class="section-kicker">MY LIST / 个人关注</span><h2>我的关注 · 报考清单 <span class="watch-headmark">把重要省份放在最前面</span></h2><p>收藏感兴趣的地区，集中查看下一关键日期，并自行标记报考进度。</p></div><span class="hint" id="watchCount">尚未关注</span></div><div class="watch-intro"><span>☆ 点击下方省份卡片右上角的星标，即可加入这里。关注和报考进度仅存于当前浏览器，不会上报，也不代表报名成功。</span><a href="#province-section">去选择省份 →</a></div><div id="watchAlerts" class="watch-alerts" role="status" aria-live="polite"></div><div id="watchGrid" class="watch-grid"><div class="watch-empty"><b>还没有关注的地区</b><p>先在省份总览中点亮星标，这里就会显示你关心的时间安排。</p><a href="#province-section">去关注省份 →</a></div></div></section>
 <section aria-label="时间轴与日历" id="schedule" class="schedule-section"><div class="sectionhead"><div><span class="section-kicker">YOUR SCHEDULE / 重要节点</span><h2>报名与考试，一眼掌握<span class="heading-star" aria-hidden="true">✳</span></h2><p>所有节点均取自已经录入的公告资料；日期变动请以公告原文为准。</p></div><span class="hint" id="scheduleHint">正在整理关键节点</span></div><div class="schedule-legend" aria-label="日期类型图例"><span><i class="legend-dot start"></i>报名开始</span><span><i class="legend-dot end"></i>报名截止</span><span><i class="legend-dot exam"></i>笔试安排</span><span><i class="legend-dot deadline"></i>分岗位截止</span></div><div class="schedule-layout"><section class="schedule-panel timeline-panel"><div class="panel-head"><div><span class="panel-eyebrow">01 / MILESTONES</span><h3>近期时间轴</h3><p>临近的节点排在前面，已过节点放在后面。</p></div><span class="panel-symbol" aria-hidden="true">↗</span></div><div id="timelineList" class="timelinelist"><div class="timeline-empty">正在整理关键时间节点…</div></div></section><section class="schedule-panel calendar-panel"><div class="panel-head"><div><span class="panel-eyebrow">02 / CALENDAR</span><h3>月度日历</h3><p>彩色小圆点标注关键日期，点选日期查看安排。</p></div><span class="panel-symbol calendar-symbol" aria-hidden="true">▦</span></div><div class="calendar-toolbar"><strong id="calendarMonth">2026年9月</strong><div class="cal-nav"><button type="button" id="calPrev" aria-label="上个月">‹</button><button type="button" id="calToday">近期</button><button type="button" id="calNext" aria-label="下个月">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div id="calendarBoard" class="calendarboard" aria-label="日期表"><div class="calendar-empty">正在生成日历…</div></div><div class="day-agenda"><div class="agenda-heading"><b id="selectedDayTitle">当日安排</b><small id="selectedDayCount">请选择日期</small></div><div id="selectedDayEvents" class="day-agenda-list"><div class="agenda-empty">点击日历中有圆点的日期查看详情</div></div></div></section></div><p class="schedule-note">仅展示已录入且有明确日期的节点；未知时刻不作推测。其他高校的校内截止不能代替省级报名截止，第三来源须人工核验后才进入日历。</p></section>
@@ -313,27 +374,45 @@ async function loadMonitoring(){const ts=Date.now();try{let [a,b,c]=await Promis
 renderAll();renderCandidates();renderSupplement();loadFeed();loadMonitoring();setInterval(()=>{renderStats();renderProvinces();renderWatchlist();renderSchedule();renderRecords()},60000);setInterval(()=>{loadFeed();loadMonitoring()},300000);
 </script>
 <script>
-/* Navigation only; independent of announcement data and monitoring. */
+/* Collapsible directory. Does not change any announcement or monitoring data. */
 (()=>{
-  const ids=['overview','watchlist','schedule','province-section','announcements','supplement','review-queue','site-guide'];
-  const anchors=[...document.querySelectorAll('.quick-directory .jump-link')];
-  const mobile=document.getElementById('mobileDirectory');
-  const back=document.getElementById('backToTop');
-  if(!anchors.length||!mobile||!back)return;
-  let ticking=false;
-  function update(){
-    ticking=false;
-    let active=ids[0];
-    for(const id of ids){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=120)active=id;}
-    for(const link of anchors){let current=link.getAttribute('href')==='#'+active;link.classList.toggle('is-active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');}
-    back.classList.toggle('is-visible',window.scrollY>460);
-  }
-  anchors.forEach(link=>link.addEventListener('click',()=>{mobile.open=false;setTimeout(update,250)}));
-  document.addEventListener('click',e=>{if(mobile.open&&!mobile.contains(e.target))mobile.open=false;});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mobile.open){mobile.open=false;mobile.querySelector('summary').focus();}});
-  window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
-  window.addEventListener('hashchange',update);
-  update();
+ const ids=['overview','watchlist','schedule','province-section','announcements','supplement','review-queue','site-guide'];
+ const links=[...document.querySelectorAll('.xd-sidebar-links .jump-link')];
+ const sidebar=document.getElementById('quick-directory');
+ const toggle=document.getElementById('sidebarToggle');
+ const menu=document.getElementById('sidebarMobileButton');
+ const backdrop=document.getElementById('sidebarBackdrop');
+ const back=document.getElementById('backToTop');
+ const small=window.matchMedia('(max-width:900px)');
+ let collapsed=false, mobileOpen=false, ticking=false;
+ try{collapsed=localStorage.getItem('xd_sidebar_collapsed')==='1'}catch{}
+ function apply(){
+   document.body.classList.toggle('xd-collapsed',collapsed);
+   document.body.classList.toggle('xd-mobile-open',mobileOpen);
+   const isMobile=small.matches;
+   toggle.textContent=isMobile?'×':(collapsed?'»':'«');
+   toggle.setAttribute('aria-label',isMobile?'关闭侧边栏':(collapsed?'展开侧边栏':'收起侧边栏'));
+   toggle.setAttribute('title',toggle.getAttribute('aria-label'));
+   toggle.setAttribute('aria-expanded',String(isMobile?mobileOpen:!collapsed));
+   menu.setAttribute('aria-expanded',String(mobileOpen));
+   menu.setAttribute('aria-label',mobileOpen?'关闭页面目录':'打开页面目录');
+   sidebar.setAttribute('aria-hidden',String(isMobile&&!mobileOpen));
+   if(isMobile){sidebar.inert=!mobileOpen;}else{sidebar.inert=false;}
+ }
+ function closeMobile(restoreFocus=false){if(!mobileOpen)return;mobileOpen=false;apply();if(restoreFocus)menu.focus();}
+ toggle.addEventListener('click',()=>{if(small.matches){closeMobile(true)}else{collapsed=!collapsed;try{localStorage.setItem('xd_sidebar_collapsed',collapsed?'1':'0')}catch{}apply()}});
+ menu.addEventListener('click',()=>{mobileOpen=!mobileOpen;apply();if(mobileOpen)toggle.focus()});
+ backdrop.addEventListener('click',()=>closeMobile(true));
+ function update(){ticking=false;let active=ids[0];for(const id of ids){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=Math.max(130,innerHeight*.25))active=id;}
+ for(const link of links){const current=link.hash==='#'+active;link.classList.toggle('is-active',current);if(current)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');}
+ back.classList.toggle('is-visible',window.scrollY>460);
+ }
+ links.forEach(link=>link.addEventListener('click',()=>{if(small.matches)closeMobile(false);requestAnimationFrame(update)}));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mobileOpen)closeMobile(true)});
+ small.addEventListener('change',()=>{mobileOpen=false;apply()});
+ window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
+ window.addEventListener('hashchange',update);
+ apply();update();
 })();
 </script>
 </body></html>
