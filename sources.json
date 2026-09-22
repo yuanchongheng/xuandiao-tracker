@@ -3,7 +3,7 @@
   "year": "2027",
   "discovery": {
     "enabled": true,
-    "provider": "Bing RSS 搜索线索（仅政府官网及吉林大学就业网；第三方搜索结果不等于内容核验）",
+    "provider": "Bing RSS，一级政府官网、二级吉林大学；前两级无可用公告时第三轮检索经确认的其他高校官方就业网。搜索结果只作待核验线索。",
     "url_template": "https://www.bing.com/search?format=rss&q={query}",
     "query_template": "{province} 2027 定向选调 公告 site:gov.cn OR site:jdjywpt.jlu.edu.cn OR site:jdjyw.jlu.edu.cn",
     "provinces": [
@@ -38,7 +38,37 @@
       "青海",
       "宁夏",
       "新疆"
-    ]
+    ],
+    "third_source": {
+      "enabled": true,
+      "trigger": "Only when current primary search has no government/JLU notice and no healthy monitored government/JLU notice for the province; transport errors are NOT proof that a notice does not exist.",
+      "query_template": "{province} 2027 定向选调 公告 site:jiuye.uestc.edu.cn OR site:www.job.ustc.edu.cn OR site:job.hust.edu.cn OR site:career.csu.edu.cn",
+      "hosts": [
+        "jiuye.uestc.edu.cn",
+        "www.job.ustc.edu.cn",
+        "job.hust.edu.cn",
+        "career.csu.edu.cn"
+      ],
+      "note": "Third-tier search is a discovery lead only; never auto-publish university-specific deadlines or requirements.",
+      "indexes": [
+        {
+          "name": "电子科技大学就业网选调专栏",
+          "url": "https://jiuye.uestc.edu.cn/career/news/recruitment"
+        },
+        {
+          "name": "中国科学技术大学就业网选调生目录",
+          "url": "https://job.ustc.edu.cn/SelectedTrainee/list.aspx"
+        },
+        {
+          "name": "华中科技大学就业网基层招聘目录",
+          "url": "https://job.hust.edu.cn/searchJob.do?fbsj=&type=6"
+        },
+        {
+          "name": "中南大学就业信息网选调公告入口",
+          "url": "https://career.csu.edu.cn/default/"
+        }
+      ]
+    }
   },
   "monitors": [
     {
@@ -129,9 +159,16 @@
     }
   ],
   "sourcePolicy": {
-    "primary": "省委组织部、各省政府和人社/人事考试机构的 .gov.cn 官方页面",
-    "universityFallback": "仅吉林大学就业网 jdjywpt.jlu.edu.cn 或 jdjyw.jlu.edu.cn",
-    "excluded": "其他高校公告、培训机构、媒体转载均不作为发布源或自动候选源",
-    "review": "链接所在域名符合政策不等于内容已核验；报名条件和日期必须人工比对原文及附件"
+    "first": "政府部门官网 *.gov.cn，优先原始公告及附件",
+    "second": "吉林大学官方就业站 jdjywpt.jlu.edu.cn / jdjyw.jlu.edu.cn",
+    "third": "仅批准的其他高校官方就业站；只发现线索，核实公告适用学校、批次、附件、报名/笔试时间后才能正式发布",
+    "otherUniversityHosts": [
+      "career.csu.edu.cn",
+      "jiuye.uestc.edu.cn",
+      "job.hust.edu.cn",
+      "www.job.ustc.edu.cn"
+    ],
+    "excluded": "其他未核实高校域名、自媒体、商业转载/培训机构不能作为直接候选或正式发布来源",
+    "review": "官网抓取失败不等于未发布；第三来源必须单独标记，不能将一所高校的校内报名或推荐截止冒充全省截止。"
   }
 }

@@ -54,13 +54,20 @@ def build(check=False):
             raise ValueError('Invalid province / HTTPS source')
         tier = source_tier(entry['source'])
         if tier is None:
-            raise ValueError('Published source must be government website or Jilin University career portal')
+            raise ValueError('Published source must belong to the approved three-tier host list')
         if entry.get('sourceTier') != tier:
             raise ValueError('Incorrect sourceTier: ' + entry['source'])
         if tier == 'government' and entry.get('sourceType') != '官方':
             raise ValueError('Government notice must be labelled 官方')
         if tier == 'jlu_fallback' and entry.get('sourceType') != '吉林大学备用':
             raise ValueError('Jilin University page must be labelled 备用, never 官方')
+        if tier == 'university_third':
+            if entry.get('sourceType') != '其他高校补充':
+                raise ValueError('Other-university source must be explicitly labelled 第三来源, never 官方')
+            if entry.get('reviewedSource') is not True or entry.get('reviewedScope') is not True:
+                raise ValueError('Other-university notice requires human source and school-scope review')
+            if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
+                raise ValueError('Other-university notice requires explicit applicability and notes')
         verified = checked_day(entry['verified'], 'verified')
         published = checked_day(entry['published'], 'published')
         if verified < published:
