@@ -1,4 +1,18 @@
 {
-  "updated": "2026-09-22T05:57:50+08:00",
-  "candidates": []
+  "updated": "2026-09-22T12:44:47+08:00",
+  "candidates": [
+    {
+      "id": "aa744922c3e72e00a5a9",
+      "province": "贵州",
+      "title": "​贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502892d",
+      "kind": "listing",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "discovered": "2026-09-22T12:44:47+08:00",
+      "status": "pending",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+    }
+  ]
 }
