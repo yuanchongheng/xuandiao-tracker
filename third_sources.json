@@ -1,4 +1,161 @@
 {
-  "updated": "",
-  "items": []
+  "updated": "2026-09-22T13:25:52+08:00",
+  "items": [
+    {
+      "id": "1afbc6ae99437c6c8833",
+      "province": "贵州",
+      "title": "【选调9】贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告 发布日期：2026-09-22 点击数：27 作者：穆瑞雅",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/fyzeriud7cht",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "aaf95660e9e3e88f61f7",
+      "province": "湖南",
+      "title": "【选调6】湖南省2027年常规选调公告 发布日期：2026-09-19 点击数：237 作者：张彦昭",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/fyoce1205r0i",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b6e91ffb6d3a2097462d",
+      "province": "湖南",
+      "title": "【选调5】湖南省2027年定向选调公告 发布日期：2026-09-19 点击数：348 作者：张彦昭",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/fyoc35o2wnb6",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "266f7fee715fb5e8b86f",
+      "province": "贵州",
+      "title": "贵州省2027年度党政机关定向选调和 省管企业招聘优秀大学毕业生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11372",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "c587d35c519488e57a63",
+      "province": "湖南",
+      "title": "湖南省2027年选调生选拔公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11369",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b1b810ffa4bfe876db9d",
+      "province": "贵州",
+      "title": "贵州省2027年度定向部分高校选调优秀毕业生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2440974.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "f48ec529408ed6b61c3d",
+      "province": "湖南",
+      "title": "湖南省2027年选调生选拔公告",
+      "url": "https://job.hust.edu.cn/jcfw/2439641.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "861a552713be05ec3b9e",
+      "province": "贵州",
+      "title": "【选调生】贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205019/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "3fa205522834c5b691ab",
+      "province": "湖南",
+      "title": "【选调生】湖南省2027年常规选调公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205001/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "55b311c9639e512c5ec5",
+      "province": "湖南",
+      "title": "【选调生】湖南省2027年定向选调公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205000/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "27ac860bc6f8c2e5e683",
+      "province": "贵州",
+      "title": "贵州省2027年度定向部分高校选调优秀毕业生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/33988.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "56abec44eaa8eb4298eb",
+      "province": "湖南",
+      "title": "湖南省2027年定向选调公告",
+      "url": "https://job.sdu.edu.cn/info/1130/33985.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "180f7fe8554baa10b5ae",
+      "province": "山东",
+      "title": "湖北省面向山东大学定向选调（选聘）2027届优秀大学毕业生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/33970.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-22T13:25:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    }
+  ]
 }
