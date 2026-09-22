@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-22T13:25:52+08:00",
+  "checkedAt": "2026-09-22T19:36:32+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -12,15 +12,15 @@
   "thirdIndexLinksFound": 13,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 3,
+  "thirdBatchActive": 4,
   "thirdHostsInThisRun": [
-    "job.hust.edu.cn",
-    "career.ruc.edu.cn",
-    "career.nankai.edu.cn",
-    "jy.scu.edu.cn"
+    "career.csu.edu.cn",
+    "career.fudan.edu.cn",
+    "job.sdu.edu.cn",
+    "job.lzu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 13,
+  "supplementalNew": 0,
   "supplementalTotal": 13,
   "pendingCandidates": 1,
   "errors": [
