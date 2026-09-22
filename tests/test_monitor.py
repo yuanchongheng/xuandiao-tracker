@@ -21,11 +21,13 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]['url'], 'https://rst.hunan.gov.cn/a')
 
-    def test_source_policy_excludes_other_universities_and_media(self):
+    def test_source_policy_only_approved_other_university_sites(self):
         self.assertEqual(source_tier('https://rst.hunan.gov.cn/a'), 'government')
         self.assertEqual(source_tier('https://jdjywpt.jlu.edu.cn/portal/xdsgz'), 'jlu_fallback')
         self.assertEqual(source_tier('https://jdjyw.jlu.edu.cn/portal/article/notice'), 'jlu_fallback')
-        for url in ('https://xds.nankai.edu.cn/a', 'https://job.sdu.edu.cn/a', 'https://www.gzastv.cn/a', 'https://fakegov.cn/a'):
+        for host in ('jiuye.uestc.edu.cn', 'www.job.ustc.edu.cn', 'job.hust.edu.cn', 'career.csu.edu.cn'):
+            self.assertEqual(source_tier(f'https://{host}/notice'), 'university_third')
+        for url in ('https://xds.nankai.edu.cn/a', 'https://job.sdu.edu.cn/a', 'https://fakejiuye.uestc.edu.cn/a', 'https://jiuye.uestc.edu.cn.evil.test/a', 'https://www.gzastv.cn/a', 'https://fakegov.cn/a'):
             self.assertIsNone(source_tier(url), url)
 
     def test_rss_jlu_only_if_no_government_match(self):
@@ -38,6 +40,20 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual([r['url'] for r in monitor.parse_rss(rss.encode(), '上海', '2027')], [jlu])
         official = '<item><title>上海2027选调公告</title><link>https://rsj.sh.gov.cn/a</link></item>'
         self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a'])
+
+    def test_third_rss_is_only_eligible_without_higher_priority_and_title_scoped(self):
+        third = 'https://job.hust.edu.cn/jcfw/2439641.htm'
+        jlu = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=abc'
+        rss = f'''<rss><channel>
+        <item><title>湖南2027定向选调公告</title><link>{third}</link></item>
+        <item><title>湖南2027定向选调公告</title><link>{jlu}</link></item>
+        <item><title>2027就业信息</title><description>湖南2027定向选调公告</description><link>https://career.csu.edu.cn/irrelevant</link></item>
+        <item><title>湖南2027定向选调公告</title><link>https://evil.edu.cn/a</link></item>
+        </channel></rss>'''
+        self.assertEqual([x['url'] for x in monitor.parse_rss(rss.encode(),'湖南','2027')], [jlu])
+        self.assertEqual([x['url'] for x in monitor.parse_rss(rss.encode(),'湖南','2027', allowed_tiers=('university_third',))], [third])
+        gov = '<item><title>湖南2027定向选调公告</title><link>https://rst.hunan.gov.cn/a</link></item>'
+        self.assertEqual([x['url'] for x in monitor.parse_rss(rss.replace('</channel>',gov+'</channel>').encode(),'湖南','2027')], ['https://rst.hunan.gov.cn/a'])
 
     def test_url_must_be_https_public(self):
         for url in ('javascript:alert(1)', 'http://gov.cn/', 'https://localhost/a', 'https://127.0.0.1/a', 'https://user:pass@gov.cn/a'):
@@ -120,9 +136,12 @@ class MonitorOfflineTests(unittest.TestCase):
         for name in ('sources.json', 'data.json'):
             shutil.copy(old_root / name, self.root / name)
         (self.root / 'review_queue.json').write_text(json.dumps({'updated':'','candidates':[]}), encoding='utf8')
+        (self.root / 'third_sources.json').write_text(json.dumps({'updated':'','items':[]}), encoding='utf8')
         (self.root / 'watch_state.json').write_text(json.dumps({'articles':{},'listings':{},'search':{}}), encoding='utf8')
         self.fixture = self.root / 'fixtures'
         self.fixture.mkdir()
+        for i in range(4):
+            (self.fixture / f'third-index-{i}.html').write_text('<html><body>没有符合条件的公告</body></html>', encoding='utf8')
         for i in range(8):
             if i == 7:
                 content = '<a href="/old">2027四川定向选调公告</a>'
@@ -216,6 +235,133 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(status['sourceHealth'][6]['state'], 'failed')
         self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(len(status['errors']), 3)
+
+    def test_third_tier_publication_requires_manual_verification(self):
+        import build
+        self.root.joinpath('index.html').write_bytes((Path(build.__file__).resolve().parent/'index.html').read_bytes())
+        data=json.loads((self.root/'data.json').read_text(encoding='utf8'))
+        third=dict(data['records'][0])
+        third.update({'province':'云南','title':'云南2027高校定向选调（示例测试，不得发布）',
+                      'source':'https://job.hust.edu.cn/example',
+                      'sourceTier':'university_third','sourceType':'其他高校补充',
+                      'sourceName':'华中科技大学就业信息网',
+                      'school':'仅按该高校公告和职位表确定','notes':'已核验适用高校、原文附件与校内流程差异'})
+        data['records'].append(third)
+        (self.root/'data.json').write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')
+        with patch.object(build,'ROOT',self.root):
+            with self.assertRaisesRegex(ValueError,'human source and school-scope review'):
+                build.build()
+            third['reviewedSource']=True
+            third['reviewedScope']=True
+            (self.root/'data.json').write_text(json.dumps(data,ensure_ascii=False),encoding='utf8')
+            build.build()
+            build.build(check=True)
+
+    def test_third_fallback_search_only_when_no_higher_priority_coverage(self):
+        config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
+        for i, province in enumerate(config['discovery']['provinces']):
+            # Healthy monitored provinces don't need the third fallback; all
+            # unrecorded provinces with empty primary RSS get a third query.
+            (self.fixture/f'search-{i}.xml').write_text('<rss><channel></channel></rss>',encoding='utf8')
+            url='https://job.hust.edu.cn/jcfw/2439641.htm'
+            rss=(f'<rss><channel><item><title>{province}2027定向选调公告</title><link>{url}</link></item></channel></rss>'
+                 if province=='云南' else '<rss><channel></channel></rss>')
+            (self.fixture/f'third-search-{i}.xml').write_text(rss,encoding='utf8')
+        before=(self.root/'data.json').read_text(encoding='utf8')
+        status=monitor.run(discovery=True,fixture_dir=self.fixture)
+        self.assertEqual(status['searchesSucceeded'],31)
+        self.assertEqual(status['thirdLinksFound'],1)
+        self.assertEqual(status['thirdSearchesAttempted'],status['thirdSearchesSucceeded'])
+        self.assertEqual(status['newCandidates'],0)
+        self.assertEqual(status['supplementalNew'],1)
+        self.assertEqual(status['supplementalTotal'],1)
+        self.assertEqual(json.loads((self.root/'review_queue.json').read_text(encoding='utf8'))['candidates'],[])
+        candidate=json.loads((self.root/'third_sources.json').read_text(encoding='utf8'))['items'][0]
+        self.assertEqual(candidate['sourceTier'],'university_third')
+        self.assertNotIn('status',candidate)
+        self.assertIn('适用高校',candidate['note'])
+        self.assertEqual((self.root/'data.json').read_text(encoding='utf8'),before)
+        second=monitor.run(discovery=True,fixture_dir=self.fixture)
+        self.assertEqual(second['newCandidates'],0)
+        self.assertEqual(second['supplementalNew'],0)
+        self.assertEqual(second['supplementalTotal'],1)
+
+    def test_direct_university_index_provides_candidate_when_rss_misses(self):
+        config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
+        for i,_ in enumerate(config['discovery']['provinces']):
+            (self.fixture/f'search-{i}.xml').write_text('<rss><channel></channel></rss>',encoding='utf8')
+            (self.fixture/f'third-search-{i}.xml').write_text('<rss><channel></channel></rss>',encoding='utf8')
+        (self.fixture/'third-index-0.html').write_text(
+            '<a href="/career/news/recruitment/test">云南省2027年定向选调公告</a>',encoding='utf8')
+        status=monitor.run(discovery=True,fixture_dir=self.fixture)
+        self.assertEqual(status['thirdIndexesSucceeded'],4)
+        self.assertEqual(status['thirdIndexesAttempted'],4)
+        self.assertEqual(status['newCandidates'],0)
+        self.assertEqual(status['supplementalNew'],1)
+        self.assertEqual(json.loads((self.root/'review_queue.json').read_text(encoding='utf8'))['candidates'],[])
+        c=json.loads((self.root/'third_sources.json').read_text(encoding='utf8'))['items'][0]
+        self.assertEqual(c['province'],'云南')
+        self.assertEqual(c['sourceTier'],'university_third')
+        self.assertEqual(c['kind'],'listing')
+        self.assertNotIn('云南', [r['province'] for r in json.loads((self.root/'data.json').read_text())['records']])
+
+    def test_failed_official_can_get_third_lead_without_claiming_success(self):
+        config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
+        for i,province in enumerate(config['discovery']['provinces']):
+            primary=f'<rss><channel><item><title>{province}2027定向选调公告</title><link>https://rst.hunan.gov.cn/news</link></item></channel></rss>'
+            (self.fixture/f'search-{i}.xml').write_text(primary,encoding='utf8')
+            third=('<rss><channel><item><title>湖南2027定向选调公告</title><link>https://job.hust.edu.cn/jcfw/2439641.htm</link></item></channel></rss>' if province=='湖南' else '<rss><channel></channel></rss>')
+            (self.fixture/f'third-search-{i}.xml').write_text(third,encoding='utf8')
+        (self.fixture/'monitor-3.html').unlink()  # Hunan govt fails
+        status=monitor.run(discovery=True,fixture_dir=self.fixture)
+        self.assertEqual(status['monitorsSucceeded'],7)
+        self.assertEqual(status['sourceHealth'][3]['state'],'failed')
+        self.assertEqual(status['thirdSearchesAttempted'],1)
+        self.assertEqual(status['thirdLinksFound'],1)
+        self.assertEqual(status['searchesSucceeded'],31)
+
+    def test_old_third_candidates_migrate_to_independent_feed(self):
+        old={'id':'legacy-id','province':'云南','title':'云南2027定向选调公告',
+             'url':'https://job.hust.edu.cn/a','kind':'search','source':'旧搜索',
+             'discovered':'2026-09-21T12:00:00+08:00','sourceTier':'university_third',
+             'status':'pending'}
+        primary={'id':'official-id','province':'北京','title':'北京2027定向选调公告',
+                 'url':'https://www.beijing.gov.cn/notice','kind':'search','source':'搜索',
+                 'discovered':'2026-09-21T12:00:00+08:00','sourceTier':'government',
+                 'status':'pending'}
+        (self.root/'review_queue.json').write_text(json.dumps({'updated':'', 'candidates':[old,primary]}),encoding='utf8')
+        first=monitor.run(discovery=False,fixture_dir=self.fixture)
+        queue=json.loads((self.root/'review_queue.json').read_text(encoding='utf8'))['candidates']
+        sources=json.loads((self.root/'third_sources.json').read_text(encoding='utf8'))['items']
+        self.assertEqual(len(queue),1)
+        self.assertEqual(queue[0]['id'],'official-id')
+        self.assertEqual(len(sources),1)
+        self.assertEqual(sources[0]['discovered'],old['discovered'])
+        self.assertNotIn('status',sources[0])
+        self.assertEqual(first['supplementalNew'],0)
+        monitor.run(discovery=False,fixture_dir=self.fixture)
+        self.assertEqual(len(json.loads((self.root/'third_sources.json').read_text(encoding='utf8'))['items']),1)
+
+    def test_third_tier_never_enters_review_queue(self):
+        with self.assertRaisesRegex(ValueError, 'third_sources.json'):
+            monitor.queue_candidate([],set(),{'province':'湖南','title':'湖南2027定向选调',
+                'kind':'search','url':'https://job.hust.edu.cn/example','source':'search'}, monitor.now_iso())
+
+    def test_third_index_and_rss_duplicate_same_url(self):
+        config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
+        url='https://jiuye.uestc.edu.cn/career/news/recruitment/test'
+        for i,p in enumerate(config['discovery']['provinces']):
+            (self.fixture/f'search-{i}.xml').write_text('<rss><channel></channel></rss>',encoding='utf8')
+            content=(f'<rss><channel><item><title>{p}2027年定向选调公告</title><link>{url}</link></item></channel></rss>'
+                     if p=='云南' else '<rss><channel></channel></rss>')
+            (self.fixture/f'third-search-{i}.xml').write_text(content,encoding='utf8')
+        (self.fixture/'third-index-0.html').write_text(
+            f'<a href="{url}">云南2027年定向选调公告</a>',encoding='utf8')
+        result=monitor.run(discovery=True,fixture_dir=self.fixture)
+        self.assertEqual(result['supplementalNew'],1)
+        self.assertEqual(result['supplementalTotal'],1)
+        self.assertEqual(result['newCandidates'],0)
+        self.assertEqual(json.loads((self.root/'review_queue.json').read_text(encoding='utf8'))['candidates'],[])
 
     def test_search_discovers_official_link_without_publishing(self):
         conf = json.loads((self.root / 'sources.json').read_text(encoding='utf8'))
