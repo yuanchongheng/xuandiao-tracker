@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-23T19:34:21+08:00",
+  "checkedAt": "2026-09-24T00:56:47+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -7,27 +7,29 @@
   "thirdSearchesAttempted": 26,
   "thirdSearchesSucceeded": 26,
   "thirdLinksFound": 0,
-  "thirdIndexesSucceeded": 8,
+  "thirdIndexesSucceeded": 7,
   "thirdIndexesAttempted": 8,
-  "thirdIndexLinksFound": 13,
+  "thirdIndexLinksFound": 11,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 4,
+  "thirdBatchActive": 1,
   "thirdHostsInThisRun": [
-    "career.csu.edu.cn",
-    "career.fudan.edu.cn",
-    "job.sdu.edu.cn",
-    "job.lzu.edu.cn"
+    "jiuye.uestc.edu.cn",
+    "scc.pku.edu.cn",
+    "www.job.sjtu.edu.cn",
+    "job.hit.edu.cn",
+    "xsjy.whu.edu.cn"
   ],
   "newCandidates": 0,
   "supplementalNew": 0,
   "supplementalTotal": 13,
   "pendingCandidates": 4,
   "errors": [
-    "湖南省人事考试机构2027选调公告: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
-    "湖南人事考试网考试通知目录（仅政府官方索引）: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
+    "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
+    "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
     "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，原定页面仍未成功检查",
-    "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0；已启用备用来源，原定页面仍未成功检查；仅监测公告索引，公告正文及附件仍未读取"
+    "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0；已启用备用来源，原定页面仍未成功检查；仅监测公告索引，公告正文及附件仍未读取",
+    "第三来源目录 华中科技大学就业网基层招聘目录: HTTPSConnectionPool(host='job.hust.edu.cn', port=443): Max retries exceeded with url: /searchJob.do?fbsj=&type=6 (Caused by NewConnectionError(\"HTTPSConnection(host='job.hust.edu.c"
   ],
   "fallbacksUsed": 2,
   "fallbackDetails": [
@@ -55,8 +57,8 @@
       "state": "failed",
       "primaryUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html",
       "failures": [
-        "湖南省人事考试机构2027选调公告: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
-        "湖南人事考试网考试通知目录（仅政府官方索引）: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b"
+        "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
+        "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b"
       ]
     },
     {
