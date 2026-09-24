@@ -1,6 +1,18 @@
 {
-  "updated": "2026-09-24T19:44:12+08:00",
+  "updated": "2026-09-25T01:09:40+08:00",
   "items": [
+    {
+      "id": "3ef731fb0f2b7407edc7",
+      "province": "贵州",
+      "title": "2026-09-29 贵州省2027年度党政机关定向选调和省管企业招聘南开大学优秀毕业生宣讲会",
+      "url": "https://career.nankai.edu.cn/recruitment/content/type/2/id/6198.html",
+      "source": "南开大学学生就业指导中心选调信息入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-09-25T01:09:40+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "1afbc6ae99437c6c8833",
       "province": "贵州",
