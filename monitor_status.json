@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-24T05:29:27+08:00",
+  "checkedAt": "2026-09-24T12:48:42+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -7,18 +7,17 @@
   "thirdSearchesAttempted": 26,
   "thirdSearchesSucceeded": 26,
   "thirdLinksFound": 0,
-  "thirdIndexesSucceeded": 7,
+  "thirdIndexesSucceeded": 8,
   "thirdIndexesAttempted": 8,
-  "thirdIndexLinksFound": 11,
+  "thirdIndexLinksFound": 13,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 1,
+  "thirdBatchActive": 3,
   "thirdHostsInThisRun": [
-    "jiuye.uestc.edu.cn",
-    "scc.pku.edu.cn",
-    "www.job.sjtu.edu.cn",
-    "job.hit.edu.cn",
-    "xsjy.whu.edu.cn"
+    "job.hust.edu.cn",
+    "career.ruc.edu.cn",
+    "career.nankai.edu.cn",
+    "jy.scu.edu.cn"
   ],
   "newCandidates": 0,
   "supplementalNew": 0,
@@ -28,14 +27,12 @@
     "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
     "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
     "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，原定页面仍未成功检查",
-    "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0",
-    "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0",
-    "吉林大学就业网选调生工作列表（仅目录备用，不代表贵州公告正文已读取）: SSLError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/list?cid=797ed1b0210f4f15937da3330918",
-    "第三来源目录 华中科技大学就业网基层招聘目录: HTTPSConnectionPool(host='job.hust.edu.cn', port=443): Max retries exceeded with url: /searchJob.do?fbsj=&type=6 (Caused by NewConnectionError(\"HTTPSConnection(host='job.hust.edu.c"
+    "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ConnectionError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=1f6b210e15d944a6988d7af33b；已启用备用来源，原定页面仍未成功检查；仅监测公告索引，公告正文及附件仍未读取"
   ],
-  "fallbacksUsed": 1,
+  "fallbacksUsed": 2,
   "fallbackDetails": [
-    "甘肃组工网2027选调公告 → 吉林大学选调专栏：甘肃2027同篇公告（第二备用入口）"
+    "甘肃组工网2027选调公告 → 吉林大学选调专栏：甘肃2027同篇公告（第二备用入口）",
+    "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用） → 吉林大学就业网选调生工作列表（仅目录备用，不代表贵州公告正文已读取）（目录覆盖，非原文）"
   ],
   "sourceHealth": [
     {
@@ -84,12 +81,17 @@
     },
     {
       "name": "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）",
-      "state": "failed",
+      "state": "fallback",
       "primaryUrl": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+      "used": {
+        "name": "吉林大学就业网选调生工作列表（仅目录备用，不代表贵州公告正文已读取）",
+        "url": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+        "kind": "listing",
+        "primary": false
+      },
       "failures": [
-        "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0",
-        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0",
-        "吉林大学就业网选调生工作列表（仅目录备用，不代表贵州公告正文已读取）: SSLError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/list?cid=797ed1b0210f4f15937da3330918"
+        "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ConnectionError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=1f6b210e15d944a6988d7af33b",
+        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0"
       ]
     },
     {
