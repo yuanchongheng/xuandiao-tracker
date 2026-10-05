@@ -6,101 +6,30 @@
 <title>2027 秋招投递总表</title>
 <style>
 :root{--bg:#f4f6f8;--card:#fff;--text:#18212b;--muted:#66727e;--line:#e4e8ed;--blue:#102a43;--teal:#126e75}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}.wrap{max-width:1380px;margin:auto;padding:24px 16px 56px}.hero{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;border-radius:22px;padding:24px 26px;box-shadow:0 12px 32px rgba(16,42,67,.16)}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;opacity:.84;line-height:1.65}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.stat{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.13);padding:12px 14px;border-radius:13px}.stat b{font-size:23px;display:block}.progress{height:9px;background:rgba(255,255,255,.18);border-radius:9px;margin-top:14px;overflow:hidden}.progress span{display:block;height:100%;background:#fff;width:0}.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 12px}button,input{font:inherit}button,.search{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px}button{cursor:pointer}button.active{background:#18212b;color:#fff;border-color:#18212b}.search{min-width:260px;flex:1}.notice{background:#fff7e8;border:1px solid #f2dda9;border-radius:13px;padding:12px 14px;margin:10px 0 16px;color:#684f18;line-height:1.6}.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 7px 25px rgba(16,24,40,.06)}table{width:100%;border-collapse:collapse}th{position:sticky;top:0;background:#f8fafb;color:var(--muted);font-size:12px;text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);z-index:2}th.sortable{cursor:pointer;user-select:none;white-space:nowrap}th.sortable:hover{background:#eef3f6;color:#293846}.sort-arrow{display:inline-block;min-width:14px;margin-left:4px;color:#2d6f8f;font-weight:900}td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}tr:last-child td{border-bottom:none}tr.done{opacity:.53;background:#fafafa}tr.done .role{text-decoration:line-through}.check{width:21px;height:21px;accent-color:#11815e;cursor:pointer}.org{font-weight:800;white-space:nowrap}.role{font-weight:700;line-height:1.4}.small{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:750;white-space:nowrap}.bank{background:#eaf3ff;color:#225a92}.soe{background:#eef8f2;color:#246b4e}.core{background:#1b6f5d;color:#fff;margin-left:5px}.lv-hot{background:#fff0ef;color:#a6362f}.lv-main{background:#edf4ff;color:#245a9a}.lv-mid{background:#f0f7ff;color:#3b6f9e}.lv-safe{background:#edf8f2;color:#256b4f}.lv-other{background:#f3f4f6;color:#4b5563}.deadline{font-weight:700}.unknown{color:#8a5c00}.apply{display:inline-block;background:#18212b;color:#fff;text-decoration:none;padding:8px 11px;border-radius:8px;font-weight:700;font-size:13px;white-space:nowrap}.copy{border:none;background:#eef2f5;border-radius:8px;padding:6px 9px;font-size:12px;cursor:pointer;margin-left:6px}.footer{font-size:12px;color:var(--muted);line-height:1.7;margin-top:14px}@media(max-width:860px){.wrap{padding:12px 8px 36px}.hero{border-radius:16px;padding:18px}.hero h1{font-size:23px}.stats{grid-template-columns:1fr 1fr}.card{overflow-x:auto}table{min-width:1200px}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif}.wrap{max-width:1380px;margin:auto;padding:24px 16px 56px}.hero{background:linear-gradient(135deg,var(--blue),var(--teal));color:#fff;border-radius:22px;padding:24px 26px;box-shadow:0 12px 32px rgba(16,42,67,.16)}.hero h1{margin:0 0 8px;font-size:30px}.hero p{margin:0;opacity:.84;line-height:1.65}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.stat{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.13);padding:12px 14px;border-radius:13px}.stat b{font-size:23px;display:block}.progress{height:9px;background:rgba(255,255,255,.18);border-radius:9px;margin-top:14px;overflow:hidden}.progress span{display:block;height:100%;background:#fff;width:0}.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 12px}button,input,select{font:inherit}button,.search,.sortselect{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px}button{cursor:pointer}button.active{background:#18212b;color:#fff;border-color:#18212b}.search{min-width:260px;flex:1}.sortselect{min-width:175px}.sortstatus{display:flex;align-items:center;padding:0 4px;color:#49606f;font-size:13px;font-weight:700}.notice{background:#fff7e8;border:1px solid #f2dda9;border-radius:13px;padding:12px 14px;margin:10px 0 16px;color:#684f18;line-height:1.6}.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 7px 25px rgba(16,24,40,.06)}table{width:100%;border-collapse:collapse}th{position:sticky;top:0;background:#f8fafb;color:var(--muted);font-size:12px;text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);z-index:2}th.sortable{cursor:pointer;user-select:none;white-space:nowrap}th.sortable:hover{background:#eef3f6;color:#293846}.sort-arrow{display:inline-block;min-width:14px;margin-left:4px;color:#2d6f8f;font-weight:900}td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}tr:last-child td{border-bottom:none}tr.done{opacity:.53;background:#fafafa}tr.done .role{text-decoration:line-through}.check{width:21px;height:21px;accent-color:#11815e;cursor:pointer}.org{font-weight:800;white-space:nowrap}.role{font-weight:700;line-height:1.4}.small{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.45}.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:750;white-space:nowrap}.bank{background:#eaf3ff;color:#225a92}.soe{background:#eef8f2;color:#246b4e}.core{background:#1b6f5d;color:#fff;margin-left:5px}.lv-hot{background:#fff0ef;color:#a6362f}.lv-main{background:#edf4ff;color:#245a9a}.lv-mid{background:#f0f7ff;color:#3b6f9e}.lv-safe{background:#edf8f2;color:#256b4f}.lv-other{background:#f3f4f6;color:#4b5563}.deadline{font-weight:700}.unknown{color:#8a5c00}.apply{display:inline-block;background:#18212b;color:#fff;text-decoration:none;padding:8px 11px;border-radius:8px;font-weight:700;font-size:13px;white-space:nowrap}.copy{border:none;background:#eef2f5;border-radius:8px;padding:6px 9px;font-size:12px;cursor:pointer;margin-left:6px}.footer{font-size:12px;color:var(--muted);line-height:1.7;margin-top:14px}@media(max-width:860px){.wrap{padding:12px 8px 36px}.hero{border-radius:16px;padding:18px}.hero h1{font-size:23px}.stats{grid-template-columns:1fr 1fr}.card{overflow-x:auto}table{min-width:1200px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <section class="hero">
-    <h1>2027 秋招投递总表</h1>
-    <p>银行 + 非银行国央企。支持打勾、筛选、搜索、表头排序、复制岗位关键词和官网直达。以后更新岗位时只需维护同目录下的 <code>data.js</code>。</p>
-    <div class="stats">
-      <div class="stat"><b id="done">0</b><span>已投</span></div>
-      <div class="stat"><b id="total">0</b><span>全部目标</span></div>
-      <div class="stat"><b id="coreRemain">0</b><span>核心未投</span></div>
-      <div class="stat"><b id="soeCount">0</b><span>国央企岗位</span></div>
-    </div>
-    <div class="progress"><span id="bar"></span></div>
-  </section>
-
-  <div class="toolbar">
-    <button class="active" data-mode="all">全部</button>
-    <button data-mode="undone">只看未投</button>
-    <button data-mode="core">只看核心</button>
-    <button data-mode="bank">只看银行</button>
-    <button data-mode="soe">只看国央企</button>
-    <input id="search" class="search" placeholder="搜索：单位 / 地区 / 岗位 / 关键词">
-    <button id="exportBtn">导出勾选</button>
-    <button id="importBtn">导入勾选</button>
-    <input id="importFile" type="file" accept="application/json" hidden>
-    <button id="reset">清空勾选</button>
-  </div>
-
-  <div class="notice"><b>排序：</b>点击“单位 / 地区 / 目标岗位 / 档位 / 截止”表头即可排序；再次点击切换升序/降序。截止日期会同时识别日期和时刻；只有月日、没有具体时刻的截止日按当天 23:59:59 处理，因此同一天有明确时刻的岗位会按真实先后顺序排列。未公开或无法识别的日期始终放在最后。</div>
-
-  <div class="card"><table>
-    <thead><tr>
-      <th style="width:52px">已投</th>
-      <th>类型</th>
-      <th class="sortable" data-sort="org">单位<span class="sort-arrow"></span></th>
-      <th class="sortable" data-sort="region">地区<span class="sort-arrow"></span></th>
-      <th class="sortable" data-sort="role">目标岗位<span class="sort-arrow"></span></th>
-      <th class="sortable" data-sort="level">档位<span class="sort-arrow"></span></th>
-      <th class="sortable" data-sort="deadline">截止<span class="sort-arrow"></span></th>
-      <th>官网</th>
-    </tr></thead>
-    <tbody id="body"></tbody>
-  </table></div>
-  <div class="footer">勾选记录默认保存在浏览器 localStorage。可用“导出勾选/导入勾选”在不同设备间迁移。当前排序仅影响显示顺序，不会改变你的勾选记录。</div>
+<section class="hero"><h1>2027 秋招投递总表</h1><p>银行 + 非银行国央企。支持打勾、筛选、搜索、表头排序、复制岗位关键词和官网直达。</p><div class="stats"><div class="stat"><b id="done">0</b><span>已投</span></div><div class="stat"><b id="total">0</b><span>全部目标</span></div><div class="stat"><b id="coreRemain">0</b><span>核心未投</span></div><div class="stat"><b id="soeCount">0</b><span>国央企岗位</span></div></div><div class="progress"><span id="bar"></span></div></section>
+<div class="toolbar"><button class="active" data-mode="all">全部</button><button data-mode="undone">只看未投</button><button data-mode="core">只看核心</button><button data-mode="bank">只看银行</button><button data-mode="soe">只看国央企</button><input id="search" class="search" placeholder="搜索：单位 / 地区 / 岗位 / 关键词"><select id="sortSelect" class="sortselect"><option value="deadline:1">截止：最早优先</option><option value="deadline:-1">截止：最晚优先</option><option value="org:1">单位：升序</option><option value="org:-1">单位：降序</option><option value="region:1">地区：升序</option><option value="region:-1">地区：降序</option><option value="role:1">岗位：升序</option><option value="role:-1">岗位：降序</option><option value="level:1">档位：高优先</option><option value="level:-1">档位：低优先</option></select><span id="sortStatus" class="sortstatus"></span><button id="exportBtn">导出勾选</button><button id="importBtn">导入勾选</button><input id="importFile" type="file" accept="application/json" hidden><button id="reset">清空勾选</button></div>
+<div class="notice"><b>截止排序规则：</b>默认“最早优先”。例如 <b>10/15 23:59</b> 一定排在 <b>10/25</b> 前；只有月日、没有具体时刻的日期按当天 <b>23:59:59</b> 计算；<b>24:00</b> 按次日 00:00 计算。未公开/待核实/仅第三方参考的截止信息固定放在精确日期之后。</div>
+<div class="card"><table><thead><tr><th style="width:52px">已投</th><th>类型</th><th class="sortable" data-sort="org">单位<span class="sort-arrow"></span></th><th class="sortable" data-sort="region">地区<span class="sort-arrow"></span></th><th class="sortable" data-sort="role">目标岗位<span class="sort-arrow"></span></th><th class="sortable" data-sort="level">档位<span class="sort-arrow"></span></th><th class="sortable" data-sort="deadline">截止<span class="sort-arrow"></span></th><th>官网</th></tr></thead><tbody id="body"></tbody></table></div>
+<div class="footer">排序选择会保存在当前浏览器，刷新页面后仍保持。当前排序仅影响显示顺序，不影响勾选记录。</div>
 </div>
 <script src="./data.js"></script>
 <script>
-const jobs=window.JOBS||[];const KEY='autumn-2027-all-jobs-v3';let state=JSON.parse(localStorage.getItem(KEY)||'{}');let mode='all',q='';
-let sortKey='';let sortDir=1;
-const collator=new Intl.Collator('zh-CN',{numeric:true,sensitivity:'base'});
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-function levelClass(x){if(['冲刺','S+','S'].includes(x))return'lv-hot';if(['主投','A+'].includes(x))return'lv-main';if(['A','A-'].includes(x))return'lv-mid';if(['稳妥'].includes(x))return'lv-safe';return'lv-other'}
-function levelRank(x){const g=levelClass(x);return {'lv-hot':1,'lv-main':2,'lv-mid':3,'lv-safe':4,'lv-other':5}[g]||9}
-function deadlineValue(text){
-  const s=String(text||'').trim();
-  let m=s.match(/(\d{1,2})\s*[\/月]\s*(\d{1,2})(?:\s*日)?(?:\s+(\d{1,2})\s*[:：]\s*(\d{2}))?/);
-  if(m){
-    const month=Number(m[1]),day=Number(m[2]);
-    if(m[3]!==undefined){
-      const hour=Number(m[3]),minute=Number(m[4]);
-      return {known:true,value:new Date(2026,month-1,day,hour,minute,0,0).getTime()};
-    }
-    return {known:true,value:new Date(2026,month-1,day,23,59,59,999).getTime()};
-  }
-  m=s.match(/(\d{1,2})月(上旬|中旬|下旬)/);
-  if(m){
-    const day=m[2]==='上旬'?5:m[2]==='中旬'?15:25;
-    return {known:true,value:new Date(2026,Number(m[1])-1,day,23,59,59,999).getTime()};
-  }
-  return {known:false,value:0};
-}
-function compareJobs(a,b){
-  if(!sortKey)return 0;
-  if(sortKey==='deadline'){
-    const av=deadlineValue(a.deadline),bv=deadlineValue(b.deadline);
-    if(av.known!==bv.known)return av.known?-1:1;
-    if(!av.known&&!bv.known)return collator.compare(a.deadline||'',b.deadline||'');
-    const diff=(av.value-bv.value)*sortDir;
-    return diff!==0?diff:collator.compare(a.deadline||'',b.deadline||'')*sortDir;
-  }
-  if(sortKey==='level'){
-    const ar=levelRank(a.level),br=levelRank(b.level);
-    if(ar!==br)return (ar-br)*sortDir;
-    return collator.compare(a.level||'',b.level||'')*sortDir;
-  }
-  return collator.compare(a[sortKey]||'',b[sortKey]||'')*sortDir;
-}
-function match(j){const text=[j.category,j.org,j.region,j.role,j.level,j.keyword,j.note].join(' ').toLowerCase();const query=q.trim().toLowerCase();const ok=mode==='all'||(mode==='undone'&&!state[j.id])||(mode==='core'&&j.core)||(mode==='bank'&&j.category==='银行')||(mode==='soe'&&j.category==='国央企');return ok&&(!query||text.includes(query))}
-function updateSortArrows(){document.querySelectorAll('th.sortable').forEach(th=>{const a=th.querySelector('.sort-arrow');if(th.dataset.sort===sortKey)a.textContent=sortDir===1?'▲':'▼';else a.textContent='↕'})}
-function render(){const body=document.getElementById('body');body.innerHTML='';const visible=jobs.filter(match);if(sortKey)visible.sort(compareJobs);visible.forEach(j=>{const tr=document.createElement('tr');if(state[j.id])tr.className='done';const unknown=/核实|未公开|第三方/.test(j.deadline);tr.innerHTML=`<td><input class="check" type="checkbox" ${state[j.id]?'checked':''}></td><td><span class="badge ${j.category==='银行'?'bank':'soe'}">${esc(j.category)}</span></td><td><div class="org">${esc(j.org)}${j.core?'<span class="badge core">核心</span>':''}</div></td><td>${esc(j.region)}</td><td><div class="role">${esc(j.role)}</div><div class="small">搜索：${esc(j.keyword)} <button class="copy">复制关键词</button></div><div class="small">${esc(j.note)}</div></td><td><span class="badge ${levelClass(j.level)}">${esc(j.level)}</span></td><td><span class="deadline ${unknown?'unknown':''}">${esc(j.deadline)}</span></td><td><a class="apply" href="${j.url}" target="_blank" rel="noopener">去官网 ↗</a></td>`;tr.querySelector('.check').onchange=e=>{state[j.id]=e.target.checked;localStorage.setItem(KEY,JSON.stringify(state));render()};tr.querySelector('.copy').onclick=e=>{navigator.clipboard.writeText(j.keyword);e.target.textContent='已复制';setTimeout(()=>e.target.textContent='复制关键词',800)};body.appendChild(tr)});const done=jobs.filter(j=>state[j.id]).length;document.getElementById('done').textContent=done;document.getElementById('total').textContent=jobs.length;document.getElementById('coreRemain').textContent=jobs.filter(j=>j.core&&!state[j.id]).length;document.getElementById('soeCount').textContent=jobs.filter(j=>j.category==='国央企').length;document.getElementById('bar').style.width=(jobs.length?Math.round(done/jobs.length*100):0)+'%';updateSortArrows()}
-document.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>{mode=btn.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()});
-document.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{const key=th.dataset.sort;if(sortKey===key)sortDir*=-1;else{sortKey=key;sortDir=1}render()});
-document.getElementById('search').oninput=e=>{q=e.target.value;render()};document.getElementById('reset').onclick=()=>{if(confirm('确定清空所有勾选吗？')){state={};localStorage.setItem(KEY,'{}');render()}};
-document.getElementById('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='2027秋招投递进度.json';a.click();URL.revokeObjectURL(a.href)};document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();document.getElementById('importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);localStorage.setItem(KEY,JSON.stringify(state));render()}catch{alert('导入文件格式不正确')}};r.readAsText(f)};render();
+const jobs=window.JOBS||[];const KEY='autumn-2027-all-jobs-v3',SORTKEY='autumn-2027-sort-v2';let state=JSON.parse(localStorage.getItem(KEY)||'{}');let mode='all',q='';
+let savedSort=JSON.parse(localStorage.getItem(SORTKEY)||'null');let sortKey=savedSort?.key||'deadline',sortDir=savedSort?.dir||1;
+const collator=new Intl.Collator('zh-CN',{numeric:true,sensitivity:'base'});const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function levelClass(x){if(['冲刺','S+','S'].includes(x))return'lv-hot';if(['主投','A+'].includes(x))return'lv-main';if(['A','A-'].includes(x))return'lv-mid';if(['稳妥'].includes(x))return'lv-safe';return'lv-other'}function levelRank(x){return {'lv-hot':1,'lv-main':2,'lv-mid':3,'lv-safe':4,'lv-other':5}[levelClass(x)]||9}
+function deadlineValue(text){const s=String(text||'').trim();if(/待核实|未公开|非官方|第三方/.test(s))return{known:false,value:0};let m=s.match(/^(\d{1,2})\s*[\/月]\s*(\d{1,2})(?:\s*日)?(?:\s+(\d{1,2})\s*[:：]\s*(\d{2}))?/);if(m){const mo=+m[1],d=+m[2];if(m[3]!==undefined){let h=+m[3],mi=+m[4];if(h===24)return{known:true,value:new Date(2026,mo-1,d+1,0,mi,0,0).getTime()};return{known:true,value:new Date(2026,mo-1,d,h,mi,0,0).getTime()}}return{known:true,value:new Date(2026,mo-1,d,23,59,59,999).getTime()}}m=s.match(/^(\d{1,2})月(上旬|中旬|下旬)/);if(m){const d=m[2]==='上旬'?5:m[2]==='中旬'?15:25;return{known:true,value:new Date(2026,+m[1]-1,d,23,59,59,999).getTime()}}return{known:false,value:0}}
+function compareJobs(a,b){if(sortKey==='deadline'){const av=deadlineValue(a.deadline),bv=deadlineValue(b.deadline);if(av.known!==bv.known)return av.known?-1:1;if(!av.known&&!bv.known)return collator.compare(a.deadline||'',b.deadline||'');const diff=(av.value-bv.value)*sortDir;return diff||collator.compare(a.org||'',b.org||'')}if(sortKey==='level'){const d=(levelRank(a.level)-levelRank(b.level))*sortDir;return d||collator.compare(a.org||'',b.org||'')}return collator.compare(a[sortKey]||'',b[sortKey]||'')*sortDir}
+function match(j){const text=[j.category,j.org,j.region,j.role,j.level,j.keyword,j.note].join(' ').toLowerCase(),query=q.trim().toLowerCase();const ok=mode==='all'||(mode==='undone'&&!state[j.id])||(mode==='core'&&j.core)||(mode==='bank'&&j.category==='银行')||(mode==='soe'&&j.category==='国央企');return ok&&(!query||text.includes(query))}
+function sortLabel(){const names={deadline:'截止',org:'单位',region:'地区',role:'岗位',level:'档位'};return `当前：${names[sortKey]} ${sortDir===1?'↑':'↓'}`}
+function updateSortUI(){document.querySelectorAll('th.sortable').forEach(th=>{const a=th.querySelector('.sort-arrow');a.textContent=th.dataset.sort===sortKey?(sortDir===1?'▲':'▼'):'↕'});document.getElementById('sortSelect').value=`${sortKey}:${sortDir}`;document.getElementById('sortStatus').textContent=sortLabel();localStorage.setItem(SORTKEY,JSON.stringify({key:sortKey,dir:sortDir}))}
+function render(){const body=document.getElementById('body');body.innerHTML='';const visible=jobs.filter(match).slice().sort(compareJobs);visible.forEach(j=>{const tr=document.createElement('tr');if(state[j.id])tr.className='done';const unknown=!deadlineValue(j.deadline).known;tr.innerHTML=`<td><input class="check" type="checkbox" ${state[j.id]?'checked':''}></td><td><span class="badge ${j.category==='银行'?'bank':'soe'}">${esc(j.category)}</span></td><td><div class="org">${esc(j.org)}${j.core?'<span class="badge core">核心</span>':''}</div></td><td>${esc(j.region)}</td><td><div class="role">${esc(j.role)}</div><div class="small">搜索：${esc(j.keyword)} <button class="copy">复制关键词</button></div><div class="small">${esc(j.note)}</div></td><td><span class="badge ${levelClass(j.level)}">${esc(j.level)}</span></td><td><span class="deadline ${unknown?'unknown':''}">${esc(j.deadline)}</span></td><td><a class="apply" href="${j.url}" target="_blank" rel="noopener">去官网 ↗</a></td>`;tr.querySelector('.check').onchange=e=>{state[j.id]=e.target.checked;localStorage.setItem(KEY,JSON.stringify(state));render()};tr.querySelector('.copy').onclick=e=>{navigator.clipboard.writeText(j.keyword);e.target.textContent='已复制';setTimeout(()=>e.target.textContent='复制关键词',800)};body.appendChild(tr)});const done=jobs.filter(j=>state[j.id]).length;doneEl.textContent=done;total.textContent=jobs.length;coreRemain.textContent=jobs.filter(j=>j.core&&!state[j.id]).length;soeCount.textContent=jobs.filter(j=>j.category==='国央企').length;bar.style.width=(jobs.length?Math.round(done/jobs.length*100):0)+'%';updateSortUI()}
+const doneEl=document.getElementById('done'),total=document.getElementById('total'),coreRemain=document.getElementById('coreRemain'),soeCount=document.getElementById('soeCount'),bar=document.getElementById('bar');
+document.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>{mode=btn.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()});document.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{const k=th.dataset.sort;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1}render()});document.getElementById('sortSelect').onchange=e=>{const[k,d]=e.target.value.split(':');sortKey=k;sortDir=Number(d);render()};document.getElementById('search').oninput=e=>{q=e.target.value;render()};document.getElementById('reset').onclick=()=>{if(confirm('确定清空所有勾选吗？')){state={};localStorage.setItem(KEY,'{}');render()}};document.getElementById('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='2027秋招投递进度.json';a.click();URL.revokeObjectURL(a.href)};document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();document.getElementById('importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);localStorage.setItem(KEY,JSON.stringify(state));render()}catch{alert('导入文件格式不正确')}};r.readAsText(f)};render();
 </script>
 </body></html>
