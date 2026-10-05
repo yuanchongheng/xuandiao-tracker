@@ -65,6 +65,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html data.json review_queue.json third_sources.json monitor_status.json _site/
+          cp -r qiuzhao _site/
           touch _site/.nojekyll
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
