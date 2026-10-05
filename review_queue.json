@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-05T13:37:48+08:00",
+  "updated": "2026-10-05T19:07:00+08:00",
   "candidates": [
     {
       "id": "41595cc77bd7d30d569c",
@@ -9,23 +9,23 @@
       "kind": "listing",
       "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
       "discovered": "2026-09-23T00:56:38+08:00",
-      "status": "pending",
+      "status": "dismissed",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+      "note": "已核验：该页仅为北京市2027年度定向选调和“优培计划”宣传片，无公告正文、报名条件、附件或独立截止时间；对应正式公告已有北京市政府官方来源，故不作为独立公告入库。"
     },
     {
       "id": "0a6289baf4954314fce1",
-      "province": "吉林",
+      "province": "湖北",
       "title": "湖北省面向吉林大学定向选调（选聘） 2027届优秀大学毕业生公告",
       "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=058c8c90ce8a4515869929f638739fee",
       "kind": "listing",
       "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
       "discovered": "2026-09-23T00:56:38+08:00",
-      "status": "pending",
+      "status": "reviewed",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+      "note": "已核验：吉林大学就业网正文完整，落款中共湖北省委组织部（2026-09-10）；未检索到湖北省级政府/组工门户独立原文，按 jlu_fallback 保留。报名2026-09-10 10:00至09-22 22:00；缴费至09-26 22:00；报名需支付宝实名认证、教育部学籍在线验证报告PDF、近期证件照，缴费后下载报名推荐表并提交院系审核盖章；准考证10-14 10:00起打印，笔试10-18 09:00—12:00。"
     },
     {
       "id": "707a1cd5b10531ffe483",
@@ -35,10 +35,10 @@
       "kind": "listing",
       "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
       "discovered": "2026-09-23T00:56:38+08:00",
-      "status": "pending",
+      "status": "reviewed",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+      "note": "已核验：吉林大学转载与首都之窗/北京组工官方公告一致；正式数据继续使用北京市政府官方链接。报名2026-09-20 09:00至09-23 18:00；需按岗位提交真实报名信息并完成学校组织推荐，填写相应推荐表并盖章，资格复审时提交；准考证10-14 10:00至10-17 09:30打印，笔试10-17 09:00—11:30。"
     },
     {
       "id": "aa744922c3e72e00a5a9",
