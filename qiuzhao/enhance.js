@@ -8,6 +8,7 @@ const PROFILE_RULES=[
   {label:'市场/客户',re:/市场|营销|客户|业务拓展|商务/,points:3}
 ];
 const LEVEL_BASE={'主投':79,'冲刺':74,'稳妥':69,'扩充':60};
+let healthData=null,candidateData=null;
 function fitInfo(j){
   const text=[j.org,j.role,j.keyword,j.note].join(' ');
   let score=LEVEL_BASE[normalizedLevel(j)]||60, bonus=0, reasons=[];
@@ -86,18 +87,32 @@ function installUI(){
     panel.innerHTML='<div class="priority-head"><div><h2>今日优先投递</h2><span>综合个人匹配、核心标记与截止时间自动排序</span></div><span>仅作排序提示，最终以岗位资格条件为准</span></div><div id="priorityList" class="priority-list"></div>';
     toolbarNode.parentNode.insertBefore(panel,toolbarNode);
   }
+  if(toolbarNode&&!document.getElementById('healthPanel')){
+    const panel=document.createElement('section');panel.id='healthPanel';panel.className='health-panel';
+    panel.innerHTML='<div class="health-head"><div><h2>岗位池巡检</h2><span id="healthTime">等待首次自动巡检</span></div><span>官网受限不等于入口失效，异常项需要人工复核</span></div><div class="health-grid"><div class="health-stat"><b id="healthOk" class="health-ok">—</b><span>正常岗位入口</span></div><div class="health-stat"><b id="healthRestricted" class="health-warn">—</b><span>官网限制自动访问</span></div><div class="health-stat"><b id="healthError" class="health-bad">—</b><span>异常待复核</span></div><div class="health-stat"><b id="candidateCount">—</b><span>候选变更待核验</span></div></div>';
+    toolbarNode.parentNode.insertBefore(panel,toolbarNode);
+  }
+}
+function healthFor(j){return healthData&&healthData.jobs?healthData.jobs[j.id]:null}
+function healthLabel(h){
+  if(!h)return {state:'unknown',label:'未巡检'};
+  if(h.state==='ok')return {state:'ok',label:'官网正常'};
+  if(h.state==='restricted')return {state:'restricted',label:'官网限流'};
+  return {state:'error',label:'需复核'};
 }
 function enhanceRows(){
   const visible=jobs.filter(match).slice().sort(compareJobs);
   const rows=[...document.querySelectorAll('#body tr')];
   rows.forEach((tr,i)=>{
     const j=visible[i];if(!j)return;
-    const f=fitInfo(j),u=urgencyInfo(j);
+    const f=fitInfo(j),u=urgencyInfo(j),h=healthLabel(healthFor(j));
     const fitTd=document.createElement('td');fitTd.className='fit-wrap';
     fitTd.innerHTML=`<span class="fit-pill ${f.score>=80?'fit-high':f.score>=70?'fit-mid':'fit-low'}">${f.score}分</span><div class="fit-reason">${f.reasons.map(esc).join(' · ')}</div>`;
     tr.children[4].after(fitTd);
     const deadlineTd=tr.children[7];
     if(deadlineTd)deadlineTd.insertAdjacentHTML('beforeend',`<div><span class="urgency ${u.cls}">${esc(u.label)}</span></div>`);
+    const orgTd=tr.children[2];
+    if(orgTd)orgTd.insertAdjacentHTML('beforeend',`<div class="source-health ${h.state}"><span class="source-dot"></span>${esc(h.label)}</div>`);
   });
 }
 function updatePriority(){
@@ -110,7 +125,24 @@ function updateEnhancedStats(){
   const el=document.getElementById('highFitRemain');
   if(el)el.textContent=jobs.filter(j=>!state[j.id]&&fitInfo(j).score>=80).length;
 }
+function updateHealthPanel(){
+  if(!healthData)return;
+  const counts=healthData.counts||{};
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
+  set('healthOk',counts.ok??0);set('healthRestricted',counts.restricted??0);set('healthError',counts.error??0);
+  const waiting=(candidateData?.items||[]).filter(x=>x.status==='待核验').length;set('candidateCount',waiting);
+  const t=document.getElementById('healthTime');
+  if(t&&healthData.generatedAt){const d=new Date(healthData.generatedAt);t.textContent=`最近巡检：${Number.isNaN(d.getTime())?healthData.generatedAt:d.toLocaleString('zh-CN',{hour12:false})}`}
+}
+async function loadHealth(){
+  try{
+    const [statusRes,candidateRes]=await Promise.all([fetch('./job_status.json',{cache:'no-store'}),fetch('./job_candidates.json',{cache:'no-store'})]);
+    if(statusRes.ok)healthData=await statusRes.json();
+    if(candidateRes.ok)candidateData=await candidateRes.json();
+    updateHealthPanel();render();
+  }catch(err){console.warn('qiuzhao health data unavailable',err)}
+}
 const baseRender=render;
-render=function(){baseRender();enhanceRows();updatePriority();updateEnhancedStats()};
-installUI();render();
+render=function(){baseRender();enhanceRows();updatePriority();updateEnhancedStats();updateHealthPanel()};
+installUI();render();loadHealth();
 })();
