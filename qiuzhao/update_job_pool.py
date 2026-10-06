@@ -5,7 +5,8 @@ It never auto-promotes unverified jobs into data.js. Instead it:
 1) checks every official URL already in the job pool;
 2) checks a registry of official recruitment portals;
 3) records portal health in job_status.json;
-4) records changed official sources in job_candidates.json for manual verification.
+4) extracts source-specific job/category candidates when the official page exposes them;
+5) records changed official sources and extracted jobs in job_candidates.json for review.
 """
 from __future__ import annotations
 
@@ -19,6 +20,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+
+from job_parsers import parse_source
 
 ROOT = Path(__file__).resolve().parent
 RESTRICTED_CODES = {401, 403, 405, 418, 429, 451}
@@ -103,6 +106,29 @@ def same_status(a: dict, b: dict) -> bool:
     return core(a) == core(b)
 
 
+def existing_job_keys(jobs: list[dict]) -> set[str]:
+    keys = set()
+    for job in jobs:
+        org = re.sub(r"\s+", "", str(job.get("org", ""))).lower()
+        role = re.sub(r"\s+", "", str(job.get("role", ""))).lower()
+        keyword = re.sub(r"\s+", "", str(job.get("keyword", ""))).lower()
+        keys.update(x for x in [f"{org}|{role}", keyword] if x)
+    return keys
+
+
+def candidate_already_listed(candidate: dict, keys: set[str]) -> bool:
+    title = re.sub(r"\s+", "", str(candidate.get("title", ""))).lower()
+    org = re.sub(r"\s+", "", str(candidate.get("org", ""))).lower()
+    code = str(candidate.get("jobCode", "")).lower()
+    if code and any(code in key for key in keys):
+        return True
+    if title and any(title in key or key.endswith("|" + title) for key in keys if len(key) >= 5):
+        return True
+    if org and title and f"{org}|{title}" in keys:
+        return True
+    return False
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--workers", type=int, default=8)
@@ -110,6 +136,7 @@ def main() -> None:
     args = parser.parse_args()
 
     jobs = load_jobs()
+    listed_keys = existing_job_keys(jobs)
     registry = json.loads((ROOT / "source_registry.json").read_text(encoding="utf-8"))
     sources = registry.get("sources", [])
     urls = sorted({j.get("url", "") for j in jobs if j.get("url")} | {s.get("url", "") for s in sources if s.get("url")})
@@ -134,14 +161,36 @@ def main() -> None:
     checked_at = now_iso()
     source_rows = []
     changed_sources = []
+    extracted_candidates: list[dict] = []
+
     for source in sources:
         r = results.get(source.get("url", ""), {})
         body_lower = r.get("body", "").lower()
         hits = [kw for kw in source.get("keywords", []) if kw.lower() in body_lower]
+        extracted = []
+        if r.get("state") == "ok" and r.get("body"):
+            try:
+                extracted = parse_source(source, r.get("body", ""), r.get("finalUrl") or source.get("url", ""))
+            except Exception as exc:
+                extracted = []
+                r["parseError"] = str(exc)[:180]
+
+        for candidate in extracted:
+            if candidate.get("eligibility") == "blocked":
+                continue
+            if candidate_already_listed(candidate, listed_keys):
+                continue
+            candidate["detectedAt"] = checked_at
+            candidate["status"] = "待核验"
+            candidate["reason"] = "官方招聘页面直接解析出的岗位/岗位类别；已按当前简历做初筛，仍需核对完整JD与资格条件。"
+            extracted_candidates.append(candidate)
+
         row = {
             "id": source.get("id"), "name": source.get("name"), "kind": source.get("kind"),
-            "url": source.get("url"), "state": r.get("state", "error"), "httpStatus": r.get("httpStatus"),
-            "title": r.get("title", ""), "contentHash": r.get("hash", ""), "keywordHits": hits[:8]
+            "parser": source.get("parser", "generic"), "url": source.get("url"),
+            "state": r.get("state", "error"), "httpStatus": r.get("httpStatus"),
+            "title": r.get("title", ""), "contentHash": r.get("hash", ""), "keywordHits": hits[:8],
+            "extractedCount": len(extracted), "parseError": r.get("parseError", "")
         }
         source_rows.append(row)
         old = prev_sources.get(source.get("id"))
@@ -166,7 +215,8 @@ def main() -> None:
         "counts": counts,
         "jobs": job_rows,
         "sources": source_rows,
-        "note": "restricted 通常表示官网阻止机器人访问，不等于招聘入口失效；error 才需要人工复核。"
+        "extractedCandidateCount": len(extracted_candidates),
+        "note": "restricted 通常表示官网阻止机器人访问，不等于招聘入口失效；error 才需要人工复核。解析器仅从官方页面可见内容提取，不自动加入正式岗位池。"
     }
     if not args.force and previous.get("generatedAt") and same_status(previous, status):
         status["generatedAt"] = previous["generatedAt"]
@@ -178,10 +228,12 @@ def main() -> None:
         candidates = json.loads(candidates_path.read_text(encoding="utf-8"))
     except Exception:
         candidates = {"updatedAt": None, "items": []}
-    existing = {(x.get("sourceId"), x.get("contentHash")) for x in candidates.get("items", [])}
+
+    existing = {(x.get("sourceId"), x.get("contentHash"), x.get("id")) for x in candidates.get("items", [])}
     added = 0
+
     for row in changed_sources:
-        key = (row.get("id"), row.get("contentHash"))
+        key = (row.get("id"), row.get("contentHash"), None)
         if key in existing:
             continue
         candidates.setdefault("items", []).append({
@@ -192,12 +244,24 @@ def main() -> None:
         })
         existing.add(key)
         added += 1
+
+    for candidate in extracted_candidates:
+        key = (candidate.get("sourceId"), None, candidate.get("id"))
+        if key in existing:
+            continue
+        candidates.setdefault("items", []).append(candidate)
+        existing.add(key)
+        added += 1
+
     if added:
         candidates["updatedAt"] = checked_at
-        candidates["items"] = candidates.get("items", [])[-200:]
+        candidates["items"] = candidates.get("items", [])[-300:]
         candidates_path.write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    print(f"checked {len(urls)} unique URLs / {len(jobs)} jobs; states={counts}; changed_sources={len(changed_sources)}; new_candidates={added}")
+    print(
+        f"checked {len(urls)} unique URLs / {len(jobs)} jobs; states={counts}; "
+        f"changed_sources={len(changed_sources)}; extracted={len(extracted_candidates)}; new_candidates={added}"
+    )
 
 
 if __name__ == "__main__":
