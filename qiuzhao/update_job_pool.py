@@ -66,8 +66,7 @@ def load_jobs() -> list[dict]:
 
 def normalize_body(raw: bytes) -> str:
     text = raw.decode("utf-8", errors="ignore")
-    text = re.sub(r"\s+", " ", text)
-    return text[:500_000]
+    return re.sub(r"\s+", " ", text)[:500_000]
 
 
 def probe(url: str) -> dict:
@@ -96,13 +95,18 @@ def probe(url: str) -> dict:
     return {"url": url, "finalUrl": final_url, "httpStatus": code, "state": state, "error": "", "title": title, "hash": digest, "body": body}
 
 
-def public_probe(result: dict) -> dict:
-    return {k: v for k, v in result.items() if k != "body"}
+def same_status(a: dict, b: dict) -> bool:
+    def core(x: dict) -> dict:
+        y = dict(x or {})
+        y.pop("generatedAt", None)
+        return y
+    return core(a) == core(b)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--force", action="store_true", help="rewrite status timestamp even when substantive data is unchanged")
     args = parser.parse_args()
 
     jobs = load_jobs()
@@ -120,9 +124,9 @@ def main() -> None:
             except Exception as e:
                 results[url] = {"url": url, "finalUrl": url, "httpStatus": None, "state": "error", "error": str(e)[:180], "title": "", "hash": "", "body": ""}
 
-    previous_status_path = ROOT / "job_status.json"
+    status_path = ROOT / "job_status.json"
     try:
-        previous = json.loads(previous_status_path.read_text(encoding="utf-8"))
+        previous = json.loads(status_path.read_text(encoding="utf-8"))
     except Exception:
         previous = {}
     prev_sources = {x.get("id"): x for x in previous.get("sources", [])}
@@ -164,14 +168,18 @@ def main() -> None:
         "sources": source_rows,
         "note": "restricted 通常表示官网阻止机器人访问，不等于招聘入口失效；error 才需要人工复核。"
     }
-    previous_status_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if not args.force and previous.get("generatedAt") and same_status(previous, status):
+        status["generatedAt"] = previous["generatedAt"]
+    else:
+        status_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     candidates_path = ROOT / "job_candidates.json"
     try:
         candidates = json.loads(candidates_path.read_text(encoding="utf-8"))
     except Exception:
-        candidates = {"updatedAt": checked_at, "items": []}
+        candidates = {"updatedAt": None, "items": []}
     existing = {(x.get("sourceId"), x.get("contentHash")) for x in candidates.get("items", [])}
+    added = 0
     for row in changed_sources:
         key = (row.get("id"), row.get("contentHash"))
         if key in existing:
@@ -182,11 +190,14 @@ def main() -> None:
             "keywordHits": row.get("keywordHits", []), "reason": "官方招聘入口页面内容发生变化，建议核验是否新增/调整2027届岗位。",
             "status": "待核验"
         })
-    candidates["updatedAt"] = checked_at
-    candidates["items"] = candidates.get("items", [])[-200:]
-    candidates_path.write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        existing.add(key)
+        added += 1
+    if added:
+        candidates["updatedAt"] = checked_at
+        candidates["items"] = candidates.get("items", [])[-200:]
+        candidates_path.write_text(json.dumps(candidates, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    print(f"checked {len(urls)} unique URLs / {len(jobs)} jobs; states={counts}; changed_sources={len(changed_sources)}")
+    print(f"checked {len(urls)} unique URLs / {len(jobs)} jobs; states={counts}; changed_sources={len(changed_sources)}; new_candidates={added}")
 
 
 if __name__ == "__main__":
