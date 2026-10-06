@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "sources": [
+    {"id":"cnpc","name":"中国石油招聘平台","url":"https://zhaopin.cnpc.com.cn/","kind":"央企官网","parser":"monitor_only","keywords":["2027","校园招聘","经济","经营","贸易","市场","管理"]},
+    {"id":"sinopec","name":"中国石化招聘平台","url":"https://job.sinopec.com/","kind":"央企官网","parser":"monitor_only","keywords":["2027","校园招聘","经营","管理","营销","国际"]},
+    {"id":"cnooc","name":"中国海油校园招聘","url":"https://cnooc.zhaopin.com/","kind":"央企官网","parser":"monitor_only","keywords":["2027","市场开发","国际商务","经营管理","规划投资"]},
+    {"id":"cosco","name":"中远海运招聘","url":"https://coscoshipping.iguopin.com/","kind":"央企官网","parser":"monitor_only","keywords":["2027","经营","商务","管理","市场"]},
+    {"id":"cofco","name":"中粮集团校园招聘","url":"https://campus.51job.com/cofco","kind":"央企官网","parser":"51job_categories","keywords":["2027","投资研究","大宗贸易","战略规划","运营管理"]},
+    {"id":"minmetals","name":"中国五矿招聘","url":"https://zhaopin.minmetals.com.cn","kind":"央企官网","parser":"monitor_only","keywords":["2027","企业管理","贸易","经营分析","管培"]},
+    {"id":"sinomach","name":"国机集团招聘","url":"https://zhaopin.sinomach.com.cn/","kind":"央企官网","parser":"generic","keywords":["2027","贸易","经营","经济","管理"]},
+    {"id":"cscec","name":"中国建筑招聘","url":"https://recruit.cscec.com/","kind":"央企官网","parser":"monitor_only","keywords":["2027","投资","运营","经济","管理"]},
+    {"id":"cgn","name":"中广核招聘","url":"https://cgn.hotjob.cn/","kind":"央企官网","parser":"monitor_only","keywords":["2027","经营","市场","投资","经济"]},
+    {"id":"cmcc","name":"中国移动招聘","url":"https://job.10086.cn/","kind":"央企官网","parser":"monitor_only","keywords":["2027","经营分析","市场运营","管理"]},
+    {"id":"itg","name":"厦门国贸校园招聘","url":"https://itgholding.zhiye.com/gmkgxzlb","kind":"地方国企官网","parser":"zhiye","keywords":["2027","贸易运营","行业研究","业务"]},
+    {"id":"wzgroup","name":"物产中大校园招聘","url":"https://campus.wzgroup.cn/","kind":"地方国企官网","parser":"generic","keywords":["2027","贸易","供应链","业务拓展","经营"]},
+    {"id":"cdb","name":"国家开发银行校园招聘","url":"https://cdb2027.zhaopin.com","kind":"银行官网","parser":"monitor_only","keywords":["2027","经济金融"]},
+    {"id":"psbc","name":"邮储银行校园招聘","url":"https://psbc2027.zhaopin.com","kind":"银行官网","parser":"monitor_only","keywords":["2027","经营管理","U培生"]},
+    {"id":"ccb","name":"建设银行招聘","url":"https://job.ccb.com","kind":"银行官网","parser":"monitor_only","keywords":["2027","管理培训生","客户经理"]},
+    {"id":"icbc","name":"工商银行招聘","url":"https://job.icbc.com.cn/pc/index.html","kind":"银行官网","parser":"monitor_only","keywords":["2027","专业英才","管培生"]},
+    {"id":"cmb","name":"招商银行招聘","url":"https://career.cmbchina.com","kind":"银行官网","parser":"monitor_only","keywords":["2027","定向培养"]}
+  ]
+}
