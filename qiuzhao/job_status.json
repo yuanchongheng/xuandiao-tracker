@@ -1,0 +1,8 @@
+{
+  "generatedAt": null,
+  "jobCount": 0,
+  "counts": {"ok": 0, "restricted": 0, "error": 0},
+  "jobs": {},
+  "sources": [],
+  "note": "等待自动巡检"
+}
