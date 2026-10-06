@@ -92,6 +92,12 @@ function installUI(){
     panel.innerHTML='<div class="health-head"><div><h2>岗位池巡检</h2><span id="healthTime">等待首次自动巡检</span></div><span>官网受限不等于入口失效，异常项需要人工复核</span></div><div class="health-grid"><div class="health-stat"><b id="healthOk" class="health-ok">—</b><span>正常岗位入口</span></div><div class="health-stat"><b id="healthRestricted" class="health-warn">—</b><span>官网限制自动访问</span></div><div class="health-stat"><b id="healthError" class="health-bad">—</b><span>异常待复核</span></div><div class="health-stat"><b id="candidateCount">—</b><span>候选变更待核验</span></div></div>';
     toolbarNode.parentNode.insertBefore(panel,toolbarNode);
   }
+  if(toolbarNode&&!document.getElementById('candidatePanel')){
+    const panel=document.createElement('section');panel.id='candidatePanel';panel.className='candidate-panel';
+    panel.innerHTML='<div class="candidate-head"><div><h2>自动发现候选</h2><span>仅展示官方页面直接解析出的高相关岗位/岗位类别，不会自动写入正式岗位池</span></div><button id="candidateToggle" type="button">展开候选</button></div><div id="candidateList" class="candidate-list" hidden></div>';
+    toolbarNode.parentNode.insertBefore(panel,toolbarNode);
+    panel.querySelector('#candidateToggle').onclick=()=>{const list=panel.querySelector('#candidateList');const opening=list.hidden;list.hidden=!opening;panel.querySelector('#candidateToggle').textContent=opening?'收起候选':'展开候选'};
+  }
 }
 function healthFor(j){return healthData&&healthData.jobs?healthData.jobs[j.id]:null}
 function healthLabel(h){
@@ -134,15 +140,27 @@ function updateHealthPanel(){
   const t=document.getElementById('healthTime');
   if(t&&healthData.generatedAt){const d=new Date(healthData.generatedAt);t.textContent=`最近巡检：${Number.isNaN(d.getTime())?healthData.generatedAt:d.toLocaleString('zh-CN',{hour12:false})}`}
 }
+function updateCandidatePanel(){
+  const box=document.getElementById('candidateList');if(!box)return;
+  const raw=(candidateData?.items||[]).filter(x=>x.status==='待核验'&&x.title);
+  const list=raw.slice().sort((a,b)=>(Number(b.matchScore)||0)-(Number(a.matchScore)||0)).slice(0,20);
+  if(!list.length){box.innerHTML='<div class="candidate-empty">暂无从官方页面直接解析出的新候选；来源页面发生变化时仍会进入待核验队列。</div>';return;}
+  box.innerHTML=list.map(c=>{
+    const reasons=(c.matchReasons||[]).slice(0,3).map(esc).join(' · ');
+    const score=Number(c.matchScore)||0;
+    const cls=score>=85?'fit-high':score>=72?'fit-mid':'fit-low';
+    return `<article class="candidate-item"><div class="candidate-main"><div class="candidate-source">${esc(c.source||'官方来源')} · ${esc(c.kind||'岗位')}</div><div class="candidate-title">${esc(c.title)}${c.jobCode?` <span>${esc(c.jobCode)}</span>`:''}</div><div class="candidate-reason">${reasons||'需人工核对JD与专业条件'}</div></div><div class="candidate-side"><span class="fit-pill ${cls}">${score||'—'}分</span><a href="${esc(c.url||'#')}" target="_blank" rel="noopener">核验官网 ↗</a></div></article>`;
+  }).join('');
+}
 async function loadHealth(){
   try{
     const [statusRes,candidateRes]=await Promise.all([fetch('./job_status.json',{cache:'no-store'}),fetch('./job_candidates.json',{cache:'no-store'})]);
     if(statusRes.ok)healthData=await statusRes.json();
     if(candidateRes.ok)candidateData=await candidateRes.json();
-    updateHealthPanel();render();
+    updateHealthPanel();updateCandidatePanel();render();
   }catch(err){console.warn('qiuzhao health data unavailable',err)}
 }
 const baseRender=render;
-render=function(){baseRender();enhanceRows();updatePriority();updateEnhancedStats();updateHealthPanel()};
+render=function(){baseRender();enhanceRows();updatePriority();updateEnhancedStats();updateHealthPanel();updateCandidatePanel()};
 installUI();render();loadHealth();
 })();
