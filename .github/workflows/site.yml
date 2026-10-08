@@ -38,10 +38,10 @@ jobs:
       - name: Run offline regression tests
         run: python -m unittest discover -s tests
       - name: Check government and JLU backup pages plus 31 regional queries
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: python monitor.py
       - name: Save check results (never modify validated data.json)
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -51,7 +51,7 @@ jobs:
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
