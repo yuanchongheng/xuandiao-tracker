@@ -1,7 +1,7 @@
 {
   "edition": "2027届",
-  "asOf": "2026-10-08T14:38:51+08:00",
-  "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；自动入库不猜测报名、考试或资格字段，未结构化内容以原文和附件为准。政府来源候选和其他高校第三来源仍按原规则处理。",
+  "asOf": "2026-10-08T15:49:33+08:00",
+  "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；系统会从吉大正文自动提取明确的报名起止和笔试日期，未明确的时刻或条件不作猜测。政府来源候选和其他高校第三来源仍按原规则处理。",
   "provinces": [
     "北京",
     "天津",
@@ -216,8 +216,8 @@
       "autoPublished": true,
       "publishedEstimated": true,
       "discoveredAt": "2026-10-08T13:45:01+08:00",
-      "autoParsedAt": "2026-10-08T14:38:51+08:00",
-      "autoParsedFrom": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=d414af75a893440a8e4ed0ad434fa312",
+      "autoParsedAt": "2026-10-08T15:49:33+08:00",
+      "autoParsedFrom": "known_timing_fallback",
       "timingFallbackNote": "报名时间已确认：10月8日8:30至10月17日17:30。"
     },
     {
@@ -242,6 +242,29 @@
       "autoPublished": true,
       "publishedEstimated": true,
       "discoveredAt": "2026-09-22T12:44:47+08:00"
+    },
+    {
+      "province": "吉林",
+      "title": "重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告",
+      "type": "定向选调",
+      "count": "以吉林大学就业网公告及附件为准",
+      "published": "2026-10-08",
+      "start": "",
+      "end": "",
+      "exam": "",
+      "examEnd": "",
+      "examText": "报名、笔试及后续安排以吉林大学就业网原文和附件为准",
+      "school": "吉林大学就业网已发布该通知；适用高校、学历、专业及校内流程以原文和附件为准。",
+      "eligibility": "自动收录不推断资格条件；请直接查看吉林大学就业网原文及附件。",
+      "notes": "吉林大学就业网自动发布，无需人工二次核验。报名起止和笔试日期仅在正文有明确表述时自动结构化；未明确内容仍以原文及附件为准。",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c691dd",
+      "sourceName": "吉林大学就业网（自动发布）",
+      "sourceType": "吉林大学备用",
+      "verified": "2026-10-08",
+      "sourceTier": "jlu_fallback",
+      "autoPublished": true,
+      "publishedEstimated": true,
+      "discoveredAt": "2026-10-08T15:47:58+08:00"
     }
   ]
 }

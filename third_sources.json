@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-08T14:36:18+08:00",
+  "updated": "2026-10-08T15:47:58+08:00",
   "items": [
+    {
+      "id": "4abd3d7fafb5cb9b5fd8",
+      "province": "黑龙江",
+      "title": "【选调10】黑龙江省2027年度定向选调 应届优秀大学毕业生公告 发布日期：2026-10-08 点击数：5 作者：张一鹤",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/g0l5nsg94fep",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T15:47:58+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "aa31cf97f60ccfb58eb1",
+      "province": "山东",
+      "title": "重庆市面向山东大学定向选调2027届急需紧缺专业应届优秀大学毕业生简章",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=33996",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T15:47:58+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "6131a3b544416c3e25ea",
       "province": "湖北",
