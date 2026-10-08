@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-08T14:14:01+08:00",
+  "updated": "2026-10-08T14:19:02+08:00",
   "items": [
+    {
+      "id": "7829fe52fc7d3e623ebf",
+      "province": "上海",
+      "title": "上海市金山区2027年选调生招考启动公告",
+      "url": "https://job.hust.edu.cn/jcfw/2433064.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T14:19:02+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "0ae9bb25142d1de7735f",
+      "province": "上海",
+      "title": "【选调生】上海市2027年度选调应届优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/204964/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T14:19:02+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "232aa83a24ecd2799890",
       "province": "山东",
