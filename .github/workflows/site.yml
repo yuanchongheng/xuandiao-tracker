@@ -10,7 +10,9 @@ on:
 
 concurrency:
   group: xuandiao-pages
-  cancel-in-progress: false
+  # A newer manual/scheduled run supersedes an older one. This prevents stale
+  # queued runs from later writing old monitoring results back to main.
+  cancel-in-progress: true
 
 permissions:
   contents: write
