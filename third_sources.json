@@ -1,6 +1,54 @@
 {
-  "updated": "2026-10-08T07:04:27+08:00",
+  "updated": "2026-10-08T13:45:01+08:00",
   "items": [
+    {
+      "id": "232aa83a24ecd2799890",
+      "province": "山东",
+      "title": "山东省2027年度选拔录用选调生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11373",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T13:45:01+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "a91b3ae389602fc3f93f",
+      "province": "山东",
+      "title": "【选调生】山东省2027年度选拔录用选调生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205050/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T13:45:01+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "1773d471e8b161b797c8",
+      "province": "黑龙江",
+      "title": "【选调生】黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205049/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T13:45:01+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "eb5b513830625f4ff709",
+      "province": "山东",
+      "title": "山东省2027年度选拔录用选调生公告",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=33995",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-08T13:45:01+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "a9926c1c33cc521964cc",
       "province": "四川",

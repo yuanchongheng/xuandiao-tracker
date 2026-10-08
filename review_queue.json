@@ -1,6 +1,19 @@
 {
-  "updated": "2026-10-08T07:04:27+08:00",
+  "updated": "2026-10-08T13:45:01+08:00",
   "candidates": [
+    {
+      "id": "fb14510b62f937521418",
+      "province": "黑龙江",
+      "title": "黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=d414af75a893440a8e4ed0ad434fa312",
+      "kind": "listing",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "discovered": "2026-10-08T13:45:01+08:00",
+      "status": "pending",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+    },
     {
       "id": "41595cc77bd7d30d569c",
       "province": "北京",
