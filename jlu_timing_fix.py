@@ -2,10 +2,9 @@
 """Backfill registration and exam times for formal JLU notices.
 
 Only explicit dates/times found in JLU employment-site article text are written.
-If one JLU hostname fails, the same article path is retried on the other JLU host.
-A very small set of manually confirmed notices provides fallback values when the
-university site is temporarily unreadable. Existing identical values are never
-rewritten, so this step is idempotent and does not create needless commits.
+If one JLU endpoint fails, equivalent host/path variants are retried. A very small
+set of manually confirmed notices provides fallback values when the university
+site is temporarily unreadable. Existing identical values are never rewritten.
 """
 from __future__ import annotations
 
@@ -21,7 +20,7 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
 HOSTS = ("jdjywpt.jlu.edu.cn", "jdjyw.jlu.edu.cn")
-HEADERS = {"User-Agent": "XuandiaoRadar/1.5", "Accept": "text/html,application/xhtml+xml"}
+HEADERS = {"User-Agent": "XuandiaoRadar/1.6", "Accept": "text/html,application/xhtml+xml"}
 
 KNOWN_TIMINGS = {
     ("黑龙江", "黑龙江省2027年度定向选调应届优秀大学毕业生公告"): {
@@ -62,21 +61,36 @@ def save(name, obj):
         path.write_text(text, encoding="utf-8")
 
 
-def is_jlu(url):
+def valid_jlu_url(url):
     try:
-        return urlsplit(url).hostname in HOSTS
+        parsed = urlsplit(url)
+        return (parsed.scheme == "https" and parsed.hostname in HOSTS
+                and not parsed.username and not parsed.password
+                and parsed.port in (None, 443))
     except Exception:
         return False
 
 
+def is_jlu(url):
+    return valid_jlu_url(url)
+
+
 def alternate_urls(url):
+    """Return equivalent public JLU article endpoints without weakening TLS/host checks."""
     parsed = urlsplit(url)
-    if parsed.hostname not in HOSTS:
+    if not valid_jlu_url(url):
         return []
-    out = [url]
+    paths = [parsed.path]
+    if parsed.path.startswith("/portal/article/details"):
+        paths.append(parsed.path.replace("/portal/article/details", "/portal/xdsgz/article/details", 1))
+    elif parsed.path.startswith("/portal/xdsgz/article/details"):
+        paths.append(parsed.path.replace("/portal/xdsgz/article/details", "/portal/article/details", 1))
+    out = []
     for host in HOSTS:
-        if host != parsed.hostname:
-            out.append(urlunsplit((parsed.scheme, host, parsed.path, parsed.query, "")))
+        for path in paths:
+            candidate = urlunsplit(("https", host, path, parsed.query, ""))
+            if candidate not in out:
+                out.append(candidate)
     return out
 
 
@@ -86,8 +100,8 @@ def fetch_text(url):
         try:
             response = requests.get(candidate, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
             response.raise_for_status()
-            if urlsplit(response.url).hostname not in HOSTS:
-                raise ValueError("redirect outside JLU hosts")
+            if not valid_jlu_url(response.url):
+                raise ValueError("redirect outside approved JLU HTTPS endpoints")
             encoding = response.apparent_encoding or response.encoding or "utf-8"
             html = response.content.decode(encoding, errors="replace")
             soup = BeautifulSoup(html, "html.parser")
