@@ -3,7 +3,9 @@
 
 JLU notices may enter formal data.json without manual second review. This script
 fetches the JLU article itself and extracts registration start/end and exam date
-when the wording is explicit. It never guesses a missing clock time.
+when the wording is explicit. A date without a clock time is stored as a midnight
+sentinel plus a *DateOnly flag; the site never presents midnight as an announced
+opening/exam time.
 """
 from __future__ import annotations
 
@@ -20,7 +22,7 @@ ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
 JLU_HOSTS = {"jdjywpt.jlu.edu.cn", "jdjyw.jlu.edu.cn"}
 HEADERS = {
-    "User-Agent": "XuandiaoRadar/1.2 (public JLU notice parser)",
+    "User-Agent": "XuandiaoRadar/1.5 (public JLU notice parser)",
     "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.5",
 }
 
@@ -55,10 +57,10 @@ def now_iso() -> str:
 
 def is_jlu(url: str) -> bool:
     try:
-        p = urlsplit(url)
+        parsed = urlsplit(url)
     except Exception:
         return False
-    return p.scheme == "https" and p.hostname in JLU_HOSTS
+    return parsed.scheme == "https" and parsed.hostname in JLU_HOSTS
 
 
 def clean_title(value: str) -> str:
@@ -68,11 +70,10 @@ def clean_title(value: str) -> str:
 def normalized_title(value: str) -> str:
     text = clean_title(value)
     text = re.sub(r"[\s·•—–_()（）\[\]【】《》“”‘’：:，,。.!！?？/\\-]+", "", text)
-    return text.removesuffix("公告")
+    return re.sub(r"(?:公告|简章|通知)$", "", text)
 
 
 def iso_dt(year: int, month: int, day: int, hour: int = 0, minute: int = 0) -> str:
-    # datetime validates impossible dates for us.
     return datetime(year, month, day, hour, minute, tzinfo=TZ).isoformat(timespec="seconds")
 
 
@@ -87,9 +88,11 @@ def fetch_article_text(url: str) -> str:
     for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
         tag.decompose()
     text = soup.get_text(" ", strip=True)
-    # JLU rendering occasionally inserts spaces inside years, e.g. 202 7.
     text = re.sub(r"(?<=\d)\s+(?=\d)", "", text)
-    return re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) < 100:
+        raise ValueError("article text too short")
+    return text
 
 
 def interval_score(text: str, match: re.Match) -> int:
@@ -122,20 +125,20 @@ def extract_timing(text: str, default_year: int) -> dict:
         if score >= 5:
             choices.append((score, match))
     if choices:
-        _, m = max(choices, key=lambda item: item[0])
-        y1 = int(m.group(1) or default_year)
-        mo1, d1 = int(m.group(2)), int(m.group(3))
-        h1 = int(m.group(4)) if m.group(4) is not None else 0
-        mi1 = int(m.group(5)) if m.group(5) is not None else 0
-        y2 = int(m.group(6) or y1)
-        mo2, d2 = int(m.group(7)), int(m.group(8))
-        h2 = int(m.group(9)) if m.group(9) is not None else None
-        mi2 = int(m.group(10)) if m.group(10) is not None else 0
-        if (mo2, d2) < (mo1, d1) and m.group(6) is None:
+        _, match = max(choices, key=lambda item: item[0])
+        y1 = int(match.group(1) or default_year)
+        mo1, d1 = int(match.group(2)), int(match.group(3))
+        h1 = int(match.group(4)) if match.group(4) is not None else 0
+        mi1 = int(match.group(5)) if match.group(5) is not None else 0
+        y2 = int(match.group(6) or y1)
+        mo2, d2 = int(match.group(7)), int(match.group(8))
+        h2 = int(match.group(9)) if match.group(9) is not None else None
+        mi2 = int(match.group(10)) if match.group(10) is not None else 0
+        if (mo2, d2) < (mo1, d1) and match.group(6) is None:
             y2 += 1
         result["start"] = iso_dt(y1, mo1, d1, h1, mi1)
-        result["startTimeUnknown"] = m.group(4) is None
-        # A date-only registration end is not safe to turn into a midnight cutoff.
+        result["startDateOnly"] = match.group(4) is None
+        # A date-only registration end is not safe to convert into a midnight cutoff.
         if h2 is not None:
             result["end"] = iso_dt(y2, mo2, d2, h2, mi2)
 
@@ -146,7 +149,7 @@ def extract_timing(text: str, default_year: int) -> dict:
         hour = int(exam.group(4)) if exam.group(4) is not None else 0
         minute = int(exam.group(5)) if exam.group(5) is not None else 0
         result["exam"] = iso_dt(year, month, day, hour, minute)
-        result["examTimeUnknown"] = exam.group(4) is None
+        result["examDateOnly"] = exam.group(4) is None
     return result
 
 
@@ -166,8 +169,8 @@ def main() -> int:
     queue = queue_doc.setdefault("candidates", [])
     stamp = now_iso()
 
-    existing_urls = {r.get("source") for r in records if r.get("source")}
-    existing_keys = {(r.get("province"), normalized_title(r.get("title"))) for r in records}
+    existing_urls = {record.get("source") for record in records if record.get("source")}
+    existing_keys = {(record.get("province"), normalized_title(record.get("title"))) for record in records}
     article_cache: dict[str, tuple[str | None, str | None]] = {}
     promoted = covered = timing_updated = 0
     timing_errors = []
@@ -183,7 +186,6 @@ def main() -> int:
             raise RuntimeError(error)
         return extract_timing(text or "", default_year)
 
-    # First: immediately promote newly discovered JLU notices into formal data.
     for candidate in queue:
         if candidate.get("status") != "pending" or not is_jlu(candidate.get("url", "")):
             continue
@@ -227,8 +229,8 @@ def main() -> int:
             "publishedEstimated": True,
             "discoveredAt": discovered,
         }
-        if timing.get("startTimeUnknown"):
-            record["startTimeUnknown"] = True
+        if timing.get("startDateOnly"):
+            record["startDateOnly"] = True
         records.append(record)
         existing_urls.add(record["source"])
         existing_keys.add(key)
@@ -236,8 +238,9 @@ def main() -> int:
         candidate["note"] = "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
         promoted += 1
 
-    # Second: backfill timing for existing JLU records. This fixes older auto-published
-    # rows (e.g. a notice was published before timing extraction was introduced).
+    # Backfill only missing structured fields. Do not rewrite identical dates on
+    # every run; corrections to already-published values belong to the dedicated
+    # timing reconciliation step, which compares before writing.
     for record in records:
         url = record.get("source", "")
         if record.get("sourceTier") != "jlu_fallback" or not is_jlu(url):
@@ -260,13 +263,14 @@ def main() -> int:
             record["exam"] = timing["exam"]
             record["examText"] = "笔试日期由吉林大学就业网正文自动提取；具体时段、考点以原文和准考证为准"
             changed = True
-        if timing.get("startTimeUnknown") and record.get("start"):
-            if record.get("startTimeUnknown") is not True:
-                record["startTimeUnknown"] = True
+        if timing.get("start"):
+            if timing.get("startDateOnly") and record.get("startDateOnly") is not True:
+                record["startDateOnly"] = True
                 changed = True
-        elif timing.get("start") and record.get("startTimeUnknown"):
-            record.pop("startTimeUnknown", None)
-            changed = True
+            elif not timing.get("startDateOnly") and record.pop("startDateOnly", None) is not None:
+                changed = True
+            if record.pop("startTimeUnknown", None) is not None:
+                changed = True
         if changed:
             timing_updated += 1
 
@@ -280,7 +284,7 @@ def main() -> int:
         )
 
     queue_doc["updated"] = stamp
-    status["pendingCandidates"] = sum(c.get("status") == "pending" for c in queue)
+    status["pendingCandidates"] = sum(candidate.get("status") == "pending" for candidate in queue)
     status["jluAutoPublishedThisRun"] = promoted
     status["jluAutoCoveredThisRun"] = covered
     status["jluTimingUpdatedThisRun"] = timing_updated
@@ -291,12 +295,9 @@ def main() -> int:
     )
     checked = status.get("checkedAt")
     remaining_new = sum(
-        c.get("status") == "pending" and (not checked or c.get("discovered") == checked)
-        for c in queue
+        candidate.get("status") == "pending" and (not checked or candidate.get("discovered") == checked)
+        for candidate in queue
     )
-    # Keep the status card consistent with what still requires action after JLU
-    # candidates have been auto-published. Previously newCandidates could say 1
-    # while pendingCandidates correctly said 0.
     status["newCandidates"] = remaining_new
 
     write_json("data.json", data)
