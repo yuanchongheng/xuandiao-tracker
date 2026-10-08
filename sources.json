@@ -5,7 +5,7 @@
     "enabled": true,
     "provider": "Bing RSS，一级政府官网、二级吉林大学；前两级无可用公告时第三轮检索经确认的其他高校官方就业网。搜索结果只作待核验线索。",
     "url_template": "https://www.bing.com/search?format=rss&q={query}",
-    "query_template": "{province} 2027 定向选调 公告 site:gov.cn OR site:jdjywpt.jlu.edu.cn OR site:jdjyw.jlu.edu.cn",
+    "query_template": "{province} 2027 (定向选调 OR 选调生) (公告 OR 简章) (site:gov.cn OR site:jdjywpt.jlu.edu.cn OR site:jdjyw.jlu.edu.cn)",
     "provinces": [
       "北京",
       "天津",
@@ -283,6 +283,12 @@
           "name": "吉林大学就业网选调生工作列表（备用入口）"
         }
       ]
+    },
+    {
+      "province": "重庆",
+      "kind": "article",
+      "name": "七一网：重庆市2027定向选调简章",
+      "url": "https://www.12371.gov.cn/web/article/1557705647757918208/web/content_1557705647757918208.html"
     }
   ],
   "sourcePolicy": {
