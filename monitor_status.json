@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-08T13:56:48+08:00",
+  "checkedAt": "2026-10-08T14:14:01+08:00",
   "monitorsConfigured": 8,
   "monitorsSucceeded": 5,
   "provincesConfigured": 31,
@@ -76,7 +76,7 @@
       },
       "failures": [
         "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau",
-        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: ValueError: article text too short; baseline not changed"
+        "吉林大学就业网：甘肃2027公告（仅官方站失联时备用）: SSLError: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/article/details?id=9e01bc05e8bc4b3a8efdaf6506"
       ]
     },
     {
@@ -91,7 +91,7 @@
       },
       "failures": [
         "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）: ValueError: unsupported content-type: (missing); bytes=0",
-        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=1f6b210e15d944a698"
+        "吉林大学选调专栏：贵州2027同篇公告（第二入口）: ValueError: unsupported content-type: (missing); bytes=0"
       ]
     },
     {
@@ -100,7 +100,11 @@
       "primaryUrl": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c"
     }
   ],
-  "warning": "吉林大学就业网线索会自动进入正式数据；政府来源候选仍需人工核验，第三来源仅供参考。自动入库不推断未明确的报名、考试或资格字段。",
-  "jluAutoPublishedThisRun": 2,
-  "jluAutoCoveredThisRun": 0
+  "warning": "吉林大学就业网线索会自动进入正式数据，并自动解析正文中的明确报名起止和笔试日期；未明确时刻不推断。政府来源候选仍需人工核验，第三来源仅供参考。",
+  "jluAutoPublishedThisRun": 0,
+  "jluAutoCoveredThisRun": 0,
+  "jluTimingUpdatedThisRun": 0,
+  "jluTimingErrors": [
+    "贵州 贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502"
+  ]
 }
