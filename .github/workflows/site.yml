@@ -41,22 +41,23 @@ jobs:
       - name: Check government and JLU backup pages plus 31 regional queries
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: python monitor.py
-      - name: Auto-publish and enrich JLU employment notices
+      - name: Auto-publish, normalize and enrich notices
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: |
           python jlu_auto_publish.py
           python jlu_timing_fix.py
+          python sync_known_notices.py
           python apply_start_date_policy.py
           python build.py
           python build.py --check
-      - name: Save check results and formal JLU auto-published notices
+      - name: Save check results and formal published notices
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html
+          git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html sources.json
           if ! git diff --cached --quiet; then
-            git commit -m 'chore: update monitoring and auto-publish JLU notices'
+            git commit -m 'chore: update monitoring and published notices'
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates still requiring review
