@@ -38,8 +38,6 @@ jobs:
           python-version: '3.12'
       - name: Install scanner libraries
         run: pip install -r requirements.txt
-      - name: Apply final repository audit fixes
-        run: python final_audit_patch.py
       - name: Normalize and validate repository data
         run: |
           python data_hygiene.py
@@ -57,13 +55,13 @@ jobs:
           python build.py
           python build.py --check
           python validate_extra.py
-      - name: Save audit fixes, monitoring results and published notices
+      - name: Save monitoring results and published notices
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html sources.json
           if ! git diff --cached --quiet; then
-            git commit -m 'chore: apply final audit fixes and refresh monitoring data'
+            git commit -m 'chore: update monitoring and published notices'
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates still requiring review
