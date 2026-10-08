@@ -2,8 +2,8 @@ name: Monitor announcements and publish site
 
 on:
   schedule:
-    # 02:17, 08:17, 14:17, 20:17 China Standard Time; GitHub can delay scheduled runs.
-    - cron: '17 0,6,12,18 * * *'
+    # Every 3 hours at :17 China Standard Time: 02:17, 05:17, 08:17, 11:17, 14:17, 17:17, 20:17, 23:17. GitHub can delay scheduled runs.
+    - cron: '17 0,3,6,9,12,15,18,21 * * *'
   workflow_dispatch:
   push:
     branches: [main]
