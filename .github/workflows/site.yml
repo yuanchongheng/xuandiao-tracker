@@ -20,6 +20,9 @@ permissions:
 
 jobs:
   monitor-and-publish:
+    # Bot commits contain monitoring results from the current run. Do not start a
+    # second full workflow for those commits; this prevents duplicate deployments.
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -33,23 +36,19 @@ jobs:
           python-version: '3.12'
       - name: Install scanner libraries
         run: pip install -r requirements.txt
-      - name: Apply repository audit migration
+      - name: Normalize and validate repository data
         run: |
-          python fix_audit_script.py
-          python audit_migrate.py
-          python audit_finalize.py
           python data_hygiene.py
+          python apply_start_date_policy.py
           python build.py
-      - name: Validate data, cross-file invariants and regression tests
-        run: |
           python build.py --check
           python validate_extra.py
           python -m unittest discover -s tests
       - name: Check government and JLU backup pages plus 31 regional queries
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: python monitor.py
       - name: Auto-publish, normalize and enrich notices
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: |
           python jlu_auto_publish.py
           python jlu_timing_fix.py
@@ -59,18 +58,18 @@ jobs:
           python build.py
           python build.py --check
           python validate_extra.py
-      - name: Save audit fixes, monitoring results and published notices
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+      - name: Save monitoring results and published notices
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html sources.json
           if ! git diff --cached --quiet; then
-            git commit -m 'chore: apply audit fixes and refresh monitoring data'
+            git commit -m 'chore: update monitoring and published notices'
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates still requiring review
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
