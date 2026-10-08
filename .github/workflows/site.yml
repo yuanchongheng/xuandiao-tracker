@@ -41,7 +41,6 @@ jobs:
       - name: Normalize and validate repository data
         run: |
           python data_hygiene.py
-          python apply_start_date_policy.py
           python build.py
           python build.py --check
           python validate_extra.py
@@ -53,7 +52,6 @@ jobs:
           python jlu_auto_publish.py
           python jlu_timing_fix.py
           python data_hygiene.py
-          python apply_start_date_policy.py
           python build.py
           python build.py --check
           python validate_extra.py
