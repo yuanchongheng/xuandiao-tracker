@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Validate data.json, and refresh the offline snapshot inside index.html.
+"""Validate data.json and refresh the offline snapshot inside index.html.
 
-This never derives dates or qualifications: data.json must be manually verified first.
+Formal records may be human-curated or auto-published from the approved Jilin
+University employment domains. This validator never derives dates or eligibility;
+it only enforces structural, source-policy and chronology invariants.
 """
 import argparse
 from datetime import datetime, date
@@ -43,6 +45,7 @@ def build(check=False):
     if not isinstance(records, list):
         raise ValueError('records must be a list')
     keys = set()
+    source_urls = set()
     for entry in records:
         for field in ('province', 'title', 'source', 'verified', 'published', 'eligibility', 'school'):
             if not isinstance(entry.get(field), str) or not entry[field].strip():
@@ -57,6 +60,9 @@ def build(check=False):
             raise ValueError('Published source must belong to the approved three-tier host list')
         if entry.get('sourceTier') != tier:
             raise ValueError('Incorrect sourceTier: ' + entry['source'])
+        if entry['source'] in source_urls:
+            raise ValueError('Duplicate formal source URL: ' + entry['source'])
+        source_urls.add(entry['source'])
         if tier == 'government' and entry.get('sourceType') != '官方':
             raise ValueError('Government notice must be labelled 官方')
         if tier == 'jlu_fallback' and entry.get('sourceType') != '吉林大学备用':
@@ -68,6 +74,10 @@ def build(check=False):
                 raise ValueError('Other-university notice requires human source and school-scope review')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
                 raise ValueError('Other-university notice requires explicit applicability and notes')
+        if entry.get('autoPublished') and tier != 'jlu_fallback':
+            raise ValueError('autoPublished is only permitted for Jilin University sources')
+        if entry.get('publishedEstimated') and not entry.get('autoPublished'):
+            raise ValueError('publishedEstimated requires autoPublished')
         verified = checked_day(entry['verified'], 'verified')
         published = checked_day(entry['published'], 'published')
         if verified < published:
@@ -80,9 +90,11 @@ def build(check=False):
             raise ValueError('examEnd requires exam: ' + entry['title'])
         if times['examEnd'] and times['examEnd'] < times['exam']:
             raise ValueError('examEnd cannot precede exam: ' + entry['title'])
-        if entry.get('startTimeUnknown') and (not times['start'] or
-                                             times['start'].strftime('%H:%M') != '00:00'):
-            raise ValueError('Unknown registration start time must use date-only sentinel: ' + entry['title'])
+        if entry.get('startTimeUnknown'):
+            raise ValueError('Legacy startTimeUnknown must be migrated to startDateOnly: ' + entry['title'])
+        if entry.get('startDateOnly'):
+            if not times['start'] or times['start'].strftime('%H:%M:%S') != '00:00:00':
+                raise ValueError('startDateOnly requires a midnight date sentinel: ' + entry['title'])
         deadlines = entry.get('deadlines', [])
         if not isinstance(deadlines, list):
             raise ValueError('deadlines must be a list: ' + entry['title'])
@@ -111,7 +123,7 @@ def build(check=False):
         print(f'PASS: {len(records)} validated records, 31 regions, embedded HTML data synchronized')
     else:
         (ROOT / 'index.html').write_text(EXPECTED.sub(lambda _: replacement, html, count=1), encoding='utf-8')
-        print(f'Updated index.html offline snapshot: {len(records)} vetted records')
+        print(f'Updated index.html offline snapshot: {len(records)} formal records')
 
 
 if __name__ == '__main__':
