@@ -1,7 +1,7 @@
 {
   "edition": "2027届",
-  "asOf": "2026-09-21T22:00:00+08:00",
-  "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。第三来源仅供发现，须人工核验原文、附件及适用学校后才进入正式日历；自动搜索不自动写入报名时间。",
+  "asOf": "2026-10-08T13:58:38+08:00",
+  "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；自动入库不猜测报名、考试或资格字段，未结构化内容以原文和附件为准。政府来源候选和其他高校第三来源仍按原规则处理。",
   "provinces": [
     "北京",
     "天津",
@@ -190,6 +190,52 @@
         }
       ],
       "sourceTier": "jlu_fallback"
+    },
+    {
+      "province": "黑龙江",
+      "title": "黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "type": "定向选调",
+      "count": "以吉林大学就业网公告及附件为准",
+      "published": "2026-10-08",
+      "start": "",
+      "end": "",
+      "exam": "",
+      "examEnd": "",
+      "examText": "报名、笔试及后续安排以吉林大学就业网原文和附件为准",
+      "school": "吉林大学就业网已发布该通知；适用高校、学历、专业及校内流程以原文和附件为准。",
+      "eligibility": "自动收录不推断资格条件；请直接查看吉林大学就业网原文及附件。",
+      "notes": "吉林大学就业网自动发布，无需人工二次核验。published 字段暂用系统发现日期，仅用于数据完整性和排序，不代表公告原始发布时间；报名、考试、岗位差异等未结构化内容一律以原文及附件为准。",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=d414af75a893440a8e4ed0ad434fa312",
+      "sourceName": "吉林大学就业网（自动发布）",
+      "sourceType": "吉林大学备用",
+      "verified": "2026-10-08",
+      "sourceTier": "jlu_fallback",
+      "autoPublished": true,
+      "publishedEstimated": true,
+      "discoveredAt": "2026-10-08T13:45:01+08:00"
+    },
+    {
+      "province": "贵州",
+      "title": "贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告",
+      "type": "定向选调",
+      "count": "以吉林大学就业网公告及附件为准",
+      "published": "2026-09-22",
+      "start": "",
+      "end": "",
+      "exam": "",
+      "examEnd": "",
+      "examText": "报名、笔试及后续安排以吉林大学就业网原文和附件为准",
+      "school": "吉林大学就业网已发布该通知；适用高校、学历、专业及校内流程以原文和附件为准。",
+      "eligibility": "自动收录不推断资格条件；请直接查看吉林大学就业网原文及附件。",
+      "notes": "吉林大学就业网自动发布，无需人工二次核验。published 字段暂用系统发现日期，仅用于数据完整性和排序，不代表公告原始发布时间；报名、考试、岗位差异等未结构化内容一律以原文及附件为准。",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502892d",
+      "sourceName": "吉林大学就业网（自动发布）",
+      "sourceType": "吉林大学备用",
+      "verified": "2026-09-22",
+      "sourceTier": "jlu_fallback",
+      "autoPublished": true,
+      "publishedEstimated": true,
+      "discoveredAt": "2026-09-22T12:44:47+08:00"
     }
   ]
 }

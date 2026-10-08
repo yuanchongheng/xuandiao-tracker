@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-08T13:45:01+08:00",
+  "updated": "2026-10-08T13:58:38+08:00",
   "candidates": [
     {
       "id": "fb14510b62f937521418",
@@ -9,10 +9,10 @@
       "kind": "listing",
       "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
       "discovered": "2026-10-08T13:45:01+08:00",
-      "status": "pending",
+      "status": "auto_published",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+      "note": "吉林大学就业网来源；已按自动发布规则加入正式 data.json，无需人工二次核验。具体条件和时间仍以原文及附件为准。"
     },
     {
       "id": "41595cc77bd7d30d569c",
@@ -61,10 +61,10 @@
       "kind": "listing",
       "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
       "discovered": "2026-09-22T12:44:47+08:00",
-      "status": "pending",
+      "status": "auto_published",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"
+      "note": "吉林大学就业网来源；已按自动发布规则加入正式 data.json，无需人工二次核验。具体条件和时间仍以原文及附件为准。"
     }
   ]
 }
