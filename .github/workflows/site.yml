@@ -37,6 +37,7 @@ jobs:
         run: |
           python fix_audit_script.py
           python audit_migrate.py
+          python audit_finalize.py
           python data_hygiene.py
           python build.py
       - name: Validate data, cross-file invariants and regression tests
