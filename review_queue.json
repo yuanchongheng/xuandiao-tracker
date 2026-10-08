@@ -1,6 +1,32 @@
 {
-  "updated": "2026-10-08T17:22:05+08:00",
+  "updated": "2026-10-08T17:53:19+08:00",
   "candidates": [
+    {
+      "id": "e3689f8cf27dba8bfd7a",
+      "province": "重庆",
+      "title": "重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=8cec6f02aeb2456686a4865bc6c691dd",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-08T17:51:55+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
+    {
+      "id": "11bef9c420802970a773",
+      "province": "黑龙江",
+      "title": "黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=d414af75a893440a8e4ed0ad434fa312",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-08T17:51:55+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
     {
       "id": "e8c3e427d612b88e067c",
       "province": "重庆",

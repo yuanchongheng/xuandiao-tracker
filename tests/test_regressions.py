@@ -25,10 +25,10 @@ class AuditRegressionTests(unittest.TestCase):
         rss = """<rss><channel><item><title>吉林大学就业信息更新</title><description>重庆2027定向选调公告</description><link>https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=x</link></item></channel></rss>"""
         self.assertEqual(monitor.parse_rss(rss.encode(), '重庆', '2027'), [])
 
-    def test_government_result_keeps_priority_over_jlu_search_hit(self):
+    def test_distinct_government_and_jlu_search_hits_are_retained(self):
         rss = """<rss><channel><item><title>重庆2027定向选调公告</title><link>https://www.cq.gov.cn/a</link></item><item><title>重庆2027面向吉林大学定向选调公告</title><link>https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=x</link></item></channel></rss>"""
         urls = [item['url'] for item in monitor.parse_rss(rss.encode(), '重庆', '2027')]
-        self.assertEqual(urls, ['https://www.cq.gov.cn/a'])
+        self.assertEqual(urls, ['https://www.cq.gov.cn/a', 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=x'])
 
     def test_auto_publish_uses_date_only_flag_without_legacy_field(self):
         timing = jlu_auto_publish.extract_timing(

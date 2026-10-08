@@ -39,7 +39,7 @@ class ParsingTests(unittest.TestCase):
         </channel></rss>'''
         self.assertEqual([r['url'] for r in monitor.parse_rss(rss.encode(), '上海', '2027')], [jlu])
         official = '<item><title>上海2027选调公告</title><link>https://rsj.sh.gov.cn/a</link></item>'
-        self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a'])
+        self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a', jlu])
 
     def test_third_rss_is_only_eligible_without_higher_priority_and_title_scoped(self):
         third = 'https://job.hust.edu.cn/jcfw/2439641.htm'
@@ -53,7 +53,7 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual([x['url'] for x in monitor.parse_rss(rss.encode(),'湖南','2027')], [jlu])
         self.assertEqual([x['url'] for x in monitor.parse_rss(rss.encode(),'湖南','2027', allowed_tiers=('university_third',))], [third])
         gov = '<item><title>湖南2027定向选调公告</title><link>https://rst.hunan.gov.cn/a</link></item>'
-        self.assertEqual([x['url'] for x in monitor.parse_rss(rss.replace('</channel>',gov+'</channel>').encode(),'湖南','2027')], ['https://rst.hunan.gov.cn/a'])
+        self.assertEqual([x['url'] for x in monitor.parse_rss(rss.replace('</channel>',gov+'</channel>').encode(),'湖南','2027')], ['https://rst.hunan.gov.cn/a', jlu])
 
     def test_url_must_be_https_public(self):
         for url in ('javascript:alert(1)', 'http://gov.cn/', 'https://localhost/a', 'https://127.0.0.1/a', 'https://user:pass@gov.cn/a'):

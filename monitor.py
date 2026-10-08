@@ -204,12 +204,16 @@ def parse_rss(content, province, year, *, allowed_tiers=("government", "jlu_fall
             continue
         results.append({"title": title, "province": province, "url": url, "kind": "search",
                         "source": "Bing RSS（搜索线索，未经人工核验）"})
-    priority = ('government', 'jlu_fallback', 'university_third')
-    for tier in priority:
-        selected = [e for e in results if source_tier(e['url']) == tier]
-        if selected:
-            return list({e['url']: e for e in selected}.values())
-    return []
+    priority = {'government': 0, 'jlu_fallback': 1, 'university_third': 2}
+    # Preserve distinct notices across tiers. The caller de-duplicates a JLU hit
+    # only when its normalized title matches a government notice. Dropping every
+    # JLU hit merely because one government result exists can hide a separate
+    # university-specific announcement.
+    results.sort(key=lambda e: (priority.get(source_tier(e['url']), 9), e['url']))
+    deduped = {}
+    for entry in results:
+        deduped.setdefault(entry['url'], entry)
+    return list(deduped.values())
 
 
 def queue_candidate(queue, known, entry, timestamp, *, fingerprint=""):
@@ -505,7 +509,7 @@ def run(discovery=True, fixture_dir=None):
               "supplementalTotal": len(supplements),
               "pendingCandidates": sum(x["status"] == "pending" for x in queue), "errors": errors[:80],
               "fallbacksUsed": len(degraded), "fallbackDetails": degraded, "sourceHealth": source_health,
-              "warning": "自动检测只能发现线索，非实时、非完整覆盖；招聘条件和日期仅在人工核对后更新。"}
+              "warning": "自动检测只能发现线索，非实时、非完整覆盖；政府来源候选需人工核对，吉林大学就业网通知按自动发布规则处理，第三来源仅供参考。"}
     write_json("monitor_status.json", status)
     report = [f"# 选调雷达监测报告 · {stamp}", "", f"新增待核验线索：{len(new)}；当前待核验总数：{status['pendingCandidates']}。",
               f"原定来源成功：{successes}/{len(config['monitors'])}；备用启用：{len(degraded)}；省份搜索成功：{discovery_count}/{status['provincesConfigured']}。", "",
