@@ -39,14 +39,11 @@ def patch_monitor():
     text, did = replace_required(text, old, new, 'parse_rss tier preservation')
     changed |= did
 
-    old = """                    existing = set(state['listings'].get(url, []))
-                    if url in state['listings']:
-                        for entry in links:
-                            if entry['url'] not in existing and queue_candidate(queue, known, entry, stamp):
-                                new.append(entry)
-                    state['listings'][url] = sorted(existing | {link['url'] for link in links})
-"""
-    new = """                    existing = set(state['listings'].get(url, []))
+    # Keep first-run listing behavior conservative. Existing links establish a
+    # baseline; subsequent additions are candidates. The national JLU index is
+    # already persisted in watch_state.json on the live site, so changing this
+    # rule would create false "new" candidates in clean/test environments.
+    over_eager = """                    existing = set(state['listings'].get(url, []))
                     had_baseline = url in state['listings']
                     # A first-time national JLU index is an approved source and its
                     # current 2027 notices should not disappear into a silent baseline.
@@ -59,8 +56,16 @@ def patch_monitor():
                                 new.append(entry)
                     state['listings'][url] = sorted(existing | {link['url'] for link in links})
 """
-    text, did = replace_required(text, old, new, 'initial national JLU listing')
-    changed |= did
+    baseline = """                    existing = set(state['listings'].get(url, []))
+                    if url in state['listings']:
+                        for entry in links:
+                            if entry['url'] not in existing and queue_candidate(queue, known, entry, stamp):
+                                new.append(entry)
+                    state['listings'][url] = sorted(existing | {link['url'] for link in links})
+"""
+    if over_eager in text:
+        text = text.replace(over_eager, baseline)
+        changed = True
 
     old = '              "warning": "自动检测只能发现线索，非实时、非完整覆盖；招聘条件和日期仅在人工核对后更新。"}\n'
     new = '              "warning": "自动检测只能发现线索，非实时、非完整覆盖；政府来源候选需人工核对，吉林大学就业网通知按自动发布规则处理，第三来源仅供参考。"}\n'
@@ -76,10 +81,23 @@ def patch_monitor_tests():
     path = ROOT / 'tests' / 'test_monitor.py'
     text = path.read_text(encoding='utf-8')
     changed = False
-    old = "self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a'])"
-    new = "self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a', jlu])"
-    text, did = replace_required(text, old, new, 'mixed-tier RSS test')
-    changed |= did
+
+    replacements = [
+        (
+            "self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a'])",
+            "self.assertEqual([r['url'] for r in monitor.parse_rss(rss.replace('</channel>', official+'</channel>').encode(), '上海', '2027')], ['https://rsj.sh.gov.cn/a', jlu])",
+            'mixed-tier RSS test',
+        ),
+        (
+            "self.assertEqual([x['url'] for x in monitor.parse_rss(rss.replace('</channel>',gov+'</channel>').encode(),'湖南','2027')], ['https://rst.hunan.gov.cn/a'])",
+            "self.assertEqual([x['url'] for x in monitor.parse_rss(rss.replace('</channel>',gov+'</channel>').encode(),'湖南','2027')], ['https://rst.hunan.gov.cn/a', jlu])",
+            'third-tier default RSS test',
+        ),
+    ]
+    for old, new, label in replacements:
+        text, did = replace_required(text, old, new, label)
+        changed |= did
+
     if changed:
         path.write_text(text, encoding='utf-8')
     return changed
