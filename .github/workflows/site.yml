@@ -44,6 +44,7 @@ jobs:
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]')
         run: |
           python jlu_auto_publish.py
+          python jlu_timing_fix.py
           python build.py
           python build.py --check
       - name: Save check results and formal JLU auto-published notices
