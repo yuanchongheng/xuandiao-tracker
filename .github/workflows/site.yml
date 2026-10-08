@@ -8,6 +8,7 @@ on:
   push:
     branches: [main]
 
+# Manual refresh trigger: 2026-10-08 15:46 CST
 concurrency:
   group: xuandiao-pages
   cancel-in-progress: false
