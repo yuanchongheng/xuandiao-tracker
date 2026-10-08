@@ -10,9 +10,9 @@ on:
 
 concurrency:
   group: xuandiao-pages
-  # A newer manual/scheduled run supersedes an older one. This prevents stale
-  # queued runs from later writing old monitoring results back to main.
-  cancel-in-progress: true
+  # A newer human/scheduled run may replace an older one, but a bot write-back
+  # must never cancel the run that is about to deploy that same write-back.
+  cancel-in-progress: ${{ github.actor != 'github-actions[bot]' }}
 
 permissions:
   contents: write
