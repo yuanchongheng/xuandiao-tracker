@@ -45,21 +45,17 @@ jobs:
           python validate_extra.py
           python -m unittest discover -s tests
       - name: Check government and JLU backup pages plus 31 regional queries
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: python monitor.py
       - name: Auto-publish, normalize and enrich notices
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: |
           python jlu_auto_publish.py
           python jlu_timing_fix.py
-          python sync_known_notices.py
           python data_hygiene.py
           python apply_start_date_policy.py
           python build.py
           python build.py --check
           python validate_extra.py
       - name: Save monitoring results and published notices
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -69,7 +65,6 @@ jobs:
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates still requiring review
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
