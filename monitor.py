@@ -23,10 +23,10 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 from source_policy import source_label, source_tier
+from province_utils import PROVINCES, province_from_title, normalized_notice_title
 
 ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
-PROVINCES = ('北京', '天津', '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '上海', '江苏', '浙江', '安徽', '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南', '重庆', '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆')
 TIMEOUT = (7, 12)
 MAX_BYTES = 2_000_000
 HEADERS = {"User-Agent": "XuandiaoRadar/1.1 (public notice monitor; respectful requests)", "Accept": "text/html,application/xml,text/xml,application/rss+xml;q=0.9"}
@@ -152,6 +152,7 @@ def listing_links(content, base_url, province, year):
     for link in soup.select("a[href]"):
         title = re.sub(r"\s+", " ", link.get_text(" ", strip=True)).strip()[:160]
         parent_text = (link.parent.get_text(" ", strip=True)[:260] if link.parent and link.parent.name in ("li", "tr", "div", "p", "td") and len(link.parent.select("a")) == 1 else title)
+        display_title = title if year in title and KEYWORD.search(title) else parent_text[:160]
         if not KEYWORD.search(title + " " + parent_text):
             continue
         if year not in title + " " + parent_text:
@@ -168,10 +169,10 @@ def listing_links(content, base_url, province, year):
         detected_province = province
         if province == '全国':
             # A national JLU index must never label all its links as one province.
-            detected_province = next((p for p in PROVINCES if p in title or p in parent_text), None)
+            detected_province = province_from_title(display_title) or province_from_title(parent_text)
             if not detected_province:
                 continue
-        out[url] = {"title": title or parent_text[:120], "province": detected_province, "url": url, "source": base_url, "kind": "listing"}
+        out[url] = {"title": display_title or parent_text[:120], "province": detected_province, "url": url, "source": base_url, "kind": "listing"}
     return list(out.values())
 
 
@@ -190,7 +191,9 @@ def parse_rss(content, province, year, *, allowed_tiers=("government", "jlu_fall
         tier = source_tier(url)
         if tier not in allowed_tiers:
             continue
-        relevant = title if tier == 'university_third' else title + ' ' + summary
+        # JLU notices are auto-published, so JLU relevance must be proven by the title itself.
+        # Government results still require manual review and may use the search snippet as supporting context.
+        relevant = title if tier in ('jlu_fallback', 'university_third') else title + ' ' + summary
         if year not in relevant or province not in relevant or not KEYWORD.search(relevant):
             continue
         if not approved_candidate(url):
@@ -221,7 +224,7 @@ def queue_candidate(queue, known, entry, timestamp, *, fingerprint=""):
     queue.append({"id": identifier, "province": entry["province"], "title": entry["title"], "url": url,
                   "kind": entry["kind"], "source": entry["source"], "discovered": timestamp, "status": "pending",
                   "sourceTier": source_tier(url), "sourceLabel": source_label(url),
-                  "note": "未核验线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异；不得直接写入正式时间表。"})
+                  "note": ("吉林大学就业网线索：按本站规则自动进入正式数据；时间字段仅从明确正文提取，未明确内容不猜测。" if source_tier(url) == "jlu_fallback" else "未核验政府线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异后再更新正式数据。")})
     return True
 
 
@@ -248,10 +251,10 @@ def store_supplement(items, urls, entry, timestamp):
 
 
 def third_query_for_batch(third_config, province, timestamp):
-    """Cycle through exact-host groups every six hours, avoiding oversized Bing queries."""
+    """Cycle through exact-host groups every three hours, matching the site schedule."""
     groups = third_config['query_batches']
     hour = datetime.fromisoformat(timestamp).hour
-    batch_index = (hour // 6) % len(groups)
+    batch_index = (hour // 3) % len(groups)
     sites = ' OR '.join('site:' + host for host in groups[batch_index])
     return third_config['query_template'].format(province=province, sites=sites), batch_index
 
@@ -407,9 +410,19 @@ def run(discovery=True, fixture_dir=None):
                 primary_results = parse_rss(content, province, config['year'])
                 primary_search_ok = True
                 previous = set(state['search'].get(province, []))
-                has_gov = any(r['province'] == province and source_tier(r['source']) == 'government' for r in vetted['records'])
+                government_keys = {
+                    normalized_notice_title(r['title']) for r in vetted['records']
+                    if r['province'] == province and source_tier(r['source']) == 'government'
+                } | {
+                    normalized_notice_title(e['title']) for e in primary_results
+                    if source_tier(e['url']) == 'government'
+                }
                 for entry in primary_results:
-                    if has_gov and source_tier(entry['url']) == 'jlu_fallback':
+                    # Prefer government only for the same normalized announcement title;
+                    # do not suppress a distinct university-specific JLU notice merely
+                    # because some government notice exists for that province.
+                    if (source_tier(entry['url']) == 'jlu_fallback'
+                            and normalized_notice_title(entry['title']) in government_keys):
                         continue
                     if entry['url'] not in vetted_urls and queue_candidate(queue, known, entry, stamp):
                         new.append(entry)

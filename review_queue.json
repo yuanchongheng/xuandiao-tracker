@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-08T16:08:52+08:00",
+  "updated": "2026-10-08T16:56:06+08:00",
   "candidates": [
     {
       "id": "e8c3e427d612b88e067c",
@@ -74,10 +74,10 @@
       "kind": "listing",
       "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
       "discovered": "2026-09-22T12:44:47+08:00",
-      "status": "auto_published",
+      "status": "auto_covered",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "吉林大学就业网来源；已按自动发布规则加入正式 data.json，无需人工二次核验。具体条件和时间仍以原文及附件为准。"
+      "note": "与已结构化发布的贵州省2027年度党政机关定向选调和省管企业招聘公告为同一公告，已合并，避免重复卡片。"
     }
   ]
 }

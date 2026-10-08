@@ -294,6 +294,10 @@ def main() -> int:
         c.get("status") == "pending" and (not checked or c.get("discovered") == checked)
         for c in queue
     )
+    # Keep the status card consistent with what still requires action after JLU
+    # candidates have been auto-published. Previously newCandidates could say 1
+    # while pendingCandidates correctly said 0.
+    status["newCandidates"] = remaining_new
 
     write_json("data.json", data)
     write_json("review_queue.json", queue_doc)

@@ -110,11 +110,11 @@ class ParsingTests(unittest.TestCase):
         self.assertEqual(len(cfg['hosts']), 17)
         self.assertEqual(len(cfg['query_batches']), 4)
         found=set()
-        for hour in (2, 8, 14, 20):
+        for hour in (2, 5, 8, 11):
             query, batch=monitor.third_query_for_batch(cfg, '湖南', f'2026-09-22T{hour:02d}:17:00+08:00')
             self.assertIn('湖南', query)
             self.assertIn('2027', query)
-            self.assertEqual(batch, hour//6)
+            self.assertEqual(batch, (hour//3) % len(cfg['query_batches']))
             hosts=cfg['query_batches'][batch]
             self.assertFalse(found.intersection(hosts))
             found.update(hosts)
@@ -163,11 +163,13 @@ class MonitorOfflineTests(unittest.TestCase):
         (self.root / 'watch_state.json').write_text(json.dumps({'articles':{},'listings':{},'search':{}}), encoding='utf8')
         self.fixture = self.root / 'fixtures'
         self.fixture.mkdir()
-        index_total = len(json.loads((old_root / 'sources.json').read_text(encoding='utf8'))['discovery']['third_source']['indexes'])
+        config = json.loads((old_root / 'sources.json').read_text(encoding='utf8'))
+        self.monitor_count = len(config['monitors'])
+        index_total = len(config['discovery']['third_source']['indexes'])
         for i in range(index_total):
             (self.fixture / f'third-index-{i}.html').write_text('<html><body>没有符合条件的公告</body></html>', encoding='utf8')
-        for i in range(8):
-            if i == 7:
+        for i, source in enumerate(config['monitors']):
+            if source.get('kind') == 'listing':
                 content = '<a href="/old">2027四川定向选调公告</a>'
             else:
                 content = '<article>' + ('2027定向选调高校名单与考试安排 ' * 15) + '</article>'
@@ -182,7 +184,7 @@ class MonitorOfflineTests(unittest.TestCase):
     def test_baseline_then_changes_then_idempotent(self):
         first = monitor.run(discovery=False, fixture_dir=self.fixture)
         self.assertEqual(first['newCandidates'], 0)
-        self.assertEqual(first['monitorsSucceeded'], 8)
+        self.assertEqual(first['monitorsSucceeded'], self.monitor_count)
         (self.fixture / 'monitor-0.html').write_text('<article>' + ('更新报名时段请确认附件 ' * 20) + '</article>', encoding='utf8')
         (self.fixture / 'monitor-7.html').write_text('<a href="/old">2027四川定向选调公告</a><a href="/new">2027四川定向选调新增公告</a>', encoding='utf8')
         second = monitor.run(discovery=False, fixture_dir=self.fixture)
@@ -206,7 +208,7 @@ class MonitorOfflineTests(unittest.TestCase):
             return html
         with patch.object(monitor, 'fetch_bytes', side_effect=stub):
             status = monitor.run(discovery=False)
-        self.assertEqual(status['monitorsSucceeded'], 7)
+        self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
         self.assertEqual(status['fallbacksUsed'], 1)
         self.assertEqual(status['sourceHealth'][5]['state'], 'fallback')
         self.assertEqual(status['sourceHealth'][5]['used']['url'], backup)
@@ -221,7 +223,7 @@ class MonitorOfflineTests(unittest.TestCase):
             return ('<article>' + '2027选调公告及报名条件 ' * 12 + '</article>').encode()
         with patch.object(monitor, 'fetch_bytes', side_effect=stub):
             status = monitor.run(discovery=False)
-        self.assertEqual(status['monitorsSucceeded'], 7)
+        self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
         self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(status['sourceHealth'][5]['state'], 'failed')
         # Primary and both configured backups must each be recorded.
@@ -339,7 +341,7 @@ class MonitorOfflineTests(unittest.TestCase):
             (self.fixture/f'third-search-{i}.xml').write_text(third,encoding='utf8')
         (self.fixture/'monitor-3.html').unlink()  # Hunan govt fails
         status=monitor.run(discovery=True,fixture_dir=self.fixture)
-        self.assertEqual(status['monitorsSucceeded'],7)
+        self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
         self.assertEqual(status['sourceHealth'][3]['state'],'failed')
         self.assertEqual(status['thirdSearchesAttempted'],1)
         self.assertEqual(status['thirdLinksFound'],1)

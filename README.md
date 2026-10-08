@@ -23,9 +23,9 @@
 1. 在 GitHub 创建一个仓库，把本项目根目录的所有文件（包括隐藏的 `.github/`）上传到 `main` 分支。
 2. 在 `Settings → Pages → Build and deployment → Source` 中选择 **GitHub Actions**。检查 `Actions` 是否已启用；如果自动提交监测结果被权限拦截，在 `Settings → Actions → General → Workflow permissions` 里允许合适的写入权限。若需要 Issue 提醒还须启用仓库 Issues。
 3. 打开 `Actions → Monitor announcements and publish site → Run workflow` 运行一次。查看运行日志和 `monitor_status.json`；网络请求成功率不等于公告覆盖率。
-4. 访问 Pages 的正式部署网址；准确地址请以 Pages 设置或部署结果为准。后续每天北京时间 **02:17、08:17、14:17、20:17** 计划运行，GitHub 不保证准点执行或仓库始终保持计划任务活跃。
+4. 访问 Pages 的正式部署网址；准确地址请以 Pages 设置或部署结果为准。后续每天北京时间 **02:17、05:17、08:17、11:17、14:17、17:17、20:17、23:17** 计划运行，GitHub 不保证准点执行或仓库始终保持计划任务活跃。
 
-工作流：检测7个既有文章和1个吉林大学索引的变化 → 对31个地区查询第三方搜索 RSS（政府官网/JLU 仅作候选）→ 写入待核验 `review_queue.json` → 如有新增候选，尝试创建 GitHub Issue → 发布静态站点。第一次直连检查只建立文章对比基线；目录第一次扫描只建立旧链接基线，RSS 发现的尚未收录链接可进入候选。失败记录在 `monitor_status.json`，**不能当成“没有公告”**。
+工作流：检查已配置的一、二级公告来源和吉林大学全国索引的变化 → 对31个地区查询第三方搜索 RSS（政府官网/JLU 用于发现）→ 政府线索进入 `review_queue.json`，吉林大学线索按规则自动发布 → 如有新增候选，尝试创建 GitHub Issue → 发布静态站点。第一次直连检查只建立文章对比基线；目录第一次扫描只建立旧链接基线，RSS 发现的尚未收录链接可进入候选。失败记录在 `monitor_status.json`，**不能当成“没有公告”**。
 
 ## 如何人工更新正式信息
 
