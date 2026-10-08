@@ -35,6 +35,7 @@ jobs:
         run: pip install -r requirements.txt
       - name: Apply repository audit migration
         run: |
+          python fix_audit_script.py
           python audit_migrate.py
           python data_hygiene.py
           python build.py
