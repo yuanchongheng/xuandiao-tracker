@@ -23,32 +23,46 @@ def _clean(value: str) -> str:
     return text.strip()
 
 
-def province_from_title(value: str):
-    """Infer the target jurisdiction without mistaking a university name for it.
+def _looks_like_university_name(text: str, end: int) -> bool:
+    tail = text[end:end + 8]
+    return tail.startswith(('大学', '工业大学', '师范大学', '财经大学', '农业大学', '医科大学'))
 
-    Strong signals only: title prefix, a province immediately following the year,
-    or a full administrative name such as 重庆市/四川省. This intentionally avoids
-    matching bare 吉林 inside 吉林大学 when the actual target is 重庆.
+
+def province_from_title(value: str):
+    """Infer the target jurisdiction without confusing a university name for it.
+
+    Strong signals are preferred: an administrative name (重庆市/四川省), a
+    province at the title prefix, or a province immediately associated with the
+    recruitment year. Bare names followed by “大学” are intentionally ignored.
     """
     text = _clean(value)
     if not text:
         return None
-    for province in sorted(PROVINCES, key=len, reverse=True):
-        forms = ADMIN_FORMS.get(province, ())
-        if text.startswith((province,) + forms):
-            return province
-    year_match = re.search(r'20\d{2}(?:年|届|年度)?[^省市区]{0,8}(' + '|'.join(map(re.escape, sorted(PROVINCES, key=len, reverse=True))) + r')', text)
-    if year_match:
-        return year_match.group(1)
-    hits = []
+
+    # Full administrative forms are unambiguous, even when they occur later in a
+    # university headline such as “吉林大学…重庆市…选调”.
+    admin_hits = []
     for province, forms in ADMIN_FORMS.items():
         for form in forms:
             pos = text.find(form)
             if pos >= 0:
-                hits.append((pos, -len(form), province))
-    if hits:
-        hits.sort()
-        return hits[0][2]
+                admin_hits.append((pos, -len(form), province))
+    if admin_hits and admin_hits[0][0] == 0:
+        admin_hits.sort()
+        return admin_hits[0][2]
+
+    for province in sorted(PROVINCES, key=len, reverse=True):
+        if text.startswith(province) and not _looks_like_university_name(text, len(province)):
+            return province
+
+    pattern = r'20\d{2}(?:年|届|年度)?[^省市区]{0,8}(' + '|'.join(map(re.escape, sorted(PROVINCES, key=len, reverse=True))) + r')'
+    year_match = re.search(pattern, text)
+    if year_match and not _looks_like_university_name(text, year_match.end(1)):
+        return year_match.group(1)
+
+    if admin_hits:
+        admin_hits.sort()
+        return admin_hits[0][2]
     return None
 
 
