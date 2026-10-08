@@ -3,8 +3,9 @@
 
 Only explicit dates/times found in JLU employment-site article text are written.
 If one JLU hostname fails, the same article path is retried on the other JLU host.
-For a very small set of manually confirmed JLU notices, KNOWN_TIMINGS provides a
-safe fallback when the university site is temporarily unreadable from GitHub Actions.
+A very small set of manually confirmed notices provides fallback values when the
+university site is temporarily unreadable. Existing identical values are never
+rewritten, so this step is idempotent and does not create needless commits.
 """
 from __future__ import annotations
 
@@ -20,10 +21,8 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
 HOSTS = ("jdjywpt.jlu.edu.cn", "jdjyw.jlu.edu.cn")
-HEADERS = {"User-Agent": "XuandiaoRadar/1.4", "Accept": "text/html,application/xhtml+xml"}
+HEADERS = {"User-Agent": "XuandiaoRadar/1.5", "Accept": "text/html,application/xhtml+xml"}
 
-# Manually confirmed from the corresponding notices. These are fallbacks only:
-# normal operation still prefers parsing the JLU article itself.
 KNOWN_TIMINGS = {
     ("黑龙江", "黑龙江省2027年度定向选调应届优秀大学毕业生公告"): {
         "start": "2026-10-08T08:30:00+08:00",
@@ -32,11 +31,11 @@ KNOWN_TIMINGS = {
     },
     ("四川", "四川省面向吉林大学选调2027届优秀大学毕业生"): {
         "start": "2026-10-08T00:00:00+08:00",
-        "startTimeUnknown": True,
+        "startDateOnly": True,
         "end": "2026-10-14T18:00:00+08:00",
         "exam": "2026-10-24T00:00:00+08:00",
-        "examTimeUnknown": True,
-        "note": "报名10月8日开始（具体开放时刻未写明），10月14日18:00截止；笔试10月24日。",
+        "examDateOnly": True,
+        "note": "报名10月8日开始（公告未列具体开放时刻），10月14日18:00截止；笔试10月24日。",
     },
 }
 
@@ -57,7 +56,10 @@ def load(name):
 
 
 def save(name, obj):
-    (ROOT / name).write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path = ROOT / name
+    text = json.dumps(obj, ensure_ascii=False, indent=2) + "\n"
+    if not path.exists() or path.read_text(encoding="utf-8") != text:
+        path.write_text(text, encoding="utf-8")
 
 
 def is_jlu(url):
@@ -68,13 +70,13 @@ def is_jlu(url):
 
 
 def alternate_urls(url):
-    p = urlsplit(url)
-    if p.hostname not in HOSTS:
+    parsed = urlsplit(url)
+    if parsed.hostname not in HOSTS:
         return []
     out = [url]
     for host in HOSTS:
-        if host != p.hostname:
-            out.append(urlunsplit((p.scheme, host, p.path, p.query, "")))
+        if host != parsed.hostname:
+            out.append(urlunsplit((parsed.scheme, host, parsed.path, parsed.query, "")))
     return out
 
 
@@ -82,15 +84,13 @@ def fetch_text(url):
     errors = []
     for candidate in alternate_urls(url):
         try:
-            r = requests.get(candidate, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
-            r.raise_for_status()
-            if urlsplit(r.url).hostname not in HOSTS:
+            response = requests.get(candidate, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
+            response.raise_for_status()
+            if urlsplit(response.url).hostname not in HOSTS:
                 raise ValueError("redirect outside JLU hosts")
-            # Some JLU responses omit or mislabel charset. Decode explicitly before parsing
-            # so Chinese date phrases are not lost to replacement characters.
-            encoding = r.apparent_encoding or r.encoding or "utf-8"
-            text_html = r.content.decode(encoding, errors="replace")
-            soup = BeautifulSoup(text_html, "html.parser")
+            encoding = response.apparent_encoding or response.encoding or "utf-8"
+            html = response.content.decode(encoding, errors="replace")
+            soup = BeautifulSoup(html, "html.parser")
             for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
                 tag.decompose()
             text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
@@ -103,8 +103,8 @@ def fetch_text(url):
     raise RuntimeError(" | ".join(errors))
 
 
-def score_context(text, m):
-    ctx = text[max(0, m.start()-160):min(len(text), m.end()+120)]
+def score_context(text, match):
+    ctx = text[max(0, match.start()-160):min(len(text), match.end()+120)]
     score = 0
     if "网上报名" in ctx: score += 30
     if "人选报名" in ctx: score += 28
@@ -117,36 +117,35 @@ def score_context(text, m):
     return score, ctx
 
 
-def iso(y, mo, d, h=0, mi=0):
-    return datetime(int(y), int(mo), int(d), int(h or 0), int(mi or 0), tzinfo=TZ).isoformat(timespec="seconds")
+def iso(year, month, day, hour=0, minute=0):
+    return datetime(int(year), int(month), int(day), int(hour or 0), int(minute or 0), tzinfo=TZ).isoformat(timespec="seconds")
 
 
 def parse_timing(text, default_year):
     result = {}
     choices = []
-    for m in INTERVAL.finditer(text):
-        score, ctx = score_context(text, m)
+    for match in INTERVAL.finditer(text):
+        score, ctx = score_context(text, match)
         if score >= 8:
-            choices.append((score, m, ctx))
+            choices.append((score, match, ctx))
     if choices:
-        _, m, ctx = max(choices, key=lambda x: x[0])
-        g = m.groups()
-        sy, sm, sd, sh, smin, ey, em, ed, eh, emin = g
+        _, match, ctx = max(choices, key=lambda item: item[0])
+        sy, sm, sd, sh, smin, ey, em, ed, eh, emin = match.groups()
         sy = int(sy or default_year)
         ey = int(ey or sy)
-        if (int(em), int(ed)) < (int(sm), int(sd)) and g[5] is None:
+        if (int(em), int(ed)) < (int(sm), int(sd)) and match.group(6) is None:
             ey += 1
         result["start"] = iso(sy, sm, sd, sh or 0, smin or 0)
-        result["startTimeUnknown"] = sh is None
+        result["startDateOnly"] = sh is None
         if eh is not None:
             result["end"] = iso(ey, em, ed, eh, emin or 0)
         result["context"] = ctx[:260]
 
-    m = EXAM.search(text)
-    if m:
-        y, mo, d, h, mi = m.groups()
-        result["exam"] = iso(y or default_year, mo, d, h or 0, mi or 0)
-        result["examTimeUnknown"] = h is None
+    exam = EXAM.search(text)
+    if exam:
+        year, month, day, hour, minute = exam.groups()
+        result["exam"] = iso(year or default_year, month, day, hour or 0, minute or 0)
+        result["examDateOnly"] = hour is None
     return result
 
 
@@ -160,13 +159,19 @@ def merge_known(record, timing):
         if not merged.get(field) and known.get(field):
             merged[field] = known[field]
             used = True
-    if "startTimeUnknown" not in merged and "startTimeUnknown" in known:
-        merged["startTimeUnknown"] = known["startTimeUnknown"]
-    if "examTimeUnknown" not in merged and "examTimeUnknown" in known:
-        merged["examTimeUnknown"] = known["examTimeUnknown"]
+    for flag in ("startDateOnly", "examDateOnly"):
+        if flag not in merged and flag in known:
+            merged[flag] = known[flag]
     if used:
         merged["fallbackNote"] = known.get("note", "")
     return merged, used
+
+
+def set_if_different(record, key, value):
+    if value is None or record.get(key) == value:
+        return False
+    record[key] = value
+    return True
 
 
 def main():
@@ -177,49 +182,54 @@ def main():
     errors = []
     fallback_used = []
 
-    for r in data.get("records", []):
-        if r.get("sourceTier") != "jlu_fallback" or not is_jlu(r.get("source", "")):
+    for record in data.get("records", []):
+        if record.get("sourceTier") != "jlu_fallback" or not is_jlu(record.get("source", "")):
             continue
 
         timing = {}
-        used = ""
+        used_source = ""
         fetch_error = None
         try:
-            text, used = fetch_text(r["source"])
-            year = int((r.get("published") or stamp[:10])[:4])
+            text, used_source = fetch_text(record["source"])
+            year = int((record.get("published") or stamp[:10])[:4])
             timing = parse_timing(text, year)
         except Exception as exc:
             fetch_error = exc
 
-        timing, fallback = merge_known(r, timing)
+        timing, fallback = merge_known(record, timing)
         if fallback:
-            fallback_used.append(r.get("province", "") + " " + r.get("title", ""))
+            fallback_used.append(record.get("province", "") + " " + record.get("title", ""))
         elif fetch_error:
-            errors.append(f"{r.get('province')} {r.get('title','')[:36]}: {type(fetch_error).__name__}: {str(fetch_error)[:180]}")
+            errors.append(f"{record.get('province')} {record.get('title','')[:36]}: {type(fetch_error).__name__}: {str(fetch_error)[:180]}")
             continue
 
         local_changed = False
-        if timing.get("start") and (not r.get("start") or r.get("autoPublished") or r.get("startTimeUnknown")):
-            r["start"] = timing["start"]
-            if timing.get("startTimeUnknown"):
-                r["startTimeUnknown"] = True
-            else:
-                r.pop("startTimeUnknown", None)
-            local_changed = True
-        if timing.get("end") and (not r.get("end") or r.get("autoPublished")):
-            r["end"] = timing["end"]
-            local_changed = True
-        if timing.get("exam") and (not r.get("exam") or r.get("autoPublished")):
-            r["exam"] = timing["exam"]
-            r["examText"] = "笔试日期由吉林大学就业网正文或已确认公告时间回填；具体安排以原文和准考证为准"
-            local_changed = True
+        local_changed |= set_if_different(record, "start", timing.get("start"))
+        local_changed |= set_if_different(record, "end", timing.get("end"))
+        if timing.get("exam"):
+            if set_if_different(record, "exam", timing["exam"]):
+                local_changed = True
+            wanted_exam_text = "笔试日期由吉林大学就业网正文或已确认公告时间回填；具体安排以原文和准考证为准"
+            local_changed |= set_if_different(record, "examText", wanted_exam_text)
+
+        if timing.get("start"):
+            wanted_date_only = bool(timing.get("startDateOnly"))
+            if wanted_date_only:
+                if record.get("startDateOnly") is not True:
+                    record["startDateOnly"] = True
+                    local_changed = True
+            elif record.pop("startDateOnly", None) is not None:
+                local_changed = True
+            if record.pop("startTimeUnknown", None) is not None:
+                local_changed = True
+
         if local_changed:
-            r["autoParsedAt"] = stamp
-            r["autoParsedFrom"] = used or "known_timing_fallback"
+            record["autoParsedAt"] = stamp
+            record["autoParsedFrom"] = used_source or "known_timing_fallback"
             if timing.get("context"):
-                r["autoParsedContext"] = timing["context"]
+                record["autoParsedContext"] = timing["context"]
             if timing.get("fallbackNote"):
-                r["timingFallbackNote"] = timing["fallbackNote"]
+                record["timingFallbackNote"] = timing["fallbackNote"]
             changed += 1
 
     if changed:
