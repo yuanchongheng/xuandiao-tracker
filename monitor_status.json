@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-09T09:14:40+08:00",
+  "checkedAt": "2026-10-09T09:47:47+08:00",
   "monitorsConfigured": 9,
   "monitorsSucceeded": 6,
   "provincesConfigured": 31,
@@ -20,7 +20,7 @@
     "job.lzu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 1,
+  "supplementalNew": 0,
   "supplementalTotal": 26,
   "pendingCandidates": 0,
   "errors": [
@@ -110,9 +110,8 @@
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
   "jluTimingErrors": [
-    "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=058c8c90ce8a4515869929f63873",
-    "四川 四川省面向吉林大学选调2027届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f",
-    "贵州 贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502"
+    "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. (read timeout=8)",
+    "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. (read timeout=8)"
   ],
   "jluTimingBackfilledThisRun": 0,
   "jluTimingBackfillErrors": [],
