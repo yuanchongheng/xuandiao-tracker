@@ -1,6 +1,18 @@
 {
-  "updated": "2026-10-09T04:42:41+08:00",
+  "updated": "2026-10-09T09:14:40+08:00",
   "items": [
+    {
+      "id": "88afbceb6d7bbac7bfa3",
+      "province": "黑龙江",
+      "title": "黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/33998.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T09:14:40+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "4abd3d7fafb5cb9b5fd8",
       "province": "黑龙江",
