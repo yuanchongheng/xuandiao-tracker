@@ -10,6 +10,8 @@ on:
 
 concurrency:
   group: xuandiao-pages
+  # A newer human/scheduled run may replace an older one, but a bot write-back
+  # must never cancel the run that is about to deploy that same write-back.
   cancel-in-progress: ${{ github.actor != 'github-actions[bot]' }}
 
 permissions:
@@ -20,6 +22,8 @@ permissions:
 
 jobs:
   monitor-and-publish:
+    # Bot commits contain monitoring results from the current run. Do not start a
+    # second full workflow for those commits; this prevents duplicate deployments.
     if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -34,8 +38,6 @@ jobs:
           python-version: '3.12'
       - name: Install scanner libraries
         run: pip install -r requirements.txt
-      - name: Apply manual 2026-10-09 refresh
-        run: python manual_refresh_20261009.py
       - name: Normalize and validate repository data
         run: |
           python data_hygiene.py
@@ -43,14 +45,32 @@ jobs:
           python build.py --check
           python validate_extra.py
           python -m unittest discover -s tests
-      - name: Save manual refresh
+      - name: Check government and JLU backup pages plus 31 regional queries
+        run: python monitor.py
+      - name: Auto-publish, normalize and enrich notices
+        run: |
+          python jlu_auto_publish.py
+          python jlu_timing_fix.py
+          python data_hygiene.py
+          python build.py
+          python build.py --check
+          python validate_extra.py
+      - name: Save monitoring results and published notices
         run: |
           git config user.name 'xuandiao-monitor[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data.json index.html
+          git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html sources.json
           if ! git diff --cached --quiet; then
-            git commit -m 'chore: manual refresh Zhejiang and Shandong selection notices'
+            git commit -m 'chore: update monitoring and published notices'
             git push origin HEAD:main
+          fi
+      - name: Open one GitHub issue for newly detected candidates still requiring review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ "$(cat new_candidate_count.txt)" -gt 0 ]; then
+            gh issue create --title "选调雷达：$(cat new_candidate_count.txt) 条新公告线索待核验" --body-file monitor_report.md || echo 'Issue creation unavailable: inspect review_queue.json manually.'
           fi
       - name: Configure Pages
         uses: actions/configure-pages@v5
