@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-09T09:47:47+08:00",
+  "checkedAt": "2026-10-09T18:38:46+08:00",
   "monitorsConfigured": 9,
   "monitorsSucceeded": 6,
   "provincesConfigured": 31,
@@ -9,19 +9,19 @@
   "thirdLinksFound": 0,
   "thirdIndexesSucceeded": 8,
   "thirdIndexesAttempted": 8,
-  "thirdIndexLinksFound": 17,
+  "thirdIndexLinksFound": 21,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 4,
+  "thirdBatchActive": 3,
   "thirdHostsInThisRun": [
-    "career.csu.edu.cn",
-    "career.fudan.edu.cn",
-    "job.sdu.edu.cn",
-    "job.lzu.edu.cn"
+    "job.hust.edu.cn",
+    "career.ruc.edu.cn",
+    "career.nankai.edu.cn",
+    "jy.scu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 0,
-  "supplementalTotal": 26,
+  "supplementalNew": 6,
+  "supplementalTotal": 32,
   "pendingCandidates": 0,
   "errors": [
     "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
@@ -106,15 +106,19 @@
     }
   ],
   "warning": "吉林大学就业网线索会自动进入正式数据，并自动解析正文中的明确报名起止和笔试日期；未明确时刻不推断。政府来源候选仍需人工核验，第三来源仅供参考。",
-  "jluAutoPublishedThisRun": 0,
+  "jluAutoPublishedThisRun": 1,
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
   "jluTimingErrors": [
-    "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. (read timeout=8)",
-    "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. (read timeout=8)"
+    "安徽 安徽省2027年度面向吉林大学定向招录选调生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=085b82caf2774453a1ad8779b862",
+    "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=d414af75a893440a8e4ed0ad434f",
+    "重庆 重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c6",
+    "安徽 安徽省2027年度面向吉林大学定向招录选调生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=085b82caf2774453a1ad8779b862"
   ],
   "jluTimingBackfilledThisRun": 0,
-  "jluTimingBackfillErrors": [],
+  "jluTimingBackfillErrors": [
+    "重庆 重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告: RuntimeError: https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c691dd: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceede"
+  ],
   "jluTimingFallbackUsed": [
     "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告"
   ]

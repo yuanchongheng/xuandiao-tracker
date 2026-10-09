@@ -1,6 +1,78 @@
 {
-  "updated": "2026-10-09T09:47:47+08:00",
+  "updated": "2026-10-09T18:38:46+08:00",
   "items": [
+    {
+      "id": "1dab6ef661efea720a96",
+      "province": "安徽",
+      "title": "【选调13】安徽省2027年度面向电子科技大学 定向招录选调生公告 发布日期：2026-10-09 点击数：1093 作者：卓立柚",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/g0o6wnl3ulmp",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "be52519583091af89e63",
+      "province": "安徽",
+      "title": "安徽省2027年度面向中国科学技术大学定向招录选调生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11375",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "3658af49f399668367df",
+      "province": "安徽",
+      "title": "安徽省2027年度面向华中科技大学定向招录选调生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2452007.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "1e45057b063f5efd41e2",
+      "province": "安徽",
+      "title": "【选调生】安徽省2027年度面向中南大学定向招录选调生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205063/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "3c078c87b9081a1ecfff",
+      "province": "浙江",
+      "title": "【选调生】2027年度浙江省党政机关选调应届优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205058/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "1e4020cd484bcfcf463e",
+      "province": "安徽",
+      "title": "安徽省2027年度面向山东大学定向招录选调生公告",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=33999",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-09T18:38:46+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "88afbceb6d7bbac7bfa3",
       "province": "黑龙江",
