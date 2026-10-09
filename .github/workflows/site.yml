@@ -38,6 +38,8 @@ jobs:
           python-version: '3.12'
       - name: Install scanner libraries
         run: pip install -r requirements.txt
+      - name: Apply manual 2026-10-09 refresh
+        run: python manual_refresh_20261009.py
       - name: Normalize and validate repository data
         run: |
           python data_hygiene.py
@@ -61,7 +63,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add watch_state.json review_queue.json third_sources.json monitor_status.json data.json index.html sources.json
           if ! git diff --cached --quiet; then
-            git commit -m 'chore: update monitoring and published notices'
+            git commit -m 'chore: manual refresh Zhejiang and Shandong selection notices'
             git push origin HEAD:main
           fi
       - name: Open one GitHub issue for newly detected candidates still requiring review
