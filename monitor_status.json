@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-10T14:08:34+08:00",
+  "checkedAt": "2026-10-10T17:54:50+08:00",
   "monitorsConfigured": 9,
   "monitorsSucceeded": 6,
   "provincesConfigured": 31,
@@ -12,16 +12,15 @@
   "thirdIndexLinksFound": 24,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 1,
+  "thirdBatchActive": 2,
   "thirdHostsInThisRun": [
-    "jiuye.uestc.edu.cn",
-    "scc.pku.edu.cn",
-    "www.job.sjtu.edu.cn",
-    "job.hit.edu.cn",
-    "xsjy.whu.edu.cn"
+    "www.job.ustc.edu.cn",
+    "career.tsinghua.edu.cn",
+    "www.career.zju.edu.cn",
+    "jy.xmu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 2,
+  "supplementalNew": 0,
   "supplementalTotal": 35,
   "pendingCandidates": 0,
   "errors": [
@@ -111,16 +110,13 @@
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
   "jluTimingErrors": [
-    "上海 上海市2027年度选调应届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=a4e2b5a3d3bd497bb276fe770acc",
     "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=058c8c90ce8a4515869929f63873",
     "四川 四川省面向吉林大学选调2027届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=59f2c91d171843309a5d561c9e5f",
     "贵州 贵州省2027年度党政机关定向选调和省管企业招聘优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502",
     "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=d414af75a893440a8e4ed0ad434f"
   ],
-  "jluTimingBackfilledThisRun": 1,
-  "jluTimingBackfillErrors": [
-    "重庆 重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告: RuntimeError: https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c691dd: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceede"
-  ],
+  "jluTimingBackfilledThisRun": 0,
+  "jluTimingBackfillErrors": [],
   "jluTimingFallbackUsed": [
     "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告",
     "安徽 安徽省2027年度面向吉林大学定向招录选调生公告"
