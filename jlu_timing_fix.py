@@ -2,7 +2,8 @@
 """Backfill registration and exam times for formal JLU notices.
 
 Only explicit dates/times found in JLU employment-site article text are written.
-If one JLU endpoint fails, equivalent host/path variants are retried. A very small
+All equivalent JLU host/path variants are inspected because some endpoints can
+return a navigation shell with HTTP 200 but omit the article body. A very small
 set of manually confirmed notices provides fallback values when the university
 site is temporarily unreadable. Existing identical values are never rewritten.
 """
@@ -20,7 +21,7 @@ from bs4 import BeautifulSoup
 ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
 HOSTS = ("jdjywpt.jlu.edu.cn", "jdjyw.jlu.edu.cn")
-HEADERS = {"User-Agent": "XuandiaoRadar/1.6", "Accept": "text/html,application/xhtml+xml"}
+HEADERS = {"User-Agent": "XuandiaoRadar/1.7", "Accept": "text/html,application/xhtml+xml"}
 
 KNOWN_TIMINGS = {
     ("黑龙江", "黑龙江省2027年度定向选调应届优秀大学毕业生公告"): {
@@ -36,6 +37,13 @@ KNOWN_TIMINGS = {
         "examDateOnly": True,
         "note": "报名10月8日开始（公告未列具体开放时刻），10月14日18:00截止；笔试10月24日。",
     },
+    ("安徽", "安徽省2027年度面向吉林大学定向招录选调生公告"): {
+        "start": "2026-10-14T09:00:00+08:00",
+        "end": "2026-10-21T17:00:00+08:00",
+        "exam": "2026-11-14T00:00:00+08:00",
+        "examDateOnly": True,
+        "note": "报名10月14日9:00开始，10月21日17:00截止；笔试11月14日，具体时间地点见准考证。",
+    },
 }
 
 TIME = r"(?:(\d{1,2})\s*(?:[:：时])\s*(\d{1,2})\s*分?)?"
@@ -44,9 +52,15 @@ INTERVAL = re.compile(
     r"\s*(?:至|到|—|－|-|~|～)\s*" +
     r"(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日\s*" + TIME
 )
-EXAM = re.compile(
-    r"笔试时间(?:为|是|[:：])?\s*(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日"
-    r"(?:[^。；，]{0,24}?(\d{1,2})\s*(?:[:：时])\s*(\d{1,2})\s*分?)?"
+EXAM_PATTERNS = (
+    re.compile(
+        r"笔试时间(?:为|是|[:：])?\s*(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日"
+        r"(?:[^。；，]{0,24}?(\d{1,2})\s*(?:[:：时])\s*(\d{1,2})\s*分?)?"
+    ),
+    re.compile(
+        r"笔试[^。；]{0,90}?(?:定于|安排在|于)\s*(?:(20\d{2})年)?\s*(\d{1,2})月\s*(\d{1,2})日"
+        r"(?:[^。；，]{0,24}?(\d{1,2})\s*(?:[:：时])\s*(\d{1,2})\s*分?)?"
+    ),
 )
 
 
@@ -94,27 +108,21 @@ def alternate_urls(url):
     return out
 
 
-def fetch_text(url):
-    errors = []
-    for candidate in alternate_urls(url):
-        try:
-            response = requests.get(candidate, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
-            response.raise_for_status()
-            if not valid_jlu_url(response.url):
-                raise ValueError("redirect outside approved JLU HTTPS endpoints")
-            encoding = response.apparent_encoding or response.encoding or "utf-8"
-            html = response.content.decode(encoding, errors="replace")
-            soup = BeautifulSoup(html, "html.parser")
-            for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
-                tag.decompose()
-            text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
-            text = re.sub(r"(?<=\d)\s+(?=\d)", "", text)
-            if len(text) < 100:
-                raise ValueError("article text too short")
-            return text, candidate
-        except Exception as exc:
-            errors.append(f"{candidate}: {type(exc).__name__}: {str(exc)[:100]}")
-    raise RuntimeError(" | ".join(errors))
+def fetch_candidate_text(candidate):
+    response = requests.get(candidate, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
+    response.raise_for_status()
+    if not valid_jlu_url(response.url):
+        raise ValueError("redirect outside approved JLU HTTPS endpoints")
+    encoding = response.apparent_encoding or response.encoding or "utf-8"
+    html = response.content.decode(encoding, errors="replace")
+    soup = BeautifulSoup(html, "html.parser")
+    for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
+        tag.decompose()
+    text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+    text = re.sub(r"(?<=\d)\s+(?=\d)", "", text)
+    if len(text) < 100:
+        raise ValueError("article text too short")
+    return text
 
 
 def score_context(text, match):
@@ -155,12 +163,44 @@ def parse_timing(text, default_year):
             result["end"] = iso(ey, em, ed, eh, emin or 0)
         result["context"] = ctx[:260]
 
-    exam = EXAM.search(text)
-    if exam:
+    for pattern in EXAM_PATTERNS:
+        exam = pattern.search(text)
+        if not exam:
+            continue
         year, month, day, hour, minute = exam.groups()
         result["exam"] = iso(year or default_year, month, day, hour or 0, minute or 0)
         result["examDateOnly"] = hour is None
+        break
     return result
+
+
+def timing_score(timing):
+    # Registration fields are more important than the exam field on the countdown card.
+    return 5 * bool(timing.get("end")) + 4 * bool(timing.get("start")) + 2 * bool(timing.get("exam"))
+
+
+def fetch_best_timing(url, default_year):
+    """Parse every equivalent JLU endpoint and keep the richest timing result.
+
+    A JLU route occasionally responds 200 with only a SPA/navigation shell. The old
+    implementation accepted the first >100-character page, so a later equivalent
+    endpoint containing the real article body was never inspected.
+    """
+    errors = []
+    best = None
+    for candidate in alternate_urls(url):
+        try:
+            text = fetch_candidate_text(candidate)
+            timing = parse_timing(text, default_year)
+            candidate_result = (timing_score(timing), len(text), timing, candidate)
+            if best is None or candidate_result[:2] > best[:2]:
+                best = candidate_result
+        except Exception as exc:
+            errors.append(f"{candidate}: {type(exc).__name__}: {str(exc)[:100]}")
+    if best is not None:
+        _, _, timing, candidate = best
+        return timing, candidate, errors
+    raise RuntimeError(" | ".join(errors) or "no approved JLU article endpoint available")
 
 
 def merge_known(record, timing):
@@ -200,13 +240,13 @@ def main():
         if record.get("sourceTier") != "jlu_fallback" or not is_jlu(record.get("source", "")):
             continue
 
+        year = int((record.get("published") or stamp[:10])[:4])
         timing = {}
         used_source = ""
+        fetch_errors = []
         fetch_error = None
         try:
-            text, used_source = fetch_text(record["source"])
-            year = int((record.get("published") or stamp[:10])[:4])
-            timing = parse_timing(text, year)
+            timing, used_source, fetch_errors = fetch_best_timing(record["source"], year)
         except Exception as exc:
             fetch_error = exc
 
@@ -216,6 +256,11 @@ def main():
         elif fetch_error:
             errors.append(f"{record.get('province')} {record.get('title','')[:36]}: {type(fetch_error).__name__}: {str(fetch_error)[:180]}")
             continue
+        elif not timing and (not record.get("start") or not record.get("end")):
+            # Surface the silent failure mode instead of reporting a clean run when
+            # every successful HTTP response was only a shell or unparseable body.
+            detail = " | ".join(fetch_errors[:2]) if fetch_errors else "HTTP succeeded but no registration interval was recognized"
+            errors.append(f"{record.get('province')} {record.get('title','')[:36]}: no timing parsed; {detail[:150]}")
 
         local_changed = False
         local_changed |= set_if_different(record, "start", timing.get("start"))
