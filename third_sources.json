@@ -1,6 +1,18 @@
 {
-  "updated": "2026-10-10T17:54:50+08:00",
+  "updated": "2026-10-11T01:22:02+08:00",
   "items": [
+    {
+      "id": "99d0833060d76a1e870a",
+      "province": "山东",
+      "title": "2026-10-12 山东省2027年度选调生招录政策宣讲会——南开大学专场",
+      "url": "https://career.nankai.edu.cn/recruitment/content/type/2/id/6239.html",
+      "source": "南开大学学生就业指导中心选调信息入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-11T01:22:02+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "272e085acde8130259e2",
       "province": "黑龙江",
