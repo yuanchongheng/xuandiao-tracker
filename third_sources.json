@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-10T08:55:26+08:00",
+  "updated": "2026-10-10T14:08:34+08:00",
   "items": [
+    {
+      "id": "272e085acde8130259e2",
+      "province": "黑龙江",
+      "title": "黑龙江省2027年度定向选调应届优秀大学毕业生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11376",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-10T14:08:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "15b3b172bf5bfaac5175",
+      "province": "山东",
+      "title": "山东省2027年度选拔录用选调生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2452714.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-10T14:08:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "9b6c783012a82dba0294",
       "province": "黑龙江",
