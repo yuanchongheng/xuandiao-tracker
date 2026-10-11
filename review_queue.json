@@ -1,6 +1,19 @@
 {
-  "updated": "2026-10-11T20:57:37+08:00",
+  "updated": "2026-10-12T03:36:33+08:00",
   "candidates": [
+    {
+      "id": "ea5ada59f37a5cf42a70",
+      "province": "安徽",
+      "title": "安徽省2027年度面向吉林大学定向招录选调生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=085b82caf2774453a1ad8779b8622b03",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-12T03:34:49+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
     {
       "id": "0e3a4b4699c3d44c71fc",
       "province": "安徽",
