@@ -1,6 +1,18 @@
 {
-  "updated": "2026-10-12T18:56:27+08:00",
+  "updated": "2026-10-13T05:17:34+08:00",
   "items": [
+    {
+      "id": "562e308943438dbf514c",
+      "province": "黑龙江",
+      "title": "2026-10-13 黑龙江省2027年度定向选调生招录宣讲会",
+      "url": "https://career.nankai.edu.cn/recruitment/content/type/2/id/6266.html",
+      "source": "南开大学学生就业指导中心选调信息入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-13T05:17:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "99d0833060d76a1e870a",
       "province": "山东",
