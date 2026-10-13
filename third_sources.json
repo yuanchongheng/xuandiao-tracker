@@ -1,6 +1,42 @@
 {
-  "updated": "2026-10-13T05:17:34+08:00",
+  "updated": "2026-10-13T11:55:23+08:00",
   "items": [
+    {
+      "id": "93004a3b2109fe173dd2",
+      "province": "江苏",
+      "title": "江苏省2027年应届优秀大学毕业生选调工作公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11379",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-13T11:55:23+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "a0f7dcf942a57f9f681a",
+      "province": "江苏",
+      "title": "江苏省2027年应届优秀大学毕业生选调工作公告（华中科技大学）",
+      "url": "https://job.hust.edu.cn/jcfw/2454005.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-13T11:55:23+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "51155dac3d61404c7ef9",
+      "province": "江苏",
+      "title": "江苏省2027年应届优秀大学毕业生选调工作公告",
+      "url": "https://job.sdu.edu.cn/info/1130/34008.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-13T11:55:23+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "562e308943438dbf514c",
       "province": "黑龙江",
