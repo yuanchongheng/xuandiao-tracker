@@ -1,6 +1,18 @@
 {
-  "updated": "2026-10-13T14:50:06+08:00",
+  "updated": "2026-10-14T00:58:37+08:00",
   "items": [
+    {
+      "id": "576dcf9cd0d8f851c3c7",
+      "province": "江苏",
+      "title": "【选调生】江苏省2027年应届优秀大学毕业生选调工作公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205087/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-14T00:58:37+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "93004a3b2109fe173dd2",
       "province": "江苏",
