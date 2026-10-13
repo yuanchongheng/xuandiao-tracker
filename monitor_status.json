@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-13T11:55:23+08:00",
+  "checkedAt": "2026-10-13T14:50:06+08:00",
   "monitorsConfigured": 9,
   "monitorsSucceeded": 6,
   "provincesConfigured": 31,
@@ -12,15 +12,16 @@
   "thirdIndexLinksFound": 27,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 4,
+  "thirdBatchActive": 1,
   "thirdHostsInThisRun": [
-    "career.csu.edu.cn",
-    "career.fudan.edu.cn",
-    "job.sdu.edu.cn",
-    "job.lzu.edu.cn"
+    "jiuye.uestc.edu.cn",
+    "scc.pku.edu.cn",
+    "www.job.sjtu.edu.cn",
+    "job.hit.edu.cn",
+    "xsjy.whu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 3,
+  "supplementalNew": 0,
   "supplementalTotal": 40,
   "pendingCandidates": 0,
   "errors": [
@@ -110,13 +111,12 @@
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
   "jluTimingErrors": [
-    "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: ConnectionError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out.",
-    "安徽 安徽省2027年度面向吉林大学定向招录选调生公告: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. (read timeout=8)"
+    "上海 上海市2027年度选调应届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=a4e2b5a3d3bd497bb276fe770acc",
+    "湖北 湖北省面向吉林大学定向选调（选聘）2027届优秀大学毕业生: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=058c8c90ce8a4515869929f63873",
+    "安徽 安徽省2027年度面向吉林大学定向招录选调生公告: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceeded with url: /portal/xdsgz/article/details?id=085b82caf2774453a1ad8779b862"
   ],
   "jluTimingBackfilledThisRun": 0,
-  "jluTimingBackfillErrors": [
-    "重庆 重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告: RuntimeError: https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c691dd: ReadTimeout: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Read timed out. "
-  ],
+  "jluTimingBackfillErrors": [],
   "jluTimingFallbackUsed": [
     "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告",
     "安徽 安徽省2027年度面向吉林大学定向招录选调生公告"
