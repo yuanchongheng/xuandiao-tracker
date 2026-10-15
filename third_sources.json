@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-15T12:45:24+08:00",
+  "updated": "2026-10-15T19:35:04+08:00",
   "items": [
+    {
+      "id": "937b2fe70ae5512d9ca2",
+      "province": "广西",
+      "title": "广西2027年定向华中科技大学招录选调生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2455656.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-15T19:35:04+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "0790f0a9279745d1cd3d",
+      "province": "广西",
+      "title": "广西2027年定向山东大学招录选调生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/34011.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-15T19:35:04+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "32cbd1dc31cb9f4d4b8e",
       "province": "广西",

@@ -1,6 +1,19 @@
 {
-  "updated": "2026-10-15T12:46:59+08:00",
+  "updated": "2026-10-15T19:36:56+08:00",
   "candidates": [
+    {
+      "id": "996407f4172f1bb08b8b",
+      "province": "广西",
+      "title": "广西2027年定向吉林大学招录选调生公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1a930e337de649f1a7bb204e4b06e01c",
+      "kind": "listing",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "discovered": "2026-10-15T19:35:04+08:00",
+      "status": "auto_published",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
+    },
     {
       "id": "ea5ada59f37a5cf42a70",
       "province": "安徽",
