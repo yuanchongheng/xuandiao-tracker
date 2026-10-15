@@ -1,6 +1,30 @@
 {
-  "updated": "2026-10-15T05:44:15+08:00",
+  "updated": "2026-10-15T12:45:24+08:00",
   "items": [
+    {
+      "id": "32cbd1dc31cb9f4d4b8e",
+      "province": "广西",
+      "title": "广西2027年定向中国科学技术大学招录选调生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11381",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-15T12:45:24+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "1c8b62843cf0c06c1867",
+      "province": "江西",
+      "title": "【选调生】江西省2027年度面向中南大学选调应届优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205092/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-15T12:45:24+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "631f95a0a0200db25d49",
       "province": "江苏",
