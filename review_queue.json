@@ -1,6 +1,45 @@
 {
-  "updated": "2026-10-16T19:31:10+08:00",
+  "updated": "2026-10-17T00:47:18+08:00",
   "candidates": [
+    {
+      "id": "6a341bb0e3fbc5e3543d",
+      "province": "吉林",
+      "title": "吉林省定向招录2027届选调生宣传片",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=cb8c4e8fd2b24332a6580e46be963167",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-17T00:45:39+08:00",
+      "status": "auto_published",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
+    },
+    {
+      "id": "b0f7836666fa1069a9d8",
+      "province": "吉林",
+      "title": "吉林省面向吉林大学定向招录2027届选调生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=d1f6aa165da5437e811e3f64348079a3",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-17T00:45:39+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
+    {
+      "id": "7df46c7b8bab01fdcacd",
+      "province": "广西",
+      "title": "广西2027年定向吉林大学招录选调生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1a930e337de649f1a7bb204e4b06e01c",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-10-17T00:45:39+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
     {
       "id": "c879475723fb5f011925",
       "province": "吉林",
