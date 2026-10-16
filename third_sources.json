@@ -1,6 +1,54 @@
 {
-  "updated": "2026-10-16T05:26:51+08:00",
+  "updated": "2026-10-16T12:36:34+08:00",
   "items": [
+    {
+      "id": "0d9bb7247368818ade7f",
+      "province": "吉林",
+      "title": "吉林省面向中国科学技术大学定向招录2027届选调生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11382",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-16T12:36:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "70f55669398fc6000160",
+      "province": "吉林",
+      "title": "吉林省面向华中科技大学定向招录2027届选调生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2456351.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-16T12:36:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b36d27beb91a75e6cdad",
+      "province": "吉林",
+      "title": "【选调生】吉林省面向中南大学定向招录 2027届选调生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205099/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-16T12:36:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b21c7e240008e7414a40",
+      "province": "吉林",
+      "title": "吉林省面向山东大学定向招录2027届选调生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/34012.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-10-16T12:36:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "937b2fe70ae5512d9ca2",
       "province": "广西",
