@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -15,6 +16,12 @@ GZ_NEW = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=7e49102ce23
 JX_URL = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=c9a25f39746844109e664b0393355256'
 GX_URL = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1a930e337de649f1a7bb204e4b06e01c'
 JL_URL = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=d1f6aa165da5437e811e3f64348079a3'
+PERSONAL_MARKER = '【你的资格】'
+NOTICE_MARKER = '【公告条件】'
+PERSONAL_POLICY = (
+    '其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；'
+    '后续吉林大学出现对应公告时自动撤销该标记。'
+)
 
 RECENT_JLU_FIXES = {
     JX_URL: {
@@ -211,6 +218,145 @@ def merge_guizhou_duplicate(data, queue):
     return changes
 
 
+def clean_third_title(value):
+    title = re.sub(r'[\u200b\ufeff]', '', str(value or '')).strip()
+    title = re.sub(r'^【选调生】\s*', '', title)
+    title = re.sub(r'\s*发布日期[:：]\s*20\d{2}[-/.年]\d{1,2}[-/.月]\d{1,2}日?.*$', '', title)
+    title = re.sub(r'\s+点击数[:：]?.*$', '', title)
+    return title.strip() or str(value or '').strip()
+
+
+def third_item_day(item):
+    text = item.get('title', '')
+    match = re.search(r'(20\d{2})[-/.年](\d{1,2})[-/.月](\d{1,2})日?', text)
+    if match:
+        return f'{int(match.group(1)):04d}-{int(match.group(2)):02d}-{int(match.group(3)):02d}', False
+    discovered = str(item.get('discovered') or '')
+    if re.match(r'^20\d{2}-\d{2}-\d{2}', discovered):
+        return discovered[:10], True
+    return datetime.now(TZ).date().isoformat(), True
+
+
+def choose_third_item(items):
+    def score(item):
+        title = clean_third_title(item.get('title', ''))
+        raw = item.get('title', '')
+        points = 0
+        if '公告' in title:
+            points += 20
+        if '2027' in title:
+            points += 8
+        if item.get('province') and item['province'] in title:
+            points += 8
+        if '发布日期' in raw:
+            points += 3
+        if '点击数' in raw:
+            points -= 2
+        return points, -len(title), str(item.get('discovered') or '')
+
+    return max(items, key=score)
+
+
+def base_eligibility(text):
+    text = str(text or '').strip()
+    if text.startswith(PERSONAL_MARKER) and NOTICE_MARKER in text:
+        return text.split(NOTICE_MARKER, 1)[1].strip()
+    return text
+
+
+def reconcile_other_school_coverage(data, third):
+    """Keep nationwide publication coverage separate from the user's JLU eligibility.
+
+    If an approved third-tier university source has a 2027 notice but there is no
+    JLU notice for that province, the province remains visible in the formal total
+    list and is marked as currently unavailable to this JLU-based user. We never
+    copy another university's campus deadline into the user's schedule. The status
+    is reversible: a later JLU notice removes the personal ineligibility marker and
+    any temporary coverage-only card.
+    """
+    records = data.setdefault('records', [])
+    third_items = [item for item in third.get('items', []) if item.get('province')]
+    by_province = {}
+    for item in third_items:
+        by_province.setdefault(item['province'], []).append(item)
+
+    before = json.dumps(records, ensure_ascii=False, sort_keys=True)
+
+    # Recompute generated coverage cards every run so stale cards disappear as
+    # soon as a government/JLU/human-reviewed formal record exists.
+    records[:] = [record for record in records if not record.get('coverageOnly')]
+    jlu_provinces = {
+        record.get('province') for record in records
+        if record.get('sourceTier') == 'jlu_fallback'
+    }
+    formal_provinces = {record.get('province') for record in records}
+
+    for province, items in by_province.items():
+        if province in formal_provinces:
+            continue
+        item = choose_third_item(items)
+        published, estimated = third_item_day(item)
+        title = clean_third_title(item.get('title', ''))
+        discovered = str(item.get('discovered') or '')
+        verified = discovered[:10] if re.match(r'^20\d{2}-\d{2}-\d{2}', discovered) else published
+        record = {
+            'province': province,
+            'title': title,
+            'type': '选调公告（其他高校已发布）',
+            'count': '以其他高校官方就业网所载公告及附件为准',
+            'published': published,
+            'start': '',
+            'end': '',
+            'exam': '',
+            'examEnd': '',
+            'examText': '不套用其他高校校内报名/推荐或考试安排；仅作为全国选调发布进度展示',
+            'school': '其他高校官方就业网已出现该省2027选调信息；吉林大学就业网暂未发现对应公告。',
+            'eligibility': (
+                '【你的资格】当前不可报：吉林大学就业网暂未发现对应公告，按你的规则视为吉林大学不在当前可报范围。'
+                '【公告条件】其他高校公告仅用于全国选调信息收录，不代表你可按其校内流程报名。'
+            ),
+            'notes': '全国总信息保留该省发布进度；来源为其他高校官方就业网。不会把该校校内报名、推荐、盖章或考试时间当作你的时间。',
+            'source': item.get('url', ''),
+            'sourceName': item.get('source') or '其他高校官方就业网（补充来源）',
+            'sourceType': '其他高校补充',
+            'verified': verified,
+            'sourceTier': 'university_third',
+            'coverageOnly': True,
+            'personalEligibility': 'ineligible_no_jlu',
+            'reviewedSource': False,
+            'reviewedScope': False,
+        }
+        if estimated:
+            record['publishedEstimated'] = True
+        records.append(record)
+        formal_provinces.add(province)
+
+    third_provinces = set(by_province)
+    for record in records:
+        if record.get('coverageOnly'):
+            continue
+        base = base_eligibility(record.get('eligibility', ''))
+        province = record.get('province')
+        should_mark = province in third_provinces and province not in jlu_provinces
+        if should_mark:
+            record['personalEligibility'] = 'ineligible_no_jlu'
+            record['eligibility'] = (
+                '【你的资格】当前不可报：其他高校已有该省2027选调信息，但吉林大学就业网暂未发现对应公告。'
+                '按你的规则，当前视为吉林大学不在可报范围。'
+                f'{NOTICE_MARKER}{base}'
+            )
+        else:
+            if record.get('personalEligibility') == 'ineligible_no_jlu':
+                record.pop('personalEligibility', None)
+            record['eligibility'] = base
+
+    if PERSONAL_POLICY not in data.get('notice', ''):
+        data['notice'] = (data.get('notice', '').rstrip('。') + '。' + PERSONAL_POLICY).lstrip('。')
+
+    after = json.dumps(records, ensure_ascii=False, sort_keys=True)
+    return int(before != after)
+
+
 def main():
     data = load('data.json', {'records': []})
     queue = load('review_queue.json', {'candidates': []})
@@ -235,6 +381,7 @@ def main():
 
     changed += ensure_recent_jlu_notices(data, queue)
     changed += merge_guizhou_duplicate(data, queue)
+    changed += reconcile_other_school_coverage(data, third)
 
     third_cfg = sources.get('discovery', {}).get('third_source', {})
     wanted_policy = '每次仅检索一个批次，每3小时轮换，共4个批次；连续4轮约12小时覆盖全部17校搜索批次；直连索引每轮单独检查。'
