@@ -28,8 +28,15 @@ def main():
             raise ValueError(f'province/title mismatch: {r.get("province")} vs {inferred}: {r.get("title")}')
         if r.get('autoPublished') and source_tier(r.get('source', '')) != 'jlu_fallback':
             raise ValueError('autoPublished is only allowed for JLU sources')
-        if r.get('publishedEstimated') and not r.get('autoPublished'):
-            raise ValueError('publishedEstimated requires autoPublished')
+        if r.get('publishedEstimated') and not (r.get('autoPublished') or r.get('coverageOnly')):
+            raise ValueError('publishedEstimated requires autoPublished or coverageOnly')
+        if r.get('coverageOnly'):
+            if source_tier(r.get('source', '')) != 'university_third':
+                raise ValueError('coverageOnly records must use approved third-tier university sources')
+            if r.get('personalEligibility') != 'ineligible_no_jlu':
+                raise ValueError('coverageOnly records must be marked ineligible_no_jlu')
+            if any(r.get(field) for field in ('start', 'end', 'exam', 'examEnd', 'deadlines')):
+                raise ValueError('coverageOnly records must not carry other-school schedule fields')
         if r.get('startTimeUnknown'):
             raise ValueError('legacy startTimeUnknown must be migrated to startDateOnly')
         if r.get('startDateOnly') and not str(r.get('start', '')).endswith('T00:00:00+08:00'):
