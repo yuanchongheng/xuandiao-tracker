@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Validate data.json and refresh the offline snapshot inside index.html.
 
-Formal records may be human-curated or auto-published from the approved Jilin
-University employment domains. This validator never derives dates or eligibility;
-it only enforces structural, source-policy and chronology invariants.
+Formal records may be human-curated, auto-published from the approved Jilin
+University employment domains, or coverage-only cards from approved third-tier
+university sources. This validator never derives dates or eligibility; it only
+enforces structural, source-policy and chronology invariants.
 """
 import argparse
 from datetime import datetime, date
@@ -70,14 +71,19 @@ def build(check=False):
         if tier == 'university_third':
             if entry.get('sourceType') != '其他高校补充':
                 raise ValueError('Other-university source must be explicitly labelled 第三来源, never 官方')
-            if entry.get('reviewedSource') is not True or entry.get('reviewedScope') is not True:
+            if entry.get('coverageOnly'):
+                if entry.get('personalEligibility') != 'ineligible_no_jlu':
+                    raise ValueError('Coverage-only card must be marked ineligible_no_jlu')
+                if any(entry.get(field) for field in ('start', 'end', 'exam', 'examEnd')):
+                    raise ValueError('Coverage-only card must not copy other-school timing fields')
+            elif entry.get('reviewedSource') is not True or entry.get('reviewedScope') is not True:
                 raise ValueError('Other-university notice requires human source and school-scope review')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
                 raise ValueError('Other-university notice requires explicit applicability and notes')
         if entry.get('autoPublished') and tier != 'jlu_fallback':
             raise ValueError('autoPublished is only permitted for Jilin University sources')
-        if entry.get('publishedEstimated') and not entry.get('autoPublished'):
-            raise ValueError('publishedEstimated requires autoPublished')
+        if entry.get('publishedEstimated') and not (entry.get('autoPublished') or entry.get('coverageOnly')):
+            raise ValueError('publishedEstimated requires autoPublished or coverageOnly')
         verified = checked_day(entry['verified'], 'verified')
         published = checked_day(entry['published'], 'published')
         if verified < published:
@@ -98,6 +104,8 @@ def build(check=False):
         deadlines = entry.get('deadlines', [])
         if not isinstance(deadlines, list):
             raise ValueError('deadlines must be a list: ' + entry['title'])
+        if entry.get('coverageOnly') and deadlines:
+            raise ValueError('Coverage-only card must not copy other-school deadlines')
         for deadline in deadlines:
             if (not isinstance(deadline, dict) or not isinstance(deadline.get('label'), str)
                     or not deadline['label'].strip()):
