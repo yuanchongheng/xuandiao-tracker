@@ -1,6 +1,19 @@
 {
-  "updated": "2026-10-19T21:26:06+08:00",
+  "updated": "2026-10-20T04:38:11+08:00",
   "candidates": [
+    {
+      "id": "7764b45a17431b63a882",
+      "province": "云南",
+      "title": "云南省人民政府门户网站",
+      "url": "https://www.yn.gov.cn/index.html",
+      "kind": "search",
+      "source": "Bing RSS（搜索线索，未经人工核验）",
+      "discovered": "2026-10-20T04:36:50+08:00",
+      "status": "pending",
+      "sourceTier": "government",
+      "sourceLabel": "政府官网",
+      "note": "未核验政府线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异后再更新正式数据。"
+    },
     {
       "id": "6a341bb0e3fbc5e3543d",
       "province": "吉林",
