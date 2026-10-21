@@ -1,6 +1,6 @@
 {
   "edition": "2027届",
-  "asOf": "2026-10-17T11:27:08+08:00",
+  "asOf": "2026-10-21T12:56:49+08:00",
   "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；系统会从吉大正文自动提取明确的报名起止和笔试日期，未明确的时刻或条件不作猜测。政府来源候选和其他高校第三来源仍按原规则处理。其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；后续吉林大学出现对应公告时自动撤销该标记。",
   "provinces": [
     "北京",
@@ -405,6 +405,31 @@
       "autoPublished": true,
       "publishedEstimated": true,
       "discoveredAt": "2026-10-17T00:45:39+08:00"
+    },
+    {
+      "province": "辽宁",
+      "title": "辽宁省2027年度选调应届优秀大学毕业生公告",
+      "type": "选调公告（其他高校已发布）",
+      "count": "以其他高校官方就业网所载公告及附件为准",
+      "published": "2026-10-21",
+      "start": "",
+      "end": "",
+      "exam": "",
+      "examEnd": "",
+      "examText": "不套用其他高校校内报名/推荐或考试安排；仅作为全国选调发布进度展示",
+      "school": "其他高校官方就业网已出现该省2027选调信息；吉林大学就业网暂未发现对应公告。",
+      "eligibility": "【你的资格】当前不可报：吉林大学就业网暂未发现对应公告，按你的规则视为吉林大学不在当前可报范围。【公告条件】其他高校公告仅用于全国选调信息收录，不代表你可按其校内流程报名。",
+      "notes": "全国总信息保留该省发布进度；来源为其他高校官方就业网。不会把该校校内报名、推荐、盖章或考试时间当作你的时间。",
+      "source": "https://career.csu.edu.cn/news/view/aid/205122/tag/jcxm",
+      "sourceName": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "sourceType": "其他高校补充",
+      "verified": "2026-10-21",
+      "sourceTier": "university_third",
+      "coverageOnly": true,
+      "personalEligibility": "ineligible_no_jlu",
+      "reviewedSource": false,
+      "reviewedScope": false,
+      "publishedEstimated": true
     },
     {
       "province": "江苏",
