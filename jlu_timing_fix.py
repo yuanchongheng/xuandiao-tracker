@@ -27,7 +27,10 @@ KNOWN_TIMINGS = {
     ("黑龙江", "黑龙江省2027年度定向选调应届优秀大学毕业生公告"): {
         "start": "2026-10-08T08:30:00+08:00",
         "end": "2026-10-17T17:30:00+08:00",
-        "note": "报名时间已确认：10月8日8:30至10月17日17:30。",
+        "exam": "2026-11-01T09:00:00+08:00",
+        "examEnd": "2026-11-01T11:30:00+08:00",
+        "examText": "11月1日 09:00—11:30；《综合素质测试》（时段由用户补充，以准考证为准）",
+        "note": "报名10月8日8:30至10月17日17:30；10月21日省选调生工作网通知确认11月1日上午哈尔滨笔试，10月22日14:00至25日17:30打印准考证；9:00—11:30为用户补充时段，须以准考证为准。",
     },
     ("四川", "四川省面向吉林大学选调2027届优秀大学毕业生"): {
         "start": "2026-10-08T00:00:00+08:00",
@@ -213,6 +216,12 @@ def merge_known(record, timing):
         if not merged.get(field) and known.get(field):
             merged[field] = known[field]
             used = True
+    # Preserve notice-specific verified notes and the exam end time only when
+    # the source-selected exam date agrees with the known notice.
+    if known.get("exam") and merged.get("exam") == known["exam"]:
+        for field in ("examEnd", "examText"):
+            if known.get(field):
+                merged[field] = known[field]
     for flag in ("startDateOnly", "examDateOnly"):
         if flag not in merged and flag in known:
             merged[flag] = known[flag]
@@ -268,8 +277,17 @@ def main():
         if timing.get("exam"):
             if set_if_different(record, "exam", timing["exam"]):
                 local_changed = True
-            wanted_exam_text = "笔试日期由吉林大学就业网正文或已确认公告时间回填；具体安排以原文和准考证为准"
+            wanted_exam_text = timing.get("examText") or "笔试日期由吉林大学就业网正文或已确认公告时间回填；具体安排以原文和准考证为准"
             local_changed |= set_if_different(record, "examText", wanted_exam_text)
+            if timing.get("examEnd"):
+                local_changed |= set_if_different(record, "examEnd", timing["examEnd"])
+            if "examDateOnly" in timing:
+                if timing["examDateOnly"]:
+                    local_changed |= set_if_different(record, "examDateOnly", True)
+                elif record.pop("examDateOnly", None) is not None:
+                    local_changed = True
+            elif timing.get("examText") and record.pop("examDateOnly", None) is not None:
+                local_changed = True
 
         if timing.get("start"):
             wanted_date_only = bool(timing.get("startDateOnly"))
