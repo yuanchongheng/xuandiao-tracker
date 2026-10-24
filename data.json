@@ -1,6 +1,6 @@
 {
   "edition": "2027届",
-  "asOf": "2026-10-24T22:30:53+08:00",
+  "asOf": "2026-10-24T22:48:45+08:00",
   "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；系统会从吉大正文自动提取明确的报名起止和笔试日期，未明确的时刻或条件不作猜测。政府来源候选和其他高校第三来源仍按原规则处理。其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；后续吉林大学出现对应公告时自动撤销该标记。",
   "provinces": [
     "北京",
@@ -136,11 +136,12 @@
       "sourceType": "吉林大学备用",
       "verified": "2026-09-21",
       "sourceTier": "jlu_fallback",
-      "autoParsedAt": "2026-10-08T17:22:08+08:00",
-      "autoParsedFrom": "known_timing_fallback",
+      "autoParsedAt": "2026-10-24T22:48:45+08:00",
+      "autoParsedFrom": "https://jdjyw.jlu.edu.cn/portal/article/details?id=59f2c91d171843309a5d561c9e5f7d2f",
       "autoParsedContext": "除公职的或公务员（参照公务员法管理机关〈单位〉工作人员）被辞退未满5年的；7.被依法列为失信联合惩戒对象的；8.在各级公务员招考中被认定有舞弊等严重违反录用纪律行为的；9.具有法律法规规定不得录用为公务员的其他情形的。 三、选调程序 （一）报名和资格初审 1. 网上报名。符合选调范围、资格条件的考生，认真阅读公告后，于2026年10月8日至10月14日18:00登录四川省人力资源和社会保障厅官网“人事考试”专栏（https://scpta.com.cn/），按网络提示如实、准确、完整填写《四川省2027届急需紧缺专",
       "startDateOnly": true,
-      "timingFallbackNote": "报名10月8日开始（公告未列具体开放时刻），10月14日18:00截止；笔试10月24日。"
+      "timingFallbackNote": "报名10月8日开始（公告未列具体开放时刻），10月14日18:00截止；笔试10月24日。",
+      "examDateOnly": true
     },
     {
       "province": "甘肃",
@@ -308,9 +309,10 @@
       "autoPublished": true,
       "publishedEstimated": true,
       "discoveredAt": "2026-10-09T18:38:46+08:00",
-      "autoParsedAt": "2026-10-10T14:10:16+08:00",
+      "autoParsedAt": "2026-10-24T22:48:45+08:00",
       "autoParsedFrom": "https://jdjywpt.jlu.edu.cn/portal/article/details?id=085b82caf2774453a1ad8779b8622b03",
-      "timingFallbackNote": "报名10月14日9:00开始，10月21日17:00截止；笔试11月14日，具体时间地点见准考证。"
+      "timingFallbackNote": "报名10月14日9:00开始，10月21日17:00截止；笔试11月14日，具体时间地点见准考证。",
+      "examDateOnly": true
     },
     {
       "province": "广西",
