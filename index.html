@@ -81,6 +81,34 @@ body{background:radial-gradient(ellipse 760px 420px at 84% 16%,#e7efff70,transpa
 @media(max-width:400px){#provinceGrid.provinces{grid-template-columns:repeat(3,minmax(0,1fr))}#provinceGrid .prov{min-height:94px}#provinceGrid .prov-label{font-size:10px}}
 
 
+
+/* 省份状态独立分区：同类并排，空间不足时自动换行，已过笔试折叠。 */
+#provinceGrid.provinces{display:flex;flex-direction:column;gap:14px;min-width:0}
+#provinceGrid .province-overview-tools{display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+#provinceGrid .province-overview-tools .prov-all{width:180px;min-height:86px;flex:none}
+#provinceGrid .province-overview-help{font-size:12px;color:#6c7d91;line-height:1.5}
+#provinceGrid .province-group{min-width:0;border:1px solid #e2e8f2;border-radius:16px;background:#fbfcff;padding:12px 13px}
+#provinceGrid .province-group-header{display:flex;align-items:center;gap:9px;margin-bottom:10px;min-height:24px}
+#provinceGrid .province-group-header h3{font-size:14px;line-height:1.5;margin:0;color:#263a51;font-weight:850}
+#provinceGrid .province-group-dot{display:block;height:9px;width:9px;border-radius:50%;background:var(--stage-dot,#8b97a8);flex:none}
+#provinceGrid .province-group-count{background:var(--stage-bg,#eef2f7);color:var(--stage-ink,#53667b);border:1px solid var(--stage-line,#dde6f0);padding:2px 8px;border-radius:99px;font-size:11px;font-weight:750}
+#provinceGrid .province-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:11px;min-width:0}
+#provinceGrid .province-row .prov-wrap{min-width:0}
+#provinceGrid .province-done-group{background:#faf7fd;border-color:#e5d9f0}
+#provinceGrid .province-stack-toggle{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:#f3edfa;border:1px dashed #dacbec;border-radius:13px;padding:10px 13px;color:#63448b;cursor:pointer}
+#provinceGrid .province-stack-toggle:hover{background:#eee6f8}
+#provinceGrid .province-stack-toggle:focus-visible{outline:3px solid #7451a3;outline-offset:2px}
+#provinceGrid .province-stack-pile{display:flex;align-items:center;min-width:125px;padding-left:2px}
+#provinceGrid .province-stack-card{display:grid;place-items:center;min-width:52px;height:50px;padding:3px 6px;background:#fff;border:2px solid #dacee9;border-top:4px solid #946dc9;border-radius:10px;box-shadow:0 2px 8px #56417d20;font-size:12px;font-weight:800;color:#64418b;white-space:nowrap}
+#provinceGrid .province-stack-card+.province-stack-card{margin-left:-27px}
+#provinceGrid .province-stack-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+#provinceGrid .province-stack-copy strong{font-size:13px}
+#provinceGrid .province-stack-copy small{font-size:11px;color:#76668d;line-height:1.5}
+#provinceGrid .province-stack-action{font-size:12px;font-weight:800;white-space:nowrap;padding:7px 10px;border-radius:9px;background:#fff;border:1px solid #d9c8e9}
+#provinceGrid #provinceDoneList.province-row{margin-top:11px}
+@media(max-width:760px){#provinceGrid .province-group{padding:10px 9px}#provinceGrid .province-row{grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:9px}#provinceGrid .province-stack-toggle{gap:8px;padding:9px}#provinceGrid .province-stack-pile{min-width:88px}#provinceGrid .province-stack-card{min-width:38px;height:40px;font-size:10px;padding:2px}#provinceGrid .province-stack-card+.province-stack-card{margin-left:-23px}#provinceGrid .province-stack-action{padding:6px 8px}}
+@media(max-width:380px){#provinceGrid .province-row{grid-template-columns:repeat(2,minmax(0,1fr))}#provinceGrid .province-overview-tools .prov-all{width:145px}#provinceGrid .province-stack-copy small{font-size:10px}}
+
 /* 关注功能：与公告状态分离，仅保存在当前浏览器 */
 .watch-section{scroll-margin-top:22px;margin-bottom:34px}.watch-headmark{font-size:12px;color:#477984;font-weight:650;white-space:normal}.watch-intro{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;padding:13px 17px;margin-bottom:15px;border-radius:14px;background:#edf7f6;border:1px solid #d8ece9;color:#3d6772;font-size:12px}.watch-intro a{color:#176c72;font-weight:800;text-decoration:underline;text-underline-offset:3px}.watch-alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:13px}.watch-alert{border:1px solid #f0d6b1;background:#fff7ed;border-radius:12px;padding:12px 15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:#794e1d}.watch-alert strong{color:#8d3f19}.watch-alert .alert-label{background:#ffe2bd;border-radius:999px;font-size:11px;padding:3px 9px;font-weight:800}.watch-alert button{margin-left:auto;background:white;color:#925419;border:1px solid #ebcda6;border-radius:8px;padding:5px 9px;font-weight:700}.watch-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.watch-card{min-width:0;background:#fff;border:1px solid #e0e8f2;border-radius:17px;padding:18px;box-shadow:0 10px 27px #1c365009;display:flex;flex-direction:column;gap:12px}.watch-card-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.watch-card h3{margin:0;font-size:18px;color:#203a58}.watch-stage{font-size:10px;color:var(--stage-ink);border:1px solid var(--stage-line);background:var(--stage-bg);border-radius:999px;padding:4px 9px;font-weight:780}.watch-remove{margin-left:auto;border:0;background:#f4f6fa;border-radius:8px;padding:6px 9px;color:#62758e;font-size:11px;white-space:nowrap}.watch-remove:hover{color:#a84b45;background:#fff0eb}.watch-next{background:#f6f9fd;border:1px solid #e9eff7;border-radius:11px;padding:12px}.watch-next small{display:block;font-size:10px;color:#73849b}.watch-next strong{display:block;font-size:17px;color:#193e67;line-height:1.45;margin-top:4px}.watch-next p{margin:4px 0 0;font-size:11px;color:#65768d;line-height:1.55}.watch-card label{font-size:11px;color:#60728a;font-weight:750}.watch-card select{width:100%;padding:10px;border:1px solid #dfe7f2;border-radius:9px;background:#fff;color:#263e5d;font-size:12px}.watch-card-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}.watch-card-footer button{border:1px solid #cfdceb;color:#345c96;background:#f4f8ff;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:770}.watch-card-footer a{font-size:12px;color:#3664aa;font-weight:750}.watch-muted{font-size:10px;color:#8a95a5;line-height:1.55}.watch-empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;border:1px dashed #bfd7dc;background:#fbfefd;padding:33px 14px;border-radius:17px}.watch-empty b{font-size:18px;color:#21425d}.watch-empty p{margin:0;color:#65768a;font-size:12px}.watch-empty a{display:inline-flex;align-items:center;background:#1b7770;color:white;font-size:12px;font-weight:780;padding:9px 15px;border-radius:9px;margin-top:2px}
 #provinceGrid .prov-wrap{position:relative;min-width:0;display:flex}#provinceGrid .prov-wrap .prov{width:100%;height:100%;padding-top:20px}#provinceGrid .prov-star{position:absolute;z-index:2;top:6px;right:6px;display:grid;place-items:center;width:27px;height:27px;padding:0;border:1px solid #cad9e8;border-radius:9px;background:#ffffffed;color:#778ca4;font-size:17px;line-height:1;box-shadow:0 1px 3px #1232}#provinceGrid .prov-star.watched{background:#fff4d9;border-color:#e8c96f;color:#a77912}#provinceGrid .prov-star:hover{border-color:#bc902e}#provinceGrid .prov-star:focus-visible{outline:3px solid #224e93;outline-offset:2px}
@@ -309,22 +337,40 @@ function renderWatchlist(){
  document.querySelectorAll('.watch-show').forEach(b=>b.onclick=()=>showProvinceFromWatch(b.dataset.province));
 }
 function showProvinceFromWatch(p){state.province=p;state.filter='all';state.query='';state.onlyFavorites=false;$('searchInput').value='';$('stateFilter').value='all';calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#results').scrollIntoView({behavior:'smooth',block:'start'})}
+let provinceDoneExpanded=false;
 function renderProvinces(){
  const byProvince=new Map(dataset.provinces.map(name=>[name,dataset.records.filter(r=>r.province===name)]));
  const info=new Map([...byProvince].map(([name,records])=>[name,provinceProgress(records)]));
- const legend=[['missing','未录入'],['soon','即将报名'],['open','报名中'],['preexam','待笔试'],['closed','已截止·笔试待定'],['done','笔试当天／已过'],['unknown','时间待核']];
- const count=stage=>[...info.values()].filter(p=>(stage==='done'?['examday','done'].includes(p.stage):p.stage===stage)).length;
+ const legend=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
+ const count=stage=>[...info.values()].filter(p=>p.stage===stage).length;
  $('provinceLegend').innerHTML=legend.map(([stage,label])=>`<span class="prov-legend-chip stage-${stage}"><i aria-hidden="true"></i>${label}<b>${count(stage)}</b></span>`).join('');
- $('provinceGrid').innerHTML=['全部',...dataset.provinces].map(name=>{
-  if(name==='全部')return `<button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="全部31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button>`;
+ const card=name=>{
   const records=byProvince.get(name),item=info.get(name),stage=item.stage,detail=progressNote(item);
   const extra=records.length>1?`${records.length} 条公告 · `:'';
   const followed=watchedProvinces.has(name);return `<div class="prov-wrap"><button type="button" data-province="${escapeHTML(name)}" class="prov stage-${stage} ${state.province===name?'active':''}" aria-pressed="${state.province===name}" aria-label="${escapeHTML(name)}，${escapeHTML(provinceStages[stage])}，${escapeHTML(extra+detail)}" title="${escapeHTML(extra+detail)}"><span class="prov-name">${escapeHTML(name)}</span><span class="prov-label">${escapeHTML(provinceStages[stage])}</span><small class="prov-meta">${escapeHTML(extra+detail)}</small></button><button type="button" class="prov-star ${followed?'watched':''}" data-watch="${escapeHTML(name)}" aria-label="${followed?'取消关注':'关注'}${escapeHTML(name)}" aria-pressed="${followed}" title="${followed?'取消关注':'加入我的关注'}">${followed?'★':'☆'}</button></div>`;
+ };
+ const sections=legend.map(([stage,label])=>{
+  const names=dataset.provinces.filter(p=>info.get(p).stage===stage);
+  if(!names.length)return '';
+  const heading=`<div class="province-group-header"><i class="province-group-dot stage-${stage}" aria-hidden="true"></i><h3>${label}</h3><span class="province-group-count stage-${stage}">${names.length} 个地区</span></div>`;
+  if(stage==='done'){
+   const pile=names.slice(0,4).map(p=>`<span class="province-stack-card">${escapeHTML(p)}</span>`).join('');
+   const summary=names.slice(0,6).join('、')+(names.length>6?'等':'');
+   const toggle=`<button class="province-stack-toggle" type="button" aria-expanded="${provinceDoneExpanded}" aria-controls="provinceDoneList"><span class="province-stack-pile" aria-hidden="true">${pile}</span><span class="province-stack-copy"><strong>${provinceDoneExpanded?'笔试已过 · 已展开':'笔试已过 · 已折叠收纳'}</strong><small>${escapeHTML(summary)}</small></span><span class="province-stack-action">${provinceDoneExpanded?'收起 ↑':'展开全部 ↓'}</span></button>`;
+   const cards=provinceDoneExpanded?`<div id="provinceDoneList" class="province-row">${names.map(card).join('')}</div>`:'<div id="provinceDoneList" hidden></div>';
+   return `<section class="province-group province-done-group" aria-label="笔试已过省份">${heading}${toggle}${cards}</section>`;
+  }
+  return `<section class="province-group" aria-label="${label}省份">${heading}<div class="province-row">${names.map(card).join('')}</div></section>`;
  }).join('');
+ $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">按进度分组，同组自动换行；笔试已过的省份可展开查看。</span></div>${sections}`;
  $('provinceGrid').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
  $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.watch));
- $('provinceHint').textContent=state.province==='全部'?'按颜色快速定位阶段':'当前：'+state.province;
+
+ const stackToggle=$('provinceGrid').querySelector('.province-stack-toggle');
+ if(stackToggle)stackToggle.onclick=()=>{provinceDoneExpanded=!provinceDoneExpanded;renderProvinces();};
+ $('provinceHint').textContent=state.province==='全部'?'已按进度分组显示':'当前：'+state.province;
 }
+
 function renderStats(){let all=dataset.records;$('provinceTotal').textContent=dataset.provinces.length;$('releasedTotal').textContent=new Set(all.map(r=>r.province)).size;$('openTotal').textContent=all.filter(r=>statusOf(r)==='open').length;$('upcomingTotal').textContent=all.filter(r=>statusOf(r)==='soon').length;let asof=dataset.asOf?dateOf(dataset.asOf).toLocaleString('zh-CN',{timeZone:TZ,year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'未注明';$('asof').textContent=`正式资料核验：${asof}（北京时间） · 与自动线索分开`;$('dataNotice').textContent=dataset.notice||'';}
 function getResults(){let a=dataset.records.filter(r=>{if(state.province!=='全部'&&r.province!==state.province)return false;if(state.filter!=='all'&&statusOf(r)!==state.filter)return false;if(state.onlyFavorites&&!favorites.has(keyFor(r)))return false;if(state.query&&!Object.values(r).join(' ').toLowerCase().includes(state.query.toLowerCase()))return false;return true});if(state.sort==='latest')a.sort((x,y)=>y.published.localeCompare(x.published));else if(state.sort==='province')a.sort((x,y)=>x.province.localeCompare(y.province,'zh-CN'));else a.sort((x,y)=>(x.end||'9999').localeCompare(y.end||'9999'));return a}
 // All calendar days and times use Beijing time, regardless of the device timezone.
