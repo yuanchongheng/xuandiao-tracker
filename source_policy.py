@@ -9,6 +9,7 @@ from urllib.parse import urlsplit
 JLU_HOSTS = frozenset({'jdjywpt.jlu.edu.cn', 'jdjyw.jlu.edu.cn'})
 OTHER_UNIVERSITY_HOSTS = frozenset({
     'career.csu.edu.cn',
+    'dj.gzu.edu.cn',  # Reviewed provincial-university official notice mirror; not a monitored search channel.
     'career.fudan.edu.cn',
     'career.nankai.edu.cn',
     'career.ruc.edu.cn',
