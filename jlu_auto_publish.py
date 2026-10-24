@@ -189,6 +189,13 @@ def main() -> int:
     for candidate in queue:
         if candidate.get("status") != "pending" or not is_jlu(candidate.get("url", "")):
             continue
+        # A JLU notice index also contains promotional videos and recruitment talks.
+        # They are not announcements and must not become formal province cards.
+        if re.search(r"宣传片|宣传视频|选调宣讲会|政策宣讲会", clean_title(candidate.get("title", ""))):
+            candidate["status"] = "not_a_notice"
+            candidate["note"] = "宣传/宣讲内容不是2027届选调招录公告，不进入正式数据。"
+            covered += 1
+            continue
         key = (candidate.get("province"), normalized_title(candidate.get("title")))
         if candidate.get("url") in existing_urls or key in existing_keys:
             candidate["status"] = "auto_covered"
