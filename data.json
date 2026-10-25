@@ -1,6 +1,6 @@
 {
   "edition": "2027届",
-  "asOf": "2026-10-24T22:48:45+08:00",
+  "asOf": "2026-10-25T12:03:54+08:00",
   "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；系统会从吉大正文自动提取明确的报名起止和笔试日期，未明确的时刻或条件不作猜测。政府来源候选和其他高校第三来源仍按原规则处理。其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；后续吉林大学出现对应公告时自动撤销该标记。",
   "provinces": [
     "北京",
@@ -53,7 +53,7 @@
       "source": "https://www.beijing.gov.cn/cs/gncs/zcwj/202609/t20260910_4858513.html",
       "sourceName": "北京市人民政府官方公告",
       "sourceType": "官方",
-      "verified": "2026-09-21",
+      "verified": "2026-10-25",
       "sourceTier": "government"
     },
     {
@@ -113,7 +113,7 @@
       "source": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html",
       "sourceName": "湖南人事考试网官方公告",
       "sourceType": "官方",
-      "verified": "2026-09-21",
+      "verified": "2026-10-25",
       "sourceTier": "government",
       "personalEligibility": "ineligible_no_jlu"
     },
@@ -420,7 +420,7 @@
       "source": "https://www.jszzb.gov.cn/tzgg/art/2026/art_06122f61eef24054b136a55aa116fc0d.html",
       "sourceName": "江苏先锋网 / 中共江苏省委组织部官方公告",
       "sourceType": "官方",
-      "verified": "2026-10-24",
+      "verified": "2026-10-25",
       "sourceTier": "government",
       "startDateOnly": true,
       "examDateOnly": true,
@@ -444,7 +444,7 @@
       "source": "https://rst.hunan.gov.cn/hnrsksw/c103125/2027xd/202609/t20260918_34067802.html",
       "sourceName": "湖南人事考试网 / 中共湖南省委组织部官方公告",
       "sourceType": "官方",
-      "verified": "2026-10-24",
+      "verified": "2026-10-25",
       "sourceTier": "government",
       "personalEligibility": "ineligible_no_jlu"
     },
@@ -465,7 +465,7 @@
       "source": "https://dj.gzu.edu.cn/2026/0921/c22459a279749/page.htm",
       "sourceName": "贵州大学党建网（刊载中共贵州省委组织部专项公告）",
       "sourceType": "其他高校补充",
-      "verified": "2026-10-24",
+      "verified": "2026-10-25",
       "sourceTier": "university_third",
       "reviewedSource": true,
       "reviewedScope": true,
