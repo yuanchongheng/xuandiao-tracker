@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-25T07:19:49+08:00",
+  "updated": "2026-10-25T12:03:54+08:00",
   "candidates": [
     {
       "id": "7764b45a17431b63a882",
@@ -9,10 +9,10 @@
       "kind": "search",
       "source": "Bing RSS（搜索线索，未经人工核验）",
       "discovered": "2026-10-20T04:36:50+08:00",
-      "status": "pending",
+      "status": "dismissed",
       "sourceTier": "government",
       "sourceLabel": "政府官网",
-      "note": "未核验政府线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异后再更新正式数据。"
+      "note": "人工核验：此链接是云南省政府门户网站首页，不是2027届定向选调公告。不能据此认定云南已发布；保留历史搜索线索以免误报。"
     },
     {
       "id": "6a341bb0e3fbc5e3543d",
@@ -22,10 +22,10 @@
       "kind": "listing",
       "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
       "discovered": "2026-10-17T00:45:39+08:00",
-      "status": "auto_published",
+      "status": "dismissed",
       "sourceTier": "jlu_fallback",
       "sourceLabel": "吉林大学备用来源",
-      "note": "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
+      "note": "人工复核：该页面是吉林省定向选调宣传片而非独立招录公告；此前 auto_published 状态不准确。吉林省面向吉林大学的正式公告已在 data.json 单独收录。"
     },
     {
       "id": "b0f7836666fa1069a9d8",
