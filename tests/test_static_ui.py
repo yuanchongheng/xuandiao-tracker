@@ -17,5 +17,25 @@ class StaticUiRegressionTests(unittest.TestCase):
             self.assertIn('yr=mo>=8?2026:2027', text)
 
 
+    def test_watchlist_reminders_exclude_other_school_batches(self):
+        text = (ROOT / 'index.html').read_text(encoding='utf-8')
+        self.assertIn('dataset.records.filter(x=>x.province===province&&!isPersonalIneligible(x))', text)
+        self.assertIn("const eligible=records.filter(record=>!isPersonalIneligible(record))", text)
+        self.assertIn("provinceUnavailable(rows)?'吉林大学当前不可报 · 等待对应公告'", text)
+
+    def test_national_notices_show_personal_unavailability(self):
+        text = (ROOT / 'index.html').read_text(encoding='utf-8')
+        self.assertIn("function isPersonalIneligible(record)", text)
+        self.assertIn("ineligible_no_jlu", text)
+        self.assertIn("ineligible_school_scope", text)
+        self.assertIn('tag personal-unavailable', text)
+
+    def test_date_only_calendar_does_not_invent_opening_time(self):
+        text = (ROOT / 'index.html').read_text(encoding='utf-8')
+        self.assertIn("dateOnly:!!r.startDateOnly", text)
+        self.assertNotIn("dateOnly:!!r.startTimeUnknown", text)
+
+
+
 if __name__ == '__main__':
     unittest.main()
