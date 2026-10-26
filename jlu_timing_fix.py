@@ -27,10 +27,12 @@ KNOWN_TIMINGS = {
     ("黑龙江", "黑龙江省2027年度定向选调应届优秀大学毕业生公告"): {
         "start": "2026-10-08T08:30:00+08:00",
         "end": "2026-10-17T17:30:00+08:00",
-        "exam": "2026-11-01T00:00:00+08:00",
-        "examDateOnly": True,
-        "examText": "11月1日上午在哈尔滨笔试；《综合素质测试》（具体开始及结束时刻尚未从官方通知核实，以准考证为准）",
-        "note": "报名10月8日8:30至10月17日17:30；10月21日省选调生工作网确认11月1日上午哈尔滨笔试，10月22日14:00至25日17:30打印准考证；未公开具体起止时刻。",
+        "exam": "2026-11-01T09:00:00+08:00",
+        "examEnd": "2026-11-01T11:30:00+08:00",
+        "examDateOnly": False,
+        "examPersonalAdmitCard": True,
+        "examText": "11月1日 09:00—11:30；《综合素质测试》（用户依据本人准考证补充；其他考生以本人准考证为准）",
+        "note": "10月21日黑龙江省选调生工作网仅公布11月1日上午哈尔滨笔试；09:00—11:30来自用户本人准考证，非公开通知所列时刻。",
     },
     ("四川", "四川省面向吉林大学选调2027届优秀大学毕业生"): {
         "start": "2026-10-08T00:00:00+08:00",
@@ -216,6 +218,16 @@ def merge_known(record, timing):
         if not merged.get(field) and known.get(field):
             merged[field] = known[field]
             used = True
+    # The candidate personally supplied the time printed on their admit card.
+    # Retain it when the JLU page only supplies the same exam date, but do not
+    # overwrite a conflicting explicit time published by an official source.
+    if (known.get("examPersonalAdmitCard") and known.get("exam")
+            and merged.get("exam", "")[:10] == known["exam"][:10]
+            and (merged.get("examDateOnly") or
+                 merged["exam"].endswith("T00:00:00+08:00"))):
+        merged["exam"] = known["exam"]
+        merged["examDateOnly"] = False
+        used = True
     # Preserve notice-specific verified notes and the exam end time only when
     # the source-selected exam date agrees with the known notice.
     if known.get("exam") and merged.get("exam") == known["exam"]:
