@@ -50,18 +50,37 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertEqual(timing['end'], '2026-10-14T18:00:00+08:00')
 
 
-    def test_2027_heilongjiang_exam_hour_not_guessed(self):
+    def test_2027_heilongjiang_candidate_admit_card_hours_preserved(self):
         from pathlib import Path
         import json
         data = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
         record = next(r for r in data['records'] if r['province'] == '黑龙江')
-        self.assertEqual(record['exam'], '2026-11-01T00:00:00+08:00')
-        self.assertTrue(record['examDateOnly'])
-        self.assertFalse(record['examEnd'])
+        self.assertEqual(record['exam'], '2026-11-01T09:00:00+08:00')
+        self.assertEqual(record['examEnd'], '2026-11-01T11:30:00+08:00')
+        self.assertFalse(record.get('examDateOnly', False))
+        self.assertIn('本人准考证', record['notes'])
+        self.assertIn('本人准考证', record['examText'])
         known = jlu_timing_fix.KNOWN_TIMINGS[('黑龙江', '黑龙江省2027年度定向选调应届优秀大学毕业生公告')]
         self.assertEqual(known['exam'], record['exam'])
-        self.assertTrue(known['examDateOnly'])
-        self.assertNotIn('examEnd', known)
+        self.assertEqual(known['examEnd'], record['examEnd'])
+        self.assertFalse(known['examDateOnly'])
+        self.assertTrue(known['examPersonalAdmitCard'])
+
+    def test_2027_heilongjiang_date_only_scrape_keeps_candidate_admit_card(self):
+        record = {'province': '黑龙江', 'title': '黑龙江省2027年度定向选调应届优秀大学毕业生公告'}
+        scraped = {'exam': '2026-11-01T00:00:00+08:00', 'examDateOnly': True}
+        merged, _ = jlu_timing_fix.merge_known(record, scraped)
+        self.assertEqual(merged['exam'], '2026-11-01T09:00:00+08:00')
+        self.assertEqual(merged['examEnd'], '2026-11-01T11:30:00+08:00')
+        self.assertFalse(merged['examDateOnly'])
+        self.assertIn('准考证', merged['examText'])
+
+    def test_2027_heilongjiang_explicit_official_hours_not_overridden(self):
+        record = {'province': '黑龙江', 'title': '黑龙江省2027年度定向选调应届优秀大学毕业生公告'}
+        scraped = {'exam': '2026-11-01T08:30:00+08:00', 'examDateOnly': False}
+        merged, _ = jlu_timing_fix.merge_known(record, scraped)
+        self.assertEqual(merged['exam'], scraped['exam'])
+        self.assertNotIn('examEnd', merged)
 
     def test_2027_jiangsu_official_jlu_scope_not_conflated_with_personal_marker(self):
         from pathlib import Path
