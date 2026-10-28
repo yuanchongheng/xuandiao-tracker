@@ -1,6 +1,18 @@
 {
-  "updated": "2026-10-28T13:47:17+08:00",
+  "updated": "2026-10-28T18:22:19+08:00",
   "items": [
+    {
+      "id": "9c84195ce00cf3eab82e",
+      "province": "广西",
+      "title": "重点推荐-广西2027年定向北京大学招录选调生公告",
+      "url": "https://scc.pku.edu.cn/frontpage/pku/html/newsDetail.html?id=2b4def8a176440f49c8c11d01f23e64c",
+      "source": "Bing RSS（搜索线索，未经人工核验）",
+      "kind": "search",
+      "discovered": "2026-10-28T18:22:19+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "725a0392be3e063f2988",
       "province": "辽宁",
