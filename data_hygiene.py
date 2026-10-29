@@ -354,7 +354,7 @@ def reconcile_other_school_coverage(data, third):
                     if keywords else
                     '其他高校已有该省2027届选调信息，但吉林大学就业网暂未发现对应公告；')
                  + '不代表官方明确排除吉林大学。')
-                f'{NOTICE_MARKER}{base}'
+                + f'{NOTICE_MARKER}{base}'
             )
         else:
             if record.get('personalEligibility') == 'ineligible_no_jlu':
