@@ -1,6 +1,6 @@
 {
   "edition": "2027届",
-  "asOf": "2026-10-29T12:05:49+08:00",
+  "asOf": "2026-10-29T13:17:00+08:00",
   "notice": "来源按政府官网、吉林大学就业网、经批准的其他高校官方就业网三级查找。吉林大学就业网发现的2027届选调通知自动进入正式数据，无需人工二次核验；系统会从吉大正文自动提取明确的报名起止和笔试日期，未明确的时刻或条件不作猜测。政府来源候选和其他高校第三来源仍按原规则处理。其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；后续吉林大学出现对应公告时自动撤销该标记。",
   "provinces": [
     "北京",
@@ -54,7 +54,13 @@
       "sourceName": "北京市人民政府官方公告",
       "sourceType": "官方",
       "verified": "2026-10-25",
-      "sourceTier": "government"
+      "sourceTier": "government",
+      "scoreStatus": "published",
+      "scoreCheckedAt": "2026-10-29",
+      "scoreEvidenceUrl": "https://gzw.beijing.gov.cn/xxfb/tzgg/202610/t20261028_4921730.html",
+      "scoreQueryUrl": "https://rsj.beijing.gov.cn/ywsite/bjpta/",
+      "scoreSourceName": "北京市国资委2026-10-28官方资格复审通知及北京市2027年度定向选调公告",
+      "scoreNote": "10月28日北京市国资委已发布按笔试成绩确定的资格复审名单，且要求提交笔试成绩通知书；原招录公告规定10月28日后查询。可以认定成绩已供相关考生使用，但全市统一开放的准确日期尚未独立核实，故不填成绩发布日期。"
     },
     {
       "province": "上海",
@@ -94,7 +100,14 @@
       "sourceName": "吉林大学就业网转载公告（备用）",
       "sourceType": "吉林大学备用",
       "verified": "2026-09-21",
-      "sourceTier": "jlu_fallback"
+      "sourceTier": "jlu_fallback",
+      "scoreStatus": "published",
+      "scoreCheckedAt": "2026-10-29",
+      "scoreEvidenceUrl": "https://www.gemu.cn/zhaokao/151976.html",
+      "scoreQueryUrl": "https://hbdxxd.oumakspt.com:5700",
+      "scoreSourceName": "格木教育10月27日成绩入口信息、湖北华图交叉核对；考务平台网址经华东师范大学官方高校公告确认",
+      "scoreNote": "10月27日招考资讯显示成绩已可查询，另有招考平台称查询通道开放；湖北省官方独立成绩发布通知本轮未检索到，日期按公开查询资讯记载，考生以考务平台本人账户显示为准。",
+      "scorePublishedAt": "2026-10-27"
     },
     {
       "province": "湖南",
@@ -115,7 +128,14 @@
       "sourceType": "官方",
       "verified": "2026-10-25",
       "sourceTier": "government",
-      "personalEligibility": "ineligible_no_jlu"
+      "personalEligibility": "ineligible_no_jlu",
+      "scoreStatus": "published",
+      "scoreCheckedAt": "2026-10-29",
+      "scoreEvidenceUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/c103103/gwy2026/202610/t20261019_34083777.html",
+      "scoreQueryUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/rskswsy.html",
+      "scoreSourceName": "湖南省人事考试院官方成绩发布公告",
+      "scoreNote": "10月19日湖南省人事考试院统一发布2027年选调生选拔笔试成绩；同时覆盖定向选调与常规选调，成绩须登录本人账号查询。",
+      "scorePublishedAt": "2026-10-19"
     },
     {
       "province": "四川",
@@ -141,7 +161,9 @@
       "autoParsedContext": "除公职的或公务员（参照公务员法管理机关〈单位〉工作人员）被辞退未满5年的；7.被依法列为失信联合惩戒对象的；8.在各级公务员招考中被认定有舞弊等严重违反录用纪律行为的；9.具有法律法规规定不得录用为公务员的其他情形的。 三、选调程序 （一）报名和资格初审 1. 网上报名。符合选调范围、资格条件的考生，认真阅读公告后，于2026年10月8日至10月14日18:00登录四川省人力资源和社会保障厅官网“人事考试”专栏（https://scpta.com.cn/），按网络提示如实、准确、完整填写《四川省2027届急需紧缺专",
       "startDateOnly": true,
       "timingFallbackNote": "报名10月8日开始（公告未列具体开放时刻），10月14日18:00截止；笔试10月24日。",
-      "examDateOnly": true
+      "examDateOnly": true,
+      "scoreExpectedText": "原公告明确：2026年11月5日前在四川人事考试专栏公布；目前是否提前开放仍需核实。",
+      "scoreCheckedAt": "2026-10-29"
     },
     {
       "province": "四川",
@@ -316,7 +338,9 @@
       "sourceType": "官方",
       "verified": "2026-10-09",
       "sourceTier": "government",
-      "personalEligibility": "ineligible_no_jlu"
+      "personalEligibility": "ineligible_no_jlu",
+      "scoreCheckedAt": "2026-10-29",
+      "scoreNote": "笔试已举行，但本轮未取得可证实本批次成绩开放的官方通知；不可依据报名系统可登录推断成绩已公布。"
     },
     {
       "province": "安徽",
@@ -477,7 +501,14 @@
       "sourceType": "官方",
       "verified": "2026-10-25",
       "sourceTier": "government",
-      "personalEligibility": "ineligible_no_jlu"
+      "personalEligibility": "ineligible_no_jlu",
+      "scoreStatus": "published",
+      "scoreCheckedAt": "2026-10-29",
+      "scoreEvidenceUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/c103103/gwy2026/202610/t20261019_34083777.html",
+      "scoreQueryUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/rskswsy.html",
+      "scoreSourceName": "湖南省人事考试院官方成绩发布公告",
+      "scoreNote": "与湖南定向选调同属2027年选调生选拔笔试，官方10月19日统一发布成绩；该批次仍需单独判断吉林大学个人报考资格。",
+      "scorePublishedAt": "2026-10-19"
     },
     {
       "province": "贵州",
