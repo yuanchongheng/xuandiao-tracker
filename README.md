@@ -79,3 +79,9 @@ python monitor.py --skip-discovery
 4. 可在 `Actions → Monitor announcements and publish site → Run workflow` 手动运行一次。
 
 页面从 `data.json` 和内嵌快照加载正式数据；用户浏览器本地收藏/进度不会反向写入仓库。
+
+## 笔试成绩公布状态（逐批次核验）
+
+正式数据可使用 `scoreStatus: "published"` 标明已核实公布，附 `scoreEvidenceUrl`（成绩公布依据）、`scoreQueryUrl`（官方指定的查分入口）、`scoreSourceName`、`scoreCheckedAt` 和 `scoreNote`。只有查证到**实际公布日期**才填 `scorePublishedAt`；资格复审材料能佐证成绩已供使用，但不能推定全市统一成绩发布日期。公告中的预计出分时间可用 `scoreExpectedText`，与公布事实分离。
+
+没有明确发布证据的批次不写 `scoreStatus`；网站按笔试日期动态显示“尚未考试／笔试日期待定／公布情况待核实”，**“待核实”不代表官方尚未公布**。跨批次不得共用成绩状态。此字段目前按人工查证更新，自动监测现阶段尚不独立核实成绩发布；如需更新应核对对应官方网站或高校通知。
