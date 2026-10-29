@@ -66,6 +66,7 @@ body{background:radial-gradient(ellipse 760px 420px at 84% 16%,#e7efff70,transpa
 .stage-preexam{--stage-bg:#fff0df;--stage-ink:#96560b;--stage-line:#f8d7af;--stage-dot:#d98228}
 .stage-closed{--stage-bg:#f9f0df;--stage-ink:#8a6727;--stage-line:#e9dcb6;--stage-dot:#ad8a41}
 .stage-examday,.stage-done{--stage-bg:#f0eafa;--stage-ink:#6942a0;--stage-line:#dfcef1;--stage-dot:#8b62c3}
+.stage-results{--stage-bg:#e8f7f5;--stage-ink:#136d68;--stage-line:#bfe5df;--stage-dot:#269b8e}
 .stage-unknown{--stage-bg:#f4effa;--stage-ink:#80569a;--stage-line:#e6d7ef;--stage-dot:#9b78ba}
 #provinceGrid.provinces{gap:11px}
 #provinceGrid .prov{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;min-height:106px;padding:12px 9px;min-width:0;border:1px solid var(--stage-line,#dbe4ef);border-top:3px solid var(--stage-dot,#7a9e9b);background:var(--stage-bg,#fff);color:var(--stage-ink,#31526c);box-shadow:0 5px 16px #182b4907;transition:transform .16s,box-shadow .16s,border-color .16s}
@@ -95,6 +96,7 @@ body{background:radial-gradient(ellipse 760px 420px at 84% 16%,#e7efff70,transpa
 #provinceGrid .province-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:11px;min-width:0}
 #provinceGrid .province-row .prov-wrap{min-width:0}
 #provinceGrid .province-done-group{background:#faf7fd;border-color:#e5d9f0}
+#provinceGrid .province-results-group{background:#f2fbf9;border-color:#cfeae4}
 #provinceGrid .province-stack-toggle{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:#f3edfa;border:1px dashed #dacbec;border-radius:13px;padding:10px 13px;color:#63448b;cursor:pointer}
 #provinceGrid .province-stack-toggle:hover{background:#eee6f8}
 #provinceGrid .province-stack-toggle:focus-visible{outline:3px solid #7451a3;outline-offset:2px}
@@ -293,9 +295,11 @@ const statusNames={open:'正在报名',soon:'即将报名',closed:'报名结束'
 function remaining(r){let e=dateOf(r.end)?.getTime(),s=dateOf(r.start)?.getTime(),now=Date.now();if(!e)return '截止时间待公布';if(now>e)return '报名已结束';if(now<s)return `距开始 ${Math.ceil((s-now)/86400000)} 天`;let diff=e-now;let dd=Math.floor(diff/86400000),hh=Math.floor(diff%86400000/3600000);return dd>0?`剩 ${dd} 天 ${hh} 小时`:`剩 ${Math.max(0,hh)} 小时 ${Math.ceil(diff%3600000/60000)} 分`}
 function keyFor(r){return r.province+'|'+r.title}
 // Progress cards are derived ONLY from manually vetted records, never from search leads.
-const provinceStages={missing:'未录入公告',soon:'即将报名',open:'报名中',preexam:'待笔试',closed:'已截止',examday:'笔试当天',done:'笔试日期已过',unknown:'时间待核实'};
+const provinceStages={missing:'未录入公告',soon:'即将报名',open:'报名中',preexam:'待笔试',closed:'已截止',examday:'笔试当天',results:'成绩已出',done:'笔试日期已过',unknown:'时间待核实'};
 function recordProgress(r,now=Date.now()){
  const start=Date.parse(r.start||''),end=Date.parse(r.end||''),exam=Date.parse(r.exam||'');
+ // Only a verified batch-level score announcement yields the result stage.
+ if(r.scoreStatus==='published'&&Number.isFinite(exam)&&now>exam)return 'results';
  if(!Number.isFinite(start)||!Number.isFinite(end))return 'unknown';
  if(now<start)return 'soon';
  // A published opening date is sufficient even when the announcement gives no clock time.
@@ -310,7 +314,7 @@ function recordProgress(r,now=Date.now()){
 // 已发布的其他高校批次仍保留在全国公告，但不能当作吉林大学可报节点。
 function isPersonalIneligible(record){return ['ineligible_no_jlu','ineligible_school_scope'].includes(record?.personalEligibility)}
 function provinceUnavailable(records){return records.length>0&&records.every(isPersonalIneligible)}
-const provinceStagePriority={open:0,examday:1,soon:2,preexam:3,unknown:4,closed:5,done:6};
+const provinceStagePriority={open:0,examday:1,soon:2,preexam:3,results:4,unknown:5,closed:6,done:7};
 function provinceProgress(records,now=Date.now(),personal=false){
  if(!records.length)return {stage:'missing',record:null};
  const eligible=records.filter(record=>!isPersonalIneligible(record));
@@ -331,6 +335,7 @@ function progressNote(p,now=Date.now()){
   return upcoming.length?`分岗位 · 最近截止 ${shortProgressDate(upcoming[0].at)}`:`截止 ${shortProgressDate(r.end)}`;
  }
  if(p.stage==='preexam')return `${shortProgressDate(r.exam,/T00:00:00\+08:00$/.test(r.exam))} 笔试`;
+ if(p.stage==='results')return r.scorePublishedAt?`笔试成绩已出 · ${Number(r.scorePublishedAt.slice(5,7))}月${Number(r.scorePublishedAt.slice(8,10))}日公布`:'笔试成绩已出 · 发布日期待核实';
  if(p.stage==='closed')return '报名已结束 · 笔试时间待公布';
  if(p.stage==='examday')return `笔试日 ${shortProgressDate(r.exam,true)} · 详见准考证`;
  if(p.stage==='done')return `${shortProgressDate(r.exam,true)} 笔试日期已过`;
@@ -385,12 +390,13 @@ let provinceDoneExpanded=false;
 function renderProvinces(){
  const byProvince=new Map(dataset.provinces.map(name=>[name,dataset.records.filter(r=>r.province===name)]));
  const info=new Map([...byProvince].map(([name,records])=>[name,provinceProgress(records)]));
- const legend=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
+ const legend=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['results','成绩已出'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
  const count=stage=>[...info.values()].filter(p=>p.stage===stage).length;
  $('provinceLegend').innerHTML=legend.map(([stage,label])=>`<span class="prov-legend-chip stage-${stage}"><i aria-hidden="true"></i>${label}<b>${count(stage)}</b></span>`).join('');
  const card=name=>{
   const records=byProvince.get(name),item=info.get(name),stage=item.stage,detail=progressNote(item);
-  const extra=records.length>1?`${records.length} 条公告 · `:'';
+  const releasedCount=records.filter(r=>r.scoreStatus==='published').length;
+  const extra=(records.length>1?`${records.length} 条公告 · `:'')+(stage!=='results'&&releasedCount?`${releasedCount} 批成绩已出 · `:'');
   const unavailable=provinceUnavailable(records),availabilityText=unavailable?'吉大当前不可报 · ':'';
   const followed=watchedProvinces.has(name);return `<div class="prov-wrap"><button type="button" data-province="${escapeHTML(name)}" class="prov stage-${stage} ${state.province===name?'active':''}" aria-pressed="${state.province===name}" aria-label="${escapeHTML(name)}，${unavailable?'吉大当前不可报，':''}${escapeHTML(provinceStages[stage])}，${escapeHTML(extra+detail)}" title="${escapeHTML(availabilityText+extra+detail)}"><span class="prov-name">${escapeHTML(name)}</span><span class="prov-label">${escapeHTML(provinceStages[stage])}</span><small class="prov-meta">${escapeHTML(availabilityText+extra+detail)}</small></button><button type="button" class="prov-star ${followed?'watched':''}" data-watch="${escapeHTML(name)}" aria-label="${followed?'取消关注':'关注'}${escapeHTML(name)}" aria-pressed="${followed}" title="${followed?'取消关注':'加入我的关注'}">${followed?'★':'☆'}</button></div>`;
  };
@@ -405,9 +411,9 @@ function renderProvinces(){
    const cards=provinceDoneExpanded?`<div id="provinceDoneList" class="province-row">${names.map(card).join('')}</div>`:'<div id="provinceDoneList" hidden></div>';
    return `<section class="province-group province-done-group" aria-label="笔试已过省份">${heading}${toggle}${cards}</section>`;
   }
-  return `<section class="province-group" aria-label="${label}省份">${heading}<div class="province-row">${names.map(card).join('')}</div></section>`;
+  return `<section class="province-group${stage==='results'?' province-results-group':''}" aria-label="${label}省份">${heading}<div class="province-row">${names.map(card).join('')}</div></section>`;
  }).join('');
- $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">按进度分组，同组自动换行；笔试已过的省份可展开查看。</span></div>${sections}`;
+ $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">按公告批次核对成绩公布；已出成绩单列，笔试已过但成绩待核的省份可展开查看。</span></div>${sections}`;
  $('provinceGrid').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
  $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.watch));
 
