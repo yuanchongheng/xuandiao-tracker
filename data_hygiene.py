@@ -285,10 +285,8 @@ def reconcile_other_school_coverage(data, third):
     # Recompute generated coverage cards every run so stale cards disappear as
     # soon as a government/JLU/human-reviewed formal record exists.
     records[:] = [record for record in records if not record.get('coverageOnly')]
-    jlu_provinces = {
-        record.get('province') for record in records
-        if record.get('sourceTier') == 'jlu_fallback'
-    }
+    jlu_records = [record for record in records if record.get('sourceTier') == 'jlu_fallback']
+    jlu_provinces = {record.get('province') for record in jlu_records}
     formal_provinces = {record.get('province') for record in records}
 
     for province, items in by_province.items():
@@ -337,11 +335,25 @@ def reconcile_other_school_coverage(data, third):
             continue
         base = base_eligibility(record.get('eligibility', ''))
         province = record.get('province')
-        should_mark = province in third_provinces and province not in jlu_provinces
+        # A JLU notice for another batch in the same province must not make
+        # this batch appear personally available. Matching is by notice keywords
+        # when a batch has explicit personalMatchKeywords (e.g. 四川基层选调).
+        keywords = record.get('personalMatchKeywords') or []
+        matching_jlu = (
+            any(j.get('province') == province and
+                all(word in j.get('title', '') for word in keywords)
+                for j in jlu_records)
+            if keywords else province in jlu_provinces
+        )
+        should_mark = (province in third_provinces or bool(keywords)) and not matching_jlu
         if should_mark:
             record['personalEligibility'] = 'ineligible_no_jlu'
             record['eligibility'] = (
-                '【你的资格】当前不可报（个人跟踪口径）：其他高校已有该省2027届选调信息，但吉林大学就业网暂未发现对应公告；不代表官方明确排除吉林大学。'
+                ('【你的资格】当前不可报（个人跟踪口径）：'
+                 + ('本批次吉林大学就业网暂未发现对应公告；同省其他批次的吉林大学公告不代表本批次已开放。'
+                    if keywords else
+                    '其他高校已有该省2027届选调信息，但吉林大学就业网暂未发现对应公告；')
+                 + '不代表官方明确排除吉林大学。')
                 f'{NOTICE_MARKER}{base}'
             )
         else:
