@@ -21,6 +21,8 @@ class StaticUiRegressionTests(unittest.TestCase):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
         self.assertIn('dataset.records.filter(x=>x.province===province&&!isPersonalIneligible(x))', text)
         self.assertIn("const eligible=records.filter(record=>!isPersonalIneligible(record))", text)
+        self.assertIn("provinceProgress(rows,now,true)", text)
+        self.assertIn("const ranked=(personal&&eligible.length?eligible:records)", text)
         self.assertIn("provinceUnavailable(rows)?'吉林大学当前不可报 · 等待对应公告'", text)
 
     def test_national_notices_show_personal_unavailability(self):
