@@ -115,6 +115,29 @@ def build(check=False):
                 raise ValueError('Deadline must be after registration start: ' + entry['title'])
             if times['end'] and at > times['end']:
                 raise ValueError('Job deadline cannot exceed latest published end: ' + entry['title'])
+        # Score publication is evidence-led; the absence of an official notice is never proof of non-publication.
+        if entry.get('scoreStatus') not in (None, 'published'):
+            raise ValueError('Unsupported scoreStatus: ' + entry['title'])
+        if entry.get('scoreStatus') == 'published':
+            if not entry.get('exam'):
+                raise ValueError('Published score must have an exam date: ' + entry['title'])
+            for required in ('scoreEvidenceUrl', 'scoreQueryUrl', 'scoreSourceName', 'scoreCheckedAt', 'scoreNote'):
+                if not isinstance(entry.get(required), str) or not entry[required].strip():
+                    raise ValueError('Missing score evidence ' + required + ': ' + entry['title'])
+        for field in ('scorePublishedAt', 'scoreCheckedAt'):
+            if entry.get(field):
+                checked_day(entry[field], field)
+        if entry.get('scorePublishedAt') and entry.get('scoreStatus') != 'published':
+            raise ValueError('Score release date without verified status: ' + entry['title'])
+        if entry.get('scorePublishedAt') and entry['scorePublishedAt'] < entry['exam'][:10]:
+            raise ValueError('Score release date precedes exam: ' + entry['title'])
+        if entry.get('scorePublishedAt') and entry.get('scoreCheckedAt') and entry['scorePublishedAt'] > entry['scoreCheckedAt']:
+            raise ValueError('Score release date after evidence check: ' + entry['title'])
+        for field in ('scoreEvidenceUrl', 'scoreQueryUrl'):
+            if entry.get(field):
+                parsed = urlsplit(entry[field])
+                if parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password:
+                    raise ValueError('Unsafe score link: ' + entry['title'])
         key = entry['province'] + '|' + entry['title']
         if key in keys:
             raise ValueError('Duplicate record: ' + key)
