@@ -38,6 +38,21 @@ class StaticUiRegressionTests(unittest.TestCase):
         self.assertNotIn("dateOnly:!!r.startTimeUnknown", text)
 
 
+    def test_province_progress_shows_verified_score_results_separately(self):
+        import json
+        text = (ROOT / 'index.html').read_text(encoding='utf-8')
+        data = json.loads((ROOT / 'data.json').read_text(encoding='utf-8'))
+        self.assertIn("results:'成绩已出'", text)
+        self.assertIn("['results','成绩已出']", text)
+        self.assertIn("if(r.scoreStatus==='published'&&Number.isFinite(exam)&&now>exam)return 'results';", text)
+        self.assertIn("results:4,unknown:5,closed:6,done:7", text)
+        self.assertIn("stage==='results'?' province-results-group':''", text)
+        self.assertIn("if(stage==='done')", text)
+        self.assertIn("releasedCount=records.filter(r=>r.scoreStatus==='published').length", text)
+        released = {r['province'] for r in data['records'] if r.get('scoreStatus') == 'published'}
+        self.assertEqual(released, {'北京', '湖北', '湖南'})
+        # Active batches take precedence, but prior batches' released scores remain visible.
+        self.assertIn("stage!=='results'&&releasedCount", text)
 
 if __name__ == '__main__':
     unittest.main()
