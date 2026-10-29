@@ -2,6 +2,8 @@ import unittest
 
 import jlu_auto_publish
 import jlu_timing_fix
+import data_hygiene
+from source_policy import source_tier
 import monitor
 from province_utils import province_from_title
 
@@ -94,6 +96,48 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertIn('不代表官方明确排除吉林大学', record['eligibility'])
         self.assertTrue(record['startDateOnly'])
         self.assertTrue(record['examDateOnly'])
+
+
+    def test_sichuan_personal_scope_is_batch_specific(self):
+        records = [
+            {'province': '四川', 'title': '四川省面向吉林大学选调2027届优秀大学毕业生',
+             'sourceTier': 'jlu_fallback', 'eligibility': '已发布急需紧缺专业定向批次'},
+            {'province': '四川', 'title': '四川省2027年度选调优秀大学毕业生到基层工作公告',
+             'sourceTier': 'government', 'eligibility': '基层选调条件',
+             'personalMatchKeywords': ['基层']},
+        ]
+        data = {'records': records}
+        data_hygiene.reconcile_other_school_coverage(data, {'items': []})
+        self.assertEqual(records[1]['personalEligibility'], 'ineligible_no_jlu')
+        self.assertIn('同省其他批次', records[1]['eligibility'])
+        records.append({
+            'province': '四川', 'title': '四川省2027年度基层选调面向吉林大学公告',
+            'sourceTier': 'jlu_fallback', 'eligibility': '基层选调吉大公告',
+        })
+        data_hygiene.reconcile_other_school_coverage(data, {'items': []})
+        self.assertNotIn('personalEligibility', records[1])
+        self.assertEqual(records[1]['eligibility'], '基层选调条件')
+
+    def test_sichuan_official_exam_portal_exact_host(self):
+        self.assertEqual(source_tier('https://www.scpta.com.cn/front/News/info/d70ea76551094491ac8249c90eaf0040?t=56'), 'government')
+        self.assertIsNone(source_tier('https://not-scpta.com.cn/front/News/info/abc'))
+        self.assertIsNone(source_tier('https://scpta.com.cn.evil.example/front/News/info/abc'))
+
+    def test_sichuan_grassroots_dates_do_not_borrow_emergency_batch(self):
+        from pathlib import Path
+        import json
+        data = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
+        notices = [r for r in data['records'] if r['province'] == '四川']
+        self.assertEqual(len(notices), 2)
+        grassroots = next(r for r in notices if '基层工作公告' in r['title'])
+        self.assertEqual(grassroots['start'], '2026-11-03T00:00:00+08:00')
+        self.assertTrue(grassroots['startDateOnly'])
+        self.assertEqual(grassroots['end'], '2026-11-09T18:00:00+08:00')
+        self.assertEqual(grassroots['exam'], '2026-12-06T00:00:00+08:00')
+        self.assertTrue(grassroots['examDateOnly'])
+        self.assertEqual(grassroots['personalMatchKeywords'], ['基层'])
+        self.assertEqual(grassroots['personalEligibility'], 'ineligible_no_jlu')
+        self.assertIn('原文直连无法打开', grassroots['notes'])
 
 
 
