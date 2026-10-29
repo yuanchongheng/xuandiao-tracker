@@ -6,6 +6,9 @@ scope/attachments for publication. Never trust arbitrary *.edu.cn hosts.
 """
 from urllib.parse import urlsplit
 
+# Sichuan's provincial personnel-examination portal uses a government-run .com.cn host.
+# This exact hostname is approved, not the entire scpta.com.cn namespace.
+GOVERNMENT_EXAM_HOSTS = frozenset({'www.scpta.com.cn'})
 JLU_HOSTS = frozenset({'jdjywpt.jlu.edu.cn', 'jdjyw.jlu.edu.cn'})
 OTHER_UNIVERSITY_HOSTS = frozenset({
     'career.csu.edu.cn',
@@ -40,7 +43,7 @@ def source_tier(url):
         host = parsed.hostname.lower()
     except (ValueError, TypeError, AttributeError):
         return None
-    if host == 'gov.cn' or host.endswith('.gov.cn'):
+    if host == 'gov.cn' or host.endswith('.gov.cn') or host in GOVERNMENT_EXAM_HOSTS:
         return 'government'
     if host in JLU_HOSTS:
         return 'jlu_fallback'
