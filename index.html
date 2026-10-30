@@ -95,6 +95,10 @@ body{background:radial-gradient(ellipse 760px 420px at 84% 16%,#e7efff70,transpa
 #provinceGrid .province-group-count{background:var(--stage-bg,#eef2f7);color:var(--stage-ink,#53667b);border:1px solid var(--stage-line,#dde6f0);padding:2px 8px;border-radius:99px;font-size:11px;font-weight:750}
 #provinceGrid .province-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:11px;min-width:0}
 #provinceGrid .province-row .prov-wrap{min-width:0;flex-direction:column}
+#provinceGrid .prov-record{min-height:143px}
+#provinceGrid .prov-batch{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;min-width:0;max-width:100%;font-size:11px;color:#4c657c;overflow-wrap:anywhere}
+#provinceGrid .prov-score-pill{display:inline-flex;align-items:center;border:1px solid #b9e4cc;border-radius:99px;padding:2px 8px;background:#e4f7ed;color:#14744d;font-size:10px;font-weight:800}
+#provinceGrid .province-stack-copy small{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #provinceGrid .province-batches{border:1px solid #dfe9f0;border-radius:0 0 12px 12px;background:#fff;margin-top:4px;padding:6px 7px;font-size:10px;color:#4b6980}
 #provinceGrid .province-batches summary{font-weight:750;cursor:pointer;list-style:revert;margin-left:11px;line-height:1.5}
 #provinceGrid .province-batches-list{display:grid;gap:5px;margin-top:6px}
@@ -262,7 +266,7 @@ body.xd-collapsed .xd-sidebar{width:var(--xd-sidebar-mini)}body.xd-collapsed .xd
 <div class="notice"><strong>ⓘ</strong><div><b>时间提醒：</b>日历仅展示已录入的明确日期，尚未查全的地区不会自动补写；报名与考试安排以公告原文及准考证为准。<details class="notice-more"><summary>查看信息来源和更新方式</summary><p>来源三级顺序：政府官网优先，吉林大学就业网其次；前两者无可用公告时，检索经过域名核对的其他高校官方就业网作第三来源。第三来源必须逐条核验适用学校、原文与附件，不采用商业转载。自动发现与正式数据分开，监测失败不等于没有公告；政府来源候选需人工核验，吉林大学就业网通知按本站规则自动入库并仅提取正文明确时间。部分省份按高校、岗位和批次发布不同公告，时间及资格须按对应公告、岗位表核对。倒计时按设备时间计算。<span id="dataNotice"></span></p></details></div></div>
 <section class="watch-section" id="watchlist" aria-label="我的关注与报考清单"><div class="sectionhead"><div><span class="section-kicker">MY LIST / 个人关注</span><h2>我的关注 · 报考清单 <span class="watch-headmark">把重要省份放在最前面</span></h2><p>收藏感兴趣的地区，集中查看下一关键日期，并自行标记报考进度。</p></div><span class="hint" id="watchCount">尚未关注</span></div><div class="watch-intro"><span>★ 省份卡片右上角可添加关注；报考清单按你手动标记的「关注中、正在报名、已报名」分组。卡片颜色仍表示公告的报名/笔试阶段，两者互不影响。</span><a href="#province-section">去选择省份 →</a></div><div id="watchAlerts" class="watch-alerts" role="status" aria-live="polite"></div><div id="watchGrid" class="watch-groups"><div class="watch-empty"><b>还没有关注的地区</b><p>先在省份总览中点亮星标，这里就会显示你关心的时间安排。</p><a href="#province-section">去关注省份 →</a></div></div></section>
 <section aria-label="时间轴与日历" id="schedule" class="schedule-section"><div class="sectionhead"><div><span class="section-kicker">YOUR SCHEDULE / 重要节点</span><h2>报名与考试，一眼掌握<span class="heading-star" aria-hidden="true">✳</span></h2><p>所有节点均取自已经录入的公告资料；日期变动请以公告原文为准。</p></div><span class="hint" id="scheduleHint">正在整理关键节点</span></div><div class="schedule-legend" aria-label="日期类型图例"><span><i class="legend-dot start"></i>报名开始</span><span><i class="legend-dot end"></i>报名截止</span><span><i class="legend-dot exam"></i>笔试安排</span><span><i class="legend-dot deadline"></i>分岗位截止</span></div><div class="schedule-layout"><section class="schedule-panel timeline-panel"><div class="panel-head"><div><span class="panel-eyebrow">01 / MILESTONES</span><h3>近期时间轴</h3><p>临近的节点排在前面，已过节点放在后面。</p></div><span class="panel-symbol" aria-hidden="true">↗</span></div><div id="timelineList" class="timelinelist"><div class="timeline-empty">正在整理关键时间节点…</div></div></section><section class="schedule-panel calendar-panel"><div class="panel-head"><div><span class="panel-eyebrow">02 / CALENDAR</span><h3>月度日历</h3><p>彩色小圆点标注关键日期，点选日期查看安排。</p></div><span class="panel-symbol calendar-symbol" aria-hidden="true">▦</span></div><div class="calendar-toolbar"><strong id="calendarMonth">2026年9月</strong><div class="cal-nav"><button type="button" id="calPrev" aria-label="上个月">‹</button><button type="button" id="calToday">近期</button><button type="button" id="calNext" aria-label="下个月">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div id="calendarBoard" class="calendarboard" aria-label="日期表"><div class="calendar-empty">正在生成日历…</div></div><div class="day-agenda"><div class="agenda-heading"><b id="selectedDayTitle">当日安排</b><small id="selectedDayCount">请选择日期</small></div><div id="selectedDayEvents" class="day-agenda-list"><div class="agenda-empty">点击日历中有圆点的日期查看详情</div></div></div></section></div><p class="schedule-note">仅展示已录入且有明确日期的节点；未知时刻不作推测。其他高校的校内截止不能代替省级报名截止，第三来源须人工核验后才进入日历。</p></section>
-<section aria-label="地区导航" id="province-section"><div class="sectionhead"><div><h2>各省选调进度 <span class="province-headmark">定向与常规分批次</span></h2><p>同省定向、常规及不同批次分别列明高校与时间；点击省份查看各批次公告和日历。</p></div><span class="hint" id="provinceHint">选择地区筛选</span></div><div id="provinceLegend" class="province-legend" aria-label="省份进度颜色说明"></div><p class="province-disclaimer">说明：“未录入”只表示本站尚无已核验公告，并不代表当地未发布；同省有多批次时优先显示正在报名等近期节点，具体以对应公告为准。</p><div id="provinceGrid" class="provinces"></div></section>
+<section aria-label="地区导航" id="province-section"><div class="sectionhead"><div><h2>各省选调进度 <span class="province-headmark">定向与常规分批次</span></h2><p>同省定向、常规及不同批次分别列明高校与时间；点击省份查看各批次公告和日历。</p></div><span class="hint" id="provinceHint">选择地区筛选</span></div><div id="provinceLegend" class="province-legend" aria-label="省份进度颜色说明"></div><p class="province-disclaimer">说明：“未录入”仅表示本站没有相应已核验公告。每条公告／批次独立归组，笔试已结束统一归入“笔试已过”；成绩已出仅作附加标记，不与同省其他批次混合。</p><div id="provinceGrid" class="provinces"></div></section>
 <section id="announcements" aria-label="公告列表"><div class="sectionhead"><div><h2>公告详情与报名条件</h2><p>自动根据本机时间判断报名状态；点击卡片查看详细要求。</p></div><span class="hint" id="resultCount"></span></div><div class="filters"><label class="search"><input id="searchInput" placeholder="搜索省份 / 高校 / 专业 / 条件" aria-label="搜索公告"></label><select id="stateFilter" aria-label="报名状态"><option value="all">全部状态</option><option value="open">正在报名</option><option value="soon">即将报名</option><option value="closed">报名结束</option><option value="unknown">时间待定</option></select><select id="sortBy" aria-label="排序方式"><option value="deadline">按截止时间</option><option value="latest">按公告发布时间</option><option value="province">按省份</option></select><button class="btn" id="favFilter" type="button">☆ 仅看收藏</button><button class="btn" id="reset" type="button">清除筛选</button></div><div id="results" class="grid"></div></section>
 <section class="supplement-section" id="supplement" aria-label="其他高校补充来源"><div class="sectionhead"><div><span class="section-kicker">03 / OTHER UNIVERSITY SOURCES</span><h2>其他高校 · 补充来源</h2><p>独立展示第三来源信息，不进入下方待核验队列，也不自动写入报名及考试日历。</p></div><span class="hint" id="supplementCount">正在读取</span></div><div class="supplement-note">仅收集已列入白名单的其他高校官方就业网所出现的选调信息链接，供交叉查找原文。<strong>这里展示的是搜索/目录线索，不等于公告正文已核实，也不代表适用于所有高校。</strong>报名条件、考试时间和校内推荐截止请以对应省份公告、附件及本人学校通知为准。</div><div class="supplement-channels"><b>已配置的高校检索渠道（17校）：</b><span>电子科技大学</span><span>中国科学技术大学</span><span>华中科技大学</span><span>中南大学</span><span>北京大学</span><span>清华大学</span><span>中国人民大学</span><span>复旦大学</span><span>上海交通大学</span><span>浙江大学</span><span>南开大学</span><span>山东大学</span><span>哈尔滨工业大学</span><span>厦门大学</span><span>四川大学</span><span>兰州大学</span><span>武汉大学</span><small>17所高校分4批、随每天八次定时任务每3小时轮换搜索；另有8个目录每轮尝试检查。列入渠道不代表本轮全部检索成功、公告齐全或适用范围已核验。</small></div><div class="supplement-top"><span id="supplementChecked" class="muted">等待第三来源数据同步</span><div class="supplement-controls"><label for="supplementKeyword">搜索信息 <input id="supplementKeyword" type="search" placeholder="省份 / 公告标题 / 高校域名" aria-label="搜索补充信息"></label><label for="supplementProvince">筛选省份 <select id="supplementProvince" aria-label="筛选补充来源省份"><option value="全部">全部地区</option></select></label></div></div><div class="supplement-grid" id="supplementGrid"><div class="supplement-empty">第三来源数据读取中…</div></div><button type="button" id="supplementMore" class="supplement-more hidden">查看更多补充来源</button></section>
 <section id="review-queue" aria-label="待核验公告线索"><div class="sectionhead"><div><h2>自动发现 · 待核验公告线索</h2><p>这里只显示政府官网、吉林大学的待核验线索；其他高校信息请查看上方独立的「补充来源」模块。</p></div><span class="hint" id="candidateCount">尚未取得监测结果</span></div><div id="coverageBoard" class="coverage-board" aria-label="公告覆盖及搜索统计">
@@ -302,26 +306,32 @@ const statusNames={open:'正在报名',soon:'即将报名',closed:'报名结束'
 function remaining(r){let e=dateOf(r.end)?.getTime(),s=dateOf(r.start)?.getTime(),now=Date.now();if(!e)return '截止时间待公布';if(now>e)return '报名已结束';if(now<s)return `距开始 ${Math.ceil((s-now)/86400000)} 天`;let diff=e-now;let dd=Math.floor(diff/86400000),hh=Math.floor(diff%86400000/3600000);return dd>0?`剩 ${dd} 天 ${hh} 小时`:`剩 ${Math.max(0,hh)} 小时 ${Math.ceil(diff%3600000/60000)} 分`}
 function keyFor(r){return r.province+'|'+r.title}
 // Progress cards are derived ONLY from manually vetted records, never from search leads.
-const provinceStages={missing:'未录入公告',soon:'即将报名',open:'报名中',preexam:'待笔试',closed:'已截止',examday:'笔试当天',results:'成绩已出',done:'笔试日期已过',unknown:'时间待核实'};
+const provinceStages={missing:'未录入公告',soon:'即将报名',open:'报名中',preexam:'待笔试',closed:'已截止',examday:'笔试当天',done:'笔试已过',unknown:'时间待核实'};
 function recordProgress(r,now=Date.now()){
  const start=Date.parse(r.start||''),end=Date.parse(r.end||''),exam=Date.parse(r.exam||'');
- // Only a verified batch-level score announcement yields the result stage.
- if(r.scoreStatus==='published'&&Number.isFinite(exam)&&now>exam)return 'results';
+ // Each batch with a finished written exam must appear under "笔试已过".
+ // The fact that results were published is additional metadata, not a stage.
+ if(Number.isFinite(exam)){
+  const examEnd=Date.parse(r.examEnd||'');
+  const today=localParts(new Date(now).toISOString()).key,examDay=localParts(r.exam).key;
+  if(Number.isFinite(examEnd)){
+   if(now>examEnd)return 'done';
+   if(now>=exam)return 'examday';
+  }else{
+   if(today>examDay)return 'done';
+   if(today===examDay)return 'examday';
+  }
+ }
  if(!Number.isFinite(start)||!Number.isFinite(end))return 'unknown';
  if(now<start)return 'soon';
- // A published opening date is sufficient even when the announcement gives no clock time.
  if(now<=end)return 'open';
  if(!Number.isFinite(exam))return 'closed';
- if(now<exam)return 'preexam';
- const examEnd=Date.parse(r.examEnd||'');
- if(Number.isFinite(examEnd))return now<=examEnd?'examday':'done';
- // Midnight is a date-only placeholder; do not treat midnight as a verified test start time.
- return localParts(new Date(now).toISOString()).key===localParts(r.exam).key?'examday':'done';
+ return 'preexam';
 }
 // 已发布的其他高校批次仍保留在全国公告，但不能当作吉林大学可报节点。
 function isPersonalIneligible(record){return ['ineligible_no_jlu','ineligible_school_scope'].includes(record?.personalEligibility)}
 function provinceUnavailable(records){return records.length>0&&records.every(isPersonalIneligible)}
-const provinceStagePriority={open:0,examday:1,soon:2,preexam:3,results:4,unknown:5,closed:6,done:7};
+const provinceStagePriority={open:0,examday:1,soon:2,preexam:3,unknown:4,closed:5,done:6};
 function provinceProgress(records,now=Date.now(),personal=false){
  if(!records.length)return {stage:'missing',record:null};
  const eligible=records.filter(record=>!isPersonalIneligible(record));
@@ -342,10 +352,9 @@ function progressNote(p,now=Date.now()){
   return upcoming.length?`分岗位 · 最近截止 ${shortProgressDate(upcoming[0].at)}`:`截止 ${shortProgressDate(r.end)}`;
  }
  if(p.stage==='preexam')return `${shortProgressDate(r.exam,/T00:00:00\+08:00$/.test(r.exam))} 笔试`;
- if(p.stage==='results')return r.scorePublishedAt?`笔试成绩已出 · ${Number(r.scorePublishedAt.slice(5,7))}月${Number(r.scorePublishedAt.slice(8,10))}日公布`:'笔试成绩已出 · 发布日期待核实';
  if(p.stage==='closed')return '报名已结束 · 笔试时间待公布';
  if(p.stage==='examday')return `笔试日 ${shortProgressDate(r.exam,true)} · 详见准考证`;
- if(p.stage==='done')return `${shortProgressDate(r.exam,true)} 笔试日期已过`;
+ if(p.stage==='done')return `${shortProgressDate(r.exam,true)} 笔试已过${r.scoreStatus==='published'?' · 成绩已出':''}`;
  return '部分时间未公布或开始时刻待核';
 }
 function saveWatch(){try{localStorage.setItem(WATCH_KEY,JSON.stringify([...watchedProvinces]));localStorage.setItem(PROGRESS_KEY,JSON.stringify(applicationProgress))}catch{}}
@@ -393,42 +402,48 @@ function renderWatchlist(){
  document.querySelectorAll('.watch-show').forEach(b=>b.onclick=()=>showProvinceFromWatch(b.dataset.province));
 }
 function showProvinceFromWatch(p){state.province=p;state.filter='all';state.query='';state.onlyFavorites=false;$('searchInput').value='';$('stateFilter').value='all';calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#results').scrollIntoView({behavior:'smooth',block:'start'})}
-let provinceDoneExpanded=false;
+let provinceDoneExpanded=true;
 function renderProvinces(){
- const byProvince=new Map(dataset.provinces.map(name=>[name,dataset.records.filter(r=>r.province===name)]));
- const info=new Map([...byProvince].map(([name,records])=>[name,provinceProgress(records)]));
- const legend=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['results','成绩已出'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
- const count=stage=>[...info.values()].filter(p=>p.stage===stage).length;
- $('provinceLegend').innerHTML=legend.map(([stage,label])=>`<span class="prov-legend-chip stage-${stage}"><i aria-hidden="true"></i>${label}<b>${count(stage)}</b></span>`).join('');
- const card=name=>{
-  const records=byProvince.get(name),item=info.get(name),stage=item.stage,detail=progressNote(item);
-  const releasedCount=records.filter(r=>r.scoreStatus==='published').length;
-  const extra=(records.length>1?`${records.length} 条公告/批次 · `:'')+(stage!=='results'&&releasedCount?`${releasedCount} 批成绩已出 · `:'');
-  const unavailable=provinceUnavailable(records),availabilityText=unavailable?'吉大当前不可报 · ':'';
-  const batchDetails=records.length>1?`<details class="province-batches"><summary>${records.length} 个选调批次 · 分开查看</summary><div class="province-batches-list">${records.map(r=>`<button type="button" class="province-batch-open" data-record="${encodeURIComponent(keyFor(r))}"><b>${escapeHTML(r.type)}</b><small>${escapeHTML(stageLabel(recordProgress(r)))}</small></button>`).join('')}</div></details>`:'';
-  const followed=watchedProvinces.has(name);return `<div class="prov-wrap"><button type="button" data-province="${escapeHTML(name)}" class="prov stage-${stage} ${state.province===name?'active':''}" aria-pressed="${state.province===name}" aria-label="${escapeHTML(name)}，${unavailable?'吉大当前不可报，':''}${escapeHTML(provinceStages[stage])}，${escapeHTML(extra+detail)}" title="${escapeHTML(availabilityText+extra+detail)}"><span class="prov-name">${escapeHTML(name)}</span><span class="prov-label">${escapeHTML(provinceStages[stage])}</span><small class="prov-meta">${escapeHTML(availabilityText+extra+detail)}</small></button><button type="button" class="prov-star ${followed?'watched':''}" data-watch="${escapeHTML(name)}" aria-label="${followed?'取消关注':'关注'}${escapeHTML(name)}" aria-pressed="${followed}" title="${followed?'取消关注':'加入我的关注'}">${followed?'★':'☆'}</button>${batchDetails}</div>`;
+ const now=Date.now();
+ // A province may have several batches at different stages. Group each batch,
+ // never choose a single province-level representative for this overview.
+ const entries=dataset.records.map(record=>({province:record.province,record,stage:recordProgress(record,now)}));
+ const withRecords=new Set(entries.map(x=>x.province));
+ for(const province of dataset.provinces)if(!withRecords.has(province))entries.push({province,record:null,stage:'missing'});
+ const stages=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
+ const count=stage=>entries.filter(item=>item.stage===stage).length;
+ $('provinceLegend').innerHTML=stages.map(([stage,label])=>`<span class="prov-legend-chip stage-${stage}"><i aria-hidden="true"></i>${label}<b>${count(stage)}</b></span>`).join('');
+ const card=item=>{
+  const {province,record:r,stage}=item,watched=watchedProvinces.has(province),selected=state.province===province;
+  const eligibility=r?.personalEligibility==='ineligible_school_scope'?'吉大不在本批高校范围':isPersonalIneligible(r)?'吉大当前不可报':'';
+  const info=r?progressNote({record:r,stage},now):'暂无已核验公告';
+  const detail=[eligibility,info].filter(Boolean).join(' · ');
+  const name=r?r.title:province+'暂无已核验公告';
+  const batch=r?`<span class="prov-batch">${escapeHTML(r.type)}</span>`:'';
+  const score=r?.scoreStatus==='published'&&stage==='done'?`<span class="prov-score-pill">成绩已出${r.scorePublishedAt?' · '+escapeHTML(r.scorePublishedAt):''}</span>`:'';
+  const locator=r?`data-record="${escapeHTML(encodeURIComponent(keyFor(r)))}"`:`data-province="${escapeHTML(province)}"`;
+  return `<div class="prov-wrap"><button type="button" ${locator} class="prov prov-record stage-${stage} ${selected?'active':''}" aria-pressed="${selected}" aria-label="${escapeHTML(name+'，'+stageLabel(stage)+'，'+detail)}" title="${escapeHTML(name+' · '+detail)}"><span class="prov-name">${escapeHTML(province)}</span>${batch}<span class="prov-label">${escapeHTML(stageLabel(stage))}</span>${score}<small class="prov-meta">${escapeHTML(detail)}</small></button><button type="button" class="prov-star ${watched?'watched':''}" data-watch="${escapeHTML(province)}" aria-label="${watched?'取消关注':'关注'}${escapeHTML(province)}" aria-pressed="${watched}" title="${watched?'取消关注':'加入我的关注'}">${watched?'★':'☆'}</button></div>`;
  };
- const sections=legend.map(([stage,label])=>{
-  const names=dataset.provinces.filter(p=>info.get(p).stage===stage);
-  if(!names.length)return '';
-  const heading=`<div class="province-group-header"><i class="province-group-dot stage-${stage}" aria-hidden="true"></i><h3>${label}</h3><span class="province-group-count stage-${stage}">${names.length} 个地区</span></div>`;
+ const groups=stages.map(([stage,label])=>{
+  const items=entries.filter(item=>item.stage===stage);
+  if(!items.length)return '';
+  const heading=`<div class="province-group-header"><i class="province-group-dot stage-${stage}" aria-hidden="true"></i><h3>${label}</h3><span class="province-group-count stage-${stage}">${items.length} ${stage==='missing'?'个地区':'条公告/批次'}</span></div>`;
   if(stage==='done'){
-   const pile=names.slice(0,4).map(p=>`<span class="province-stack-card">${escapeHTML(p)}</span>`).join('');
-   const summary=names.slice(0,6).join('、')+(names.length>6?'等':'');
-   const toggle=`<button class="province-stack-toggle" type="button" aria-expanded="${provinceDoneExpanded}" aria-controls="provinceDoneList"><span class="province-stack-pile" aria-hidden="true">${pile}</span><span class="province-stack-copy"><strong>${provinceDoneExpanded?'笔试已过 · 已展开':'笔试已过 · 已折叠收纳'}</strong><small>${escapeHTML(summary)}</small></span><span class="province-stack-action">${provinceDoneExpanded?'收起 ↑':'展开全部 ↓'}</span></button>`;
-   const cards=provinceDoneExpanded?`<div id="provinceDoneList" class="province-row">${names.map(card).join('')}</div>`:'<div id="provinceDoneList" hidden></div>';
-   return `<section class="province-group province-done-group" aria-label="笔试已过省份">${heading}${toggle}${cards}</section>`;
+   const pile=items.slice(0,4).map(item=>`<span class="province-stack-card">${escapeHTML(item.province)}</span>`).join('');
+   const summary=items.slice(0,6).map(item=>item.province+'·'+item.record.type).join('、')+(items.length>6?'等':'');
+   const toggle=`<button class="province-stack-toggle" type="button" aria-expanded="${provinceDoneExpanded}" aria-controls="provinceDoneList"><span class="province-stack-pile" aria-hidden="true">${pile}</span><span class="province-stack-copy"><strong>${provinceDoneExpanded?'笔试已过 · 已展开':'笔试已过 · 已收起'}</strong><small title="${escapeHTML(summary)}">${escapeHTML(summary)}</small></span><span class="province-stack-action">${provinceDoneExpanded?'收起 ↑':'展开全部 ↓'}</span></button>`;
+   const body=provinceDoneExpanded?`<div id="provinceDoneList" class="province-row">${items.map(card).join('')}</div>`:'<div id="provinceDoneList" hidden></div>';
+   return `<section class="province-group province-done-group" aria-label="笔试已过批次">${heading}${toggle}${body}</section>`;
   }
-  return `<section class="province-group${stage==='results'?' province-results-group':''}" aria-label="${label}省份">${heading}<div class="province-row">${names.map(card).join('')}</div></section>`;
+  return `<section class="province-group" aria-label="${label}批次">${heading}<div class="province-row">${items.map(card).join('')}</div></section>`;
  }).join('');
- $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">按公告批次核对成绩公布；已出成绩单列，笔试已过但成绩待核的省份可展开查看。</span></div>${sections}`;
- $('provinceGrid').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
+ $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">每条公告和批次独立归组；已考完统一进入“笔试已过”，成绩已出仅在卡片上标记。</span></div>${groups}`;
+ $('provinceGrid').querySelectorAll('.prov-record[data-record]').forEach(b=>b.onclick=()=>openDetail(decodeURIComponent(b.dataset.record)));
+ $('provinceGrid').querySelectorAll('.prov[data-province]').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
  $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.watch));
- $('provinceGrid').querySelectorAll('.province-batch-open').forEach(b=>b.onclick=()=>openDetail(decodeURIComponent(b.dataset.record)));
-
  const stackToggle=$('provinceGrid').querySelector('.province-stack-toggle');
  if(stackToggle)stackToggle.onclick=()=>{provinceDoneExpanded=!provinceDoneExpanded;renderProvinces();};
- $('provinceHint').textContent=state.province==='全部'?'已按进度分组显示':'当前：'+state.province;
+ $('provinceHint').textContent=state.province==='全部'?'按每条公告/批次独立分组':'当前：'+state.province+'（各批次分别归组）';
 }
 
 function renderStats(){let all=dataset.records;$('provinceTotal').textContent=dataset.provinces.length;$('releasedTotal').textContent=new Set(all.map(r=>r.province)).size;$('openTotal').textContent=all.filter(r=>statusOf(r)==='open').length;$('upcomingTotal').textContent=all.filter(r=>statusOf(r)==='soon').length;let asof=dataset.asOf?dateOf(dataset.asOf).toLocaleString('zh-CN',{timeZone:TZ,year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}):'未注明';$('asof').textContent=`正式资料核验：${asof}（北京时间） · 与自动线索分开`;$('dataNotice').textContent=dataset.notice||'';}
