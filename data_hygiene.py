@@ -333,6 +333,10 @@ def reconcile_other_school_coverage(data, third):
     for record in records:
         if record.get('coverageOnly'):
             continue
+        # Official school-list exclusion is an independent, manually verified fact.
+        # Do not treat it as a reversible missing-JLU-notice marker.
+        if record.get('personalEligibility') == 'ineligible_school_scope':
+            continue
         base = base_eligibility(record.get('eligibility', ''))
         province = record.get('province')
         # A JLU notice for another batch in the same province must not make
