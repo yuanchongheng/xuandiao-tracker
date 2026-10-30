@@ -38,28 +38,64 @@ class StaticUiRegressionTests(unittest.TestCase):
         self.assertNotIn("dateOnly:!!r.startTimeUnknown", text)
 
 
-    def test_province_progress_shows_verified_score_results_separately(self):
+    def test_completed_exams_belong_to_past_section_per_batch(self):
         import json
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
         data = json.loads((ROOT / 'data.json').read_text(encoding='utf-8'))
-        self.assertIn("results:'成绩已出'", text)
-        self.assertIn("['results','成绩已出']", text)
-        self.assertIn("if(r.scoreStatus==='published'&&Number.isFinite(exam)&&now>exam)return 'results';", text)
-        self.assertIn("results:4,unknown:5,closed:6,done:7", text)
-        self.assertIn("stage==='results'?' province-results-group':''", text)
-        self.assertIn("if(stage==='done')", text)
-        self.assertIn("releasedCount=records.filter(r=>r.scoreStatus==='published').length", text)
-        released = {r['province'] for r in data['records'] if r.get('scoreStatus') == 'published'}
-        self.assertEqual(released, {'北京', '湖北', '湖南'})
-        # Active batches take precedence, but prior batches' released scores remain visible.
-        self.assertIn("stage!=='results'&&releasedCount", text)
-    def test_overview_keeps_each_selection_track_clickable(self):
+        self.assertIn("if(now>examEnd)return 'done';", text)
+        self.assertIn("if(today>examDay)return 'done';", text)
+        self.assertNotIn("return 'results'", text)
+        self.assertNotIn("['results','成绩已出']", text)
+        self.assertIn("const entries=dataset.records.map(record=>", text)
+        self.assertIn("const items=entries.filter(item=>item.stage===stage)", text)
+        self.assertIn("let provinceDoneExpanded=true;", text)
+        self.assertIn("r?.scoreStatus==='published'&&stage==='done'", text)
+        self.assertEqual(len(data['provinces']), 31)
+        self.assertEqual(len([r for r in data['records'] if r['province'] == '四川']), 2)
+
+    def test_each_selection_track_opens_own_detail(self):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
-        self.assertIn('class="province-batches"', text)
-        self.assertIn('class="province-batch-open"', text)
-        self.assertIn('data-record="${encodeURIComponent(keyFor(r))}"', text)
+        self.assertIn('data-record="${escapeHTML(encodeURIComponent(keyFor(r)))}"', text)
         self.assertIn("openDetail(decodeURIComponent(b.dataset.record))", text)
-        self.assertIn("records.length>1?", text)
+        self.assertIn("toggleProvinceWatch(b.dataset.watch)", text)
+        self.assertIn("stage==='done'", text)
+
+    def test_progress_classification_of_finished_and_upcoming_exams(self):
+        import re
+        import shutil
+        import subprocess
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is not installed')
+        html = (ROOT / 'index.html').read_text(encoding='utf-8')
+        match = re.search(r'function recordProgress\(r,now=Date\.now\(\)\)\{[\s\S]*?\n\}', html)
+        self.assertIsNotNone(match)
+        javascript = """
+        function localParts(date) {
+            const vals={};
+            const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'});
+            for (const v of fmt.formatToParts(new Date(date))) if(v.type!=='literal') vals[v.type]=v.value;
+            return {key:vals.year+'-'+vals.month+'-'+vals.day};
+        }
+        """ + match.group(0) + """
+        const time=Date.parse('2026-10-30T12:00:00+08:00');
+        const cases=[
+            [{start:'2026-10-08T00:00:00+08:00',end:'2026-10-14T18:00:00+08:00',exam:'2026-10-24T00:00:00+08:00'},'done'],
+            [{start:'2026-11-03T00:00:00+08:00',end:'2026-11-09T18:00:00+08:00',exam:'2026-12-06T00:00:00+08:00'},'soon'],
+            [{start:'2026-09-20T09:00:00+08:00',end:'2026-09-29T17:00:00+08:00',exam:'2026-10-11T00:00:00+08:00',scoreStatus:'published'},'done'],
+            [{start:'2026-10-08T08:30:00+08:00',end:'2026-10-17T17:30:00+08:00',exam:'2026-11-01T09:00:00+08:00',examEnd:'2026-11-01T11:30:00+08:00'},'preexam'],
+            [{start:'',end:'',exam:''},'unknown'],
+            [{start:'2026-09-20T09:00:00+08:00',end:'2026-09-29T17:00:00+08:00',exam:'2026-10-30T00:00:00+08:00'},'examday']
+        ];
+        for(const [record,expected] of cases){
+            const actual=recordProgress(record,time);
+            if(actual!==expected)throw new Error(expected+' expected, got '+actual+': '+JSON.stringify(record));
+        }
+        const card={start:'2026-10-08T08:30:00+08:00',end:'2026-10-17T17:30:00+08:00',exam:'2026-11-01T09:00:00+08:00',examEnd:'2026-11-01T11:30:00+08:00'};
+        if(recordProgress(card,Date.parse('2026-11-01T10:00:00+08:00'))!=='examday')throw new Error('during exam');
+        if(recordProgress(card,Date.parse('2026-11-01T12:00:00+08:00'))!=='done')throw new Error('after exam');
+        """
+        subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True)
 
 
 if __name__ == '__main__':
