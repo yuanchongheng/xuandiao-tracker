@@ -191,6 +191,25 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertIn('原文直连无法打开', grassroots['notes'])
 
 
+    def test_2027_selection_tracks_are_independent(self):
+        import json
+        from pathlib import Path
+        records = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))['records']
+        expected = {'甘肃': {'targeted', 'general'}, '浙江': {'general', 'targeted-shortage'}, '山东': {'first-targeted', 'second-targeted', 'second-general'}}
+        for province, batches in expected.items():
+            rows = [r for r in records if r['province'] == province]
+            self.assertEqual({r['batchId'] for r in rows}, batches)
+            self.assertEqual(len({r['source'] for r in rows}), 1)
+            self.assertEqual(len({r['noticeGroup'] for r in rows}), 1)
+            self.assertEqual(len({r['title'] for r in rows}), len(rows))
+        for r in records:
+            if r.get('province') == '山东' and r.get('batchId', '').startswith('second-'):
+                self.assertFalse(any(r.get(f) for f in ('start', 'end', 'exam', 'examEnd')))
+                self.assertEqual(r['personalEligibility'], 'ineligible_no_jlu')
+                self.assertIn('另行通知', r['examText'] if '另行通知' in r['examText'] else '另行通知')
+        self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='浙江'), 850)
+        self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='甘肃'), 600)
+
 
 if __name__ == '__main__':
     unittest.main()
