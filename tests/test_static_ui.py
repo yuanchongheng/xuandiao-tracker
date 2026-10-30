@@ -17,13 +17,19 @@ class StaticUiRegressionTests(unittest.TestCase):
             self.assertIn('yr=mo>=8?2026:2027', text)
 
 
-    def test_watchlist_reminders_exclude_other_school_batches(self):
+    def test_watchlist_tracks_specific_notice_batches_without_cross_reminders(self):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
-        self.assertIn('dataset.records.filter(x=>x.province===province&&!isPersonalIneligible(x))', text)
-        self.assertIn("const eligible=records.filter(record=>!isPersonalIneligible(record))", text)
-        self.assertIn("provinceProgress(rows,now,true)", text)
-        self.assertIn("const ranked=(personal&&eligible.length?eligible:records)", text)
-        self.assertIn("provinceUnavailable(rows)?'吉林大学当前不可报 · 等待对应公告'", text)
+        self.assertIn("const WATCH_KEY='xd_watched_batches_v2'", text)
+        self.assertIn("const recordsByKey=new Map(dataset.records.map(r=>[keyFor(r),r]))", text)
+        self.assertIn("if(!record||isPersonalIneligible(record))return [];", text)
+        self.assertIn("const stage=recordProgress(record,now),events=watchEvents(record,now)", text)
+        self.assertIn("const groups=[['open','报名中']", text)
+        self.assertIn("['done','笔试已过']", text)
+        self.assertIn("data-watch-key", text)
+        self.assertIn("toggleWatchKey(decodeURIComponent(b.dataset.watchKey))", text)
+        self.assertNotIn("watchedProvinces", text)
+        self.assertNotIn("toggleProvinceWatch", text)
+
 
     def test_national_notices_show_personal_unavailability(self):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
@@ -57,7 +63,7 @@ class StaticUiRegressionTests(unittest.TestCase):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
         self.assertIn('data-record="${escapeHTML(encodeURIComponent(keyFor(r)))}"', text)
         self.assertIn("openDetail(decodeURIComponent(b.dataset.record))", text)
-        self.assertIn("toggleProvinceWatch(b.dataset.watch)", text)
+        self.assertIn("toggleWatchKey(decodeURIComponent(b.dataset.watchKey))", text)
         self.assertIn("stage==='done'", text)
 
     def test_progress_classification_of_finished_and_upcoming_exams(self):
@@ -96,6 +102,83 @@ class StaticUiRegressionTests(unittest.TestCase):
         if(recordProgress(card,Date.parse('2026-11-01T12:00:00+08:00'))!=='done')throw new Error('after exam');
         """
         subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True)
+
+    def test_batch_watch_migration_and_isolated_toggle_in_node(self):
+        import shutil
+        import subprocess
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is not installed')
+        javascript = r"""
+        const fs=require('fs'),vm=require('vm'),assert=require('assert');
+        const html=fs.readFileSync('index.html','utf8');
+        const before=html.indexOf("const WATCH_KEY='xd_watched_batches_v2'");
+        const beforeEnd=html.indexOf('function validData(d){',before);
+        const watch=html.indexOf('function saveWatch(){',beforeEnd);
+        const after=html.indexOf('let provinceDoneExpanded=true;',watch);
+        assert(before>=0&&beforeEnd>before&&watch>beforeEnd&&after>watch);
+        const src=html.slice(before,beforeEnd)+html.slice(watch,after);
+        const sc={province:'四川',type:'定向',title:'四川定向选调',exam:'2026-10-24T00:00:00+08:00',end:'2026-10-14T18:00:00+08:00',source:'https://example.org/sc1',verified:'2026-10-24'};
+        const sb={province:'四川',type:'基层',title:'四川基层选调',start:'2026-11-03T00:00:00+08:00',end:'2026-11-09T18:00:00+08:00',exam:'2026-12-06T00:00:00+08:00',source:'https://example.org/sc2',verified:'2026-10-29',personalEligibility:'ineligible_no_jlu'};
+        const ln={province:'辽宁',type:'定向',title:'辽宁定向选调',source:'https://example.org/ln',verified:'2026-10-21'};
+        const records=[sc,sb,ln],storage=new Map([
+          ['xd_watched_provinces_v1',JSON.stringify(['四川','辽宁'])],
+          ['xd_application_progress_v1',JSON.stringify({'四川':'正在报名','辽宁':'已报名'})]
+        ]);
+        const elements=new Map();
+        const ctx={
+          dataset:{provinces:['四川','辽宁'],records},localStorage:{
+            getItem:k=>storage.has(k)?storage.get(k):null,
+            setItem:(k,v)=>storage.set(k,v)
+          },
+          validData:()=>false,keyFor:r=>r.province+'|'+r.title,
+          recordProgress:r=>r.title==='四川定向选调'?'done':r.title==='四川基层选调'?'soon':'unknown',
+          isPersonalIneligible:r=>!!r&&r.personalEligibility==='ineligible_no_jlu',
+          progressNote:()=> '当前批次',shortProgressDate:()=> '11月3日',
+          dateFmt:t=>t,stageLabel:x=>({done:'笔试已过',soon:'即将报名',unknown:'时间待核'})[x]||x,
+          safeUrl:x=>x,escapeHTML:x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'),
+          renderProvinces:()=>{},openDetail:()=>{},
+          $:id=>{if(!elements.has(id))elements.set(id,{innerHTML:'',textContent:'',querySelectorAll:()=>[]});return elements.get(id)},
+          document:{querySelectorAll:()=>[]},state:{}
+        };
+        vm.createContext(ctx);
+        vm.runInContext(src,ctx);
+        let watched=JSON.parse(storage.get('xd_watched_batches_v2'));
+        assert(watched.includes('@province|四川')&&!watched.includes('四川|四川定向选调'));
+        assert(watched.includes('辽宁|辽宁定向选调'));
+        vm.runInContext('renderWatchlist()',ctx);
+        assert(elements.get('watchGrid').innerHTML.includes('请选择具体批次'));
+        vm.runInContext("toggleWatchKey('四川|四川定向选调')",ctx);
+        watched=JSON.parse(storage.get('xd_watched_batches_v2'));
+        assert(watched.includes('四川|四川定向选调')&&!watched.includes('四川|四川基层选调'));
+        assert(!watched.includes('@province|四川'));
+        assert.equal(ctx.applicationProgress['四川|四川定向选调'],'正在报名');
+        let rendered=elements.get('watchGrid').innerHTML;
+        assert(rendered.includes('四川定向选调')&&!rendered.includes('四川基层选调'));
+        assert(rendered.includes('笔试已过'));
+        vm.runInContext("toggleWatchKey('四川|四川基层选调')",ctx);
+        watched=JSON.parse(storage.get('xd_watched_batches_v2'));
+        assert(watched.includes('四川|四川定向选调')&&watched.includes('四川|四川基层选调'));
+        rendered=elements.get('watchGrid').innerHTML;
+        assert(rendered.includes('四川定向选调')&&rendered.includes('四川基层选调'));
+        assert(rendered.includes('即将报名')&&rendered.includes('笔试已过'));
+        assert.equal(ctx.applicationProgress['四川|四川定向选调'],'正在报名');
+        assert.equal(ctx.applicationProgress['四川|四川基层选调'],'关注中');
+        const blocked=vm.runInContext("watchEvents(dataset.records[1],Date.parse('2026-10-30T12:00:00+08:00'))",ctx);
+        assert.equal(blocked.length,0);
+        vm.runInContext("toggleWatchKey('四川|四川基层选调')",ctx);
+        watched=JSON.parse(storage.get('xd_watched_batches_v2'));
+        assert(watched.includes('四川|四川定向选调')&&!watched.includes('四川|四川基层选调'));
+        // Reloaded data must never re-migrate the old province bookmark into both batches.
+        vm.runInContext(src.replace('let watchedItems=new Set(),applicationProgress={};','watchedItems=new Set();applicationProgress={};')
+                        .replace("const WATCH_KEY='xd_watched_batches_v2',PROGRESS_KEY='xd_application_progress_batches_v2';","")
+                        .replace("const LEGACY_WATCH_KEY='xd_watched_provinces_v1',LEGACY_PROGRESS_KEY='xd_application_progress_v1';","")
+                        .replace("let customData=null;","customData=null;"),ctx);
+        watched=JSON.parse(storage.get('xd_watched_batches_v2'));
+        assert.equal(watched.filter(x=>x.startsWith('四川|')).length,1);
+        """
+        subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True, cwd=ROOT)
+
 
 
 if __name__ == '__main__':
