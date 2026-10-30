@@ -230,6 +230,19 @@
       ]
     },
     {
+      "province": "江苏",
+      "kind": "article",
+      "name": "江苏省委组织部2027乡镇（街道）选调报名补充公告（监测后续更正）",
+      "url": "https://www.jszzb.gov.cn/tzgg/art/2026/art_e57bbc5ce42c49c288cbec425f749986.html",
+      "fallbacks": [
+        {
+          "url": "https://www.jsxf.gov.cn/tzgg/art/2026/art_e57bbc5ce42c49c288cbec425f749986.html",
+          "kind": "article",
+          "name": "江苏先锋网：同篇官方公告备用入口"
+        }
+      ]
+    },
+    {
       "province": "四川",
       "kind": "article",
       "name": "吉林大学备用：四川面向吉林大学2027选调公告",
