@@ -339,10 +339,14 @@ def reconcile_other_school_coverage(data, third):
         # this batch appear personally available. Matching is by notice keywords
         # when a batch has explicit personalMatchKeywords (e.g. 四川基层选调).
         keywords = record.get('personalMatchKeywords') or []
+        # A province-wide JLU notice may cover both batches, but a batch-specific
+        # notice must only clear the corresponding batch's personal marker.
+        shared_title = record.get('personalMatchSharedTitle') or ''
         matching_jlu = (
-            any(j.get('province') == province and
+            any(j.get('province') == province and (
                 all(word in j.get('title', '') for word in keywords)
-                for j in jlu_records)
+                or (shared_title and shared_title in j.get('title', ''))
+            ) for j in jlu_records)
             if keywords else province in jlu_provinces
         )
         should_mark = (province in third_provinces or bool(keywords)) and not matching_jlu
