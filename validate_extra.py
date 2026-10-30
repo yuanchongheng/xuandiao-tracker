@@ -17,7 +17,7 @@ def main():
     queue = load('review_queue.json')
     third = load('third_sources.json')
     sources = load('sources.json')
-    seen_sources = set()
+    seen_sources = {}
     seen_titles = set()
     for r in data.get('records', []):
         for field in ('type', 'count', 'sourceName', 'sourceType'):
@@ -42,9 +42,13 @@ def main():
         if r.get('startDateOnly') and not str(r.get('start', '')).endswith('T00:00:00+08:00'):
             raise ValueError('startDateOnly requires the midnight date sentinel')
         source = r.get('source')
-        if source in seen_sources:
-            raise ValueError('duplicate formal source URL: ' + source)
-        seen_sources.add(source)
+        group, batch = r.get('noticeGroup'), r.get('batchId')
+        if bool(group) != bool(batch):
+            raise ValueError('noticeGroup and batchId must be paired')
+        siblings = seen_sources.setdefault(source, [])
+        if siblings and (not group or any(old.get('noticeGroup') != group or old.get('province') != r['province'] or not old.get('batchId') or old['batchId'] == batch for old in siblings)):
+            raise ValueError('duplicate formal source URL without distinct batches: ' + source)
+        siblings.append(r)
         title_key = (r.get('province'), normalized_notice_title(r.get('title', '')))
         if title_key in seen_titles:
             raise ValueError('duplicate normalized formal title: ' + str(title_key))
