@@ -53,6 +53,14 @@ class StaticUiRegressionTests(unittest.TestCase):
         self.assertEqual(released, {'北京', '湖北', '湖南'})
         # Active batches take precedence, but prior batches' released scores remain visible.
         self.assertIn("stage!=='results'&&releasedCount", text)
+    def test_overview_keeps_each_selection_track_clickable(self):
+        text = (ROOT / 'index.html').read_text(encoding='utf-8')
+        self.assertIn('class="province-batches"', text)
+        self.assertIn('class="province-batch-open"', text)
+        self.assertIn('data-record="${encodeURIComponent(keyFor(r))}"', text)
+        self.assertIn("openDetail(decodeURIComponent(b.dataset.record))", text)
+        self.assertIn("records.length>1?", text)
+
 
 if __name__ == '__main__':
     unittest.main()
