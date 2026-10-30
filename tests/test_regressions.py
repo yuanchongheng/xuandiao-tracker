@@ -206,9 +206,32 @@ class AuditRegressionTests(unittest.TestCase):
             if r.get('province') == '山东' and r.get('batchId', '').startswith('second-'):
                 self.assertFalse(any(r.get(f) for f in ('start', 'end', 'exam', 'examEnd')))
                 self.assertEqual(r['personalEligibility'], 'ineligible_no_jlu')
-                self.assertIn('另行通知', r['examText'] if '另行通知' in r['examText'] else '另行通知')
+                self.assertIn('待官方后续通知', r['examText'])
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='浙江'), 850)
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='甘肃'), 600)
+
+    def test_2027_shandong_batches_keep_independent_jlu_scope(self):
+        import json
+        from pathlib import Path
+        from copy import deepcopy
+        data = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
+        rows = [deepcopy(r) for r in data['records'] if r['province'] == '山东']
+        first = next(r for r in rows if r['batchId'] == 'first-targeted')
+        self.assertEqual(first['personalEligibility'], 'ineligible_school_scope')
+        targeted = next(r for r in rows if r['batchId'] == 'second-targeted')
+        general = next(r for r in rows if r['batchId'] == 'second-general')
+        self.assertNotIn('personalMatchSharedTitle', targeted)
+        self.assertNotIn('personalMatchSharedTitle', general)
+        data_hygiene.reconcile_other_school_coverage({'records': rows}, {'items': []})
+        self.assertEqual(first['personalEligibility'], 'ineligible_school_scope')
+        self.assertEqual(targeted['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(general['personalEligibility'], 'ineligible_no_jlu')
+        rows.append({'province': '山东', 'title': '山东省2027年度第二批定向选调面向吉林大学公告',
+                     'sourceTier': 'jlu_fallback', 'eligibility': '第二批定向可核对'})
+        data_hygiene.reconcile_other_school_coverage({'records': rows}, {'items': []})
+        self.assertNotIn('personalEligibility', targeted)
+        self.assertEqual(general['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(first['personalEligibility'], 'ineligible_school_scope')
 
 
 if __name__ == '__main__':
