@@ -98,6 +98,51 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertTrue(record['examDateOnly'])
 
 
+
+    def test_jiangsu_batched_jlu_eligibility_and_shared_notice(self):
+        shared = '江苏省2027年应届优秀大学毕业生选调工作公告'
+        records = [
+            {'province': '江苏', 'title': shared,
+             'sourceTier': 'government', 'eligibility': '第一批条件',
+             'personalMatchKeywords': ['县级'], 'personalMatchSharedTitle': shared},
+            {'province': '江苏', 'title': shared + '乡镇（街道）职位报名有关事项公告',
+             'sourceTier': 'government', 'eligibility': '第二批条件',
+             'personalMatchKeywords': ['乡镇'], 'personalMatchSharedTitle': shared},
+            {'province': '江苏', 'title': '江苏省2027年乡镇（街道）职位报名公告',
+             'sourceTier': 'jlu_fallback', 'eligibility': '吉大乡镇批次'},
+        ]
+        data = {'records': records}
+        third = {'items': [{'province': '江苏', 'title': shared,
+                            'url': 'https://job.sdu.edu.cn/xdgk.htm',
+                            'discovered': '2026-10-13'}]}
+        data_hygiene.reconcile_other_school_coverage(data, third)
+        self.assertEqual(records[0]['personalEligibility'], 'ineligible_no_jlu')
+        self.assertNotIn('personalEligibility', records[1])
+        records[2]['title'] = shared
+        data_hygiene.reconcile_other_school_coverage(data, third)
+        self.assertNotIn('personalEligibility', records[0])
+        self.assertNotIn('personalEligibility', records[1])
+
+    def test_jiangsu_second_batch_official_timing_and_scope(self):
+        from pathlib import Path
+        import json
+        data = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
+        rows = [r for r in data['records'] if r['province'] == '江苏']
+        self.assertEqual(len(rows), 2)
+        first = next(r for r in rows if r['published'] == '2026-10-13')
+        second = next(r for r in rows if r['published'] == '2026-10-30')
+        self.assertEqual(first['end'], '2026-11-02T16:00:00+08:00')
+        self.assertEqual(first['exam'], '2026-11-14T00:00:00+08:00')
+        self.assertEqual(second['start'], '2026-11-03T00:00:00+08:00')
+        self.assertTrue(second['startDateOnly'])
+        self.assertEqual(second['end'], '2026-11-09T16:00:00+08:00')
+        self.assertEqual(second['exam'], '2026-12-06T09:00:00+08:00')
+        self.assertEqual(second['examEnd'], '2026-12-06T16:30:00+08:00')
+        self.assertEqual(second['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(second['personalMatchKeywords'], ['乡镇'])
+        self.assertIn('吉林大学', second['school'])
+        self.assertIn('校内', second['notes'])
+
     def test_sichuan_personal_scope_is_batch_specific(self):
         records = [
             {'province': '四川', 'title': '四川省面向吉林大学选调2027届优秀大学毕业生',
