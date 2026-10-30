@@ -164,7 +164,10 @@ class MonitorOfflineTests(unittest.TestCase):
         self.fixture = self.root / 'fixtures'
         self.fixture.mkdir()
         config = json.loads((old_root / 'sources.json').read_text(encoding='utf8'))
-        self.monitor_count = len(config['monitors'])
+        self.monitor_sources = config['monitors']
+        self.monitor_count = len(self.monitor_sources)
+        self.monitor_index = {m['province']: i for i, m in enumerate(self.monitor_sources)}
+        self.assertEqual(len(self.monitor_index), self.monitor_count)  # keyed fixtures must be unambiguous
         index_total = len(config['discovery']['third_source']['indexes'])
         for i in range(index_total):
             (self.fixture / f'third-index-{i}.html').write_text('<html><body>没有符合条件的公告</body></html>', encoding='utf8')
@@ -181,12 +184,21 @@ class MonitorOfflineTests(unittest.TestCase):
         self.root_patch.stop()
         self.folder.cleanup()
 
+
+    def test_monitor_fixture_source_lookup_tracks_config(self):
+        # Adding a new monitored province must not silently redirect a fixture
+        # or a status assertion to the next source in the list.
+        for province in ('湖南', '甘肃', '贵州', '全国'):
+            idx = self.monitor_index[province]
+            self.assertEqual(self.monitor_sources[idx]['province'], province)
+            self.assertTrue((self.fixture / f'monitor-{idx}.html').exists())
+
     def test_baseline_then_changes_then_idempotent(self):
         first = monitor.run(discovery=False, fixture_dir=self.fixture)
         self.assertEqual(first['newCandidates'], 0)
         self.assertEqual(first['monitorsSucceeded'], self.monitor_count)
         (self.fixture / 'monitor-0.html').write_text('<article>' + ('更新报名时段请确认附件 ' * 20) + '</article>', encoding='utf8')
-        (self.fixture / 'monitor-7.html').write_text('<a href="/old">2027四川定向选调公告</a><a href="/new">2027四川定向选调新增公告</a>', encoding='utf8')
+        (self.fixture / f"monitor-{self.monitor_index['全国']}.html").write_text('<a href="/old">2027四川定向选调公告</a><a href="/new">2027四川定向选调新增公告</a>', encoding='utf8')
         second = monitor.run(discovery=False, fixture_dir=self.fixture)
         self.assertEqual(second['newCandidates'], 2)
         third = monitor.run(discovery=False, fixture_dir=self.fixture)
@@ -210,8 +222,8 @@ class MonitorOfflineTests(unittest.TestCase):
             status = monitor.run(discovery=False)
         self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
         self.assertEqual(status['fallbacksUsed'], 1)
-        self.assertEqual(status['sourceHealth'][5]['state'], 'fallback')
-        self.assertEqual(status['sourceHealth'][5]['used']['url'], backup)
+        self.assertEqual(status['sourceHealth'][self.monitor_index['甘肃']]['state'], 'fallback')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['甘肃']]['used']['url'], backup)
         self.assertEqual(len(status['errors']), 1)
         self.assertEqual(status['newCandidates'], 0)
         self.assertEqual(json.loads((self.root / 'watch_state.json').read_text())['articles'].get(official), None)
@@ -225,7 +237,7 @@ class MonitorOfflineTests(unittest.TestCase):
             status = monitor.run(discovery=False)
         self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
         self.assertEqual(status['fallbacksUsed'], 0)
-        self.assertEqual(status['sourceHealth'][5]['state'], 'failed')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['甘肃']]['state'], 'failed')
         # Primary and both configured backups must each be recorded.
         self.assertEqual(len(status['errors']), 3)
 
@@ -240,8 +252,8 @@ class MonitorOfflineTests(unittest.TestCase):
             return listing if url == list_url else html
         with patch.object(monitor, 'fetch_bytes', side_effect=stub):
             status = monitor.run(discovery=False)
-        self.assertEqual(status['sourceHealth'][6]['state'], 'fallback')
-        self.assertEqual(status['sourceHealth'][6]['used']['kind'], 'listing')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['贵州']]['state'], 'fallback')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['贵州']]['used']['kind'], 'listing')
         self.assertEqual(status['fallbacksUsed'], 1)
         self.assertIn('公告正文及附件仍未读取', status['errors'][-1])
         self.assertNotIn('https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00',
@@ -258,7 +270,7 @@ class MonitorOfflineTests(unittest.TestCase):
             return html
         with patch.object(monitor, 'fetch_bytes', side_effect=stub):
             status = monitor.run(discovery=False)
-        self.assertEqual(status['sourceHealth'][6]['state'], 'failed')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['贵州']]['state'], 'failed')
         self.assertEqual(status['fallbacksUsed'], 0)
         self.assertEqual(len(status['errors']), 3)
 
@@ -339,10 +351,10 @@ class MonitorOfflineTests(unittest.TestCase):
             (self.fixture/f'search-{i}.xml').write_text(primary,encoding='utf8')
             third=('<rss><channel><item><title>湖南2027定向选调公告</title><link>https://job.hust.edu.cn/jcfw/2439641.htm</link></item></channel></rss>' if province=='湖南' else '<rss><channel></channel></rss>')
             (self.fixture/f'third-search-{i}.xml').write_text(third,encoding='utf8')
-        (self.fixture/'monitor-3.html').unlink()  # Hunan govt fails
+        (self.fixture / f"monitor-{self.monitor_index['湖南']}.html").unlink()  # Hunan govt fails
         status=monitor.run(discovery=True,fixture_dir=self.fixture)
         self.assertEqual(status['monitorsSucceeded'], self.monitor_count - 1)
-        self.assertEqual(status['sourceHealth'][3]['state'],'failed')
+        self.assertEqual(status['sourceHealth'][self.monitor_index['湖南']]['state'],'failed')
         self.assertEqual(status['thirdSearchesAttempted'],1)
         self.assertEqual(status['thirdLinksFound'],1)
         self.assertEqual(status['searchesSucceeded'],31)
