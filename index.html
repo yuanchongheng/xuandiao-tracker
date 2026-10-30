@@ -94,7 +94,14 @@ body{background:radial-gradient(ellipse 760px 420px at 84% 16%,#e7efff70,transpa
 #provinceGrid .province-group-dot{display:block;height:9px;width:9px;border-radius:50%;background:var(--stage-dot,#8b97a8);flex:none}
 #provinceGrid .province-group-count{background:var(--stage-bg,#eef2f7);color:var(--stage-ink,#53667b);border:1px solid var(--stage-line,#dde6f0);padding:2px 8px;border-radius:99px;font-size:11px;font-weight:750}
 #provinceGrid .province-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:11px;min-width:0}
-#provinceGrid .province-row .prov-wrap{min-width:0}
+#provinceGrid .province-row .prov-wrap{min-width:0;flex-direction:column}
+#provinceGrid .province-batches{border:1px solid #dfe9f0;border-radius:0 0 12px 12px;background:#fff;margin-top:4px;padding:6px 7px;font-size:10px;color:#4b6980}
+#provinceGrid .province-batches summary{font-weight:750;cursor:pointer;list-style:revert;margin-left:11px;line-height:1.5}
+#provinceGrid .province-batches-list{display:grid;gap:5px;margin-top:6px}
+#provinceGrid .province-batches-list button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;padding:7px;border-radius:7px;background:#f5f8fc;border:1px solid #e0e7f0;color:#31506b;font-size:10px;cursor:pointer;line-height:1.5}
+#provinceGrid .province-batches-list button:hover{border-color:#8db9cf;background:#ecf7fb}
+#provinceGrid .province-batches-list small{color:#728396}
+#provinceGrid .province-batches summary:focus-visible,#provinceGrid .province-batches-list button:focus-visible{outline:2px solid #315ead;outline-offset:2px}
 #provinceGrid .province-done-group{background:#faf7fd;border-color:#e5d9f0}
 #provinceGrid .province-results-group{background:#f2fbf9;border-color:#cfeae4}
 #provinceGrid .province-stack-toggle{width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:#f3edfa;border:1px dashed #dacbec;border-radius:13px;padding:10px 13px;color:#63448b;cursor:pointer}
@@ -398,7 +405,8 @@ function renderProvinces(){
   const releasedCount=records.filter(r=>r.scoreStatus==='published').length;
   const extra=(records.length>1?`${records.length} 条公告/批次 · `:'')+(stage!=='results'&&releasedCount?`${releasedCount} 批成绩已出 · `:'');
   const unavailable=provinceUnavailable(records),availabilityText=unavailable?'吉大当前不可报 · ':'';
-  const followed=watchedProvinces.has(name);return `<div class="prov-wrap"><button type="button" data-province="${escapeHTML(name)}" class="prov stage-${stage} ${state.province===name?'active':''}" aria-pressed="${state.province===name}" aria-label="${escapeHTML(name)}，${unavailable?'吉大当前不可报，':''}${escapeHTML(provinceStages[stage])}，${escapeHTML(extra+detail)}" title="${escapeHTML(availabilityText+extra+detail)}"><span class="prov-name">${escapeHTML(name)}</span><span class="prov-label">${escapeHTML(provinceStages[stage])}</span><small class="prov-meta">${escapeHTML(availabilityText+extra+detail)}</small></button><button type="button" class="prov-star ${followed?'watched':''}" data-watch="${escapeHTML(name)}" aria-label="${followed?'取消关注':'关注'}${escapeHTML(name)}" aria-pressed="${followed}" title="${followed?'取消关注':'加入我的关注'}">${followed?'★':'☆'}</button></div>`;
+  const batchDetails=records.length>1?`<details class="province-batches"><summary>${records.length} 个选调批次 · 分开查看</summary><div class="province-batches-list">${records.map(r=>`<button type="button" class="province-batch-open" data-record="${encodeURIComponent(keyFor(r))}"><b>${escapeHTML(r.type)}</b><small>${escapeHTML(stageLabel(recordProgress(r)))}</small></button>`).join('')}</div></details>`:'';
+  const followed=watchedProvinces.has(name);return `<div class="prov-wrap"><button type="button" data-province="${escapeHTML(name)}" class="prov stage-${stage} ${state.province===name?'active':''}" aria-pressed="${state.province===name}" aria-label="${escapeHTML(name)}，${unavailable?'吉大当前不可报，':''}${escapeHTML(provinceStages[stage])}，${escapeHTML(extra+detail)}" title="${escapeHTML(availabilityText+extra+detail)}"><span class="prov-name">${escapeHTML(name)}</span><span class="prov-label">${escapeHTML(provinceStages[stage])}</span><small class="prov-meta">${escapeHTML(availabilityText+extra+detail)}</small></button><button type="button" class="prov-star ${followed?'watched':''}" data-watch="${escapeHTML(name)}" aria-label="${followed?'取消关注':'关注'}${escapeHTML(name)}" aria-pressed="${followed}" title="${followed?'取消关注':'加入我的关注'}">${followed?'★':'☆'}</button>${batchDetails}</div>`;
  };
  const sections=legend.map(([stage,label])=>{
   const names=dataset.provinces.filter(p=>info.get(p).stage===stage);
@@ -416,6 +424,7 @@ function renderProvinces(){
  $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">按公告批次核对成绩公布；已出成绩单列，笔试已过但成绩待核的省份可展开查看。</span></div>${sections}`;
  $('provinceGrid').querySelectorAll('.prov').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
  $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.watch));
+ $('provinceGrid').querySelectorAll('.province-batch-open').forEach(b=>b.onclick=()=>openDetail(decodeURIComponent(b.dataset.record)));
 
  const stackToggle=$('provinceGrid').querySelector('.province-stack-toggle');
  if(stackToggle)stackToggle.onclick=()=>{provinceDoneExpanded=!provinceDoneExpanded;renderProvinces();};
