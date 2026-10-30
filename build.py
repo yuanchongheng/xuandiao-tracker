@@ -46,7 +46,7 @@ def build(check=False):
     if not isinstance(records, list):
         raise ValueError('records must be a list')
     keys = set()
-    source_urls = set()
+    source_urls = {}
     for entry in records:
         for field in ('province', 'title', 'source', 'verified', 'published', 'eligibility', 'school'):
             if not isinstance(entry.get(field), str) or not entry[field].strip():
@@ -61,9 +61,14 @@ def build(check=False):
             raise ValueError('Published source must belong to the approved three-tier host list')
         if entry.get('sourceTier') != tier:
             raise ValueError('Incorrect sourceTier: ' + entry['source'])
-        if entry['source'] in source_urls:
-            raise ValueError('Duplicate formal source URL: ' + entry['source'])
-        source_urls.add(entry['source'])
+        # One official umbrella notice may cover multiple genuinely distinct tracks.
+        group, batch = entry.get('noticeGroup'), entry.get('batchId')
+        if bool(group) != bool(batch):
+            raise ValueError('noticeGroup and batchId must be provided together: ' + entry['title'])
+        siblings = source_urls.setdefault(entry['source'], [])
+        if siblings and (not group or any(old.get('noticeGroup') != group or old.get('province') != entry['province'] or not old.get('batchId') or old['batchId'] == batch for old in siblings)):
+            raise ValueError('Duplicate formal source URL without distinct notice batches: ' + entry['source'])
+        siblings.append(entry)
         if tier == 'government' and entry.get('sourceType') != '官方':
             raise ValueError('Government notice must be labelled 官方')
         if tier == 'jlu_fallback' and entry.get('sourceType') != '吉林大学备用':
