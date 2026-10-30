@@ -152,7 +152,7 @@ class StaticUiRegressionTests(unittest.TestCase):
         watched=JSON.parse(storage.get('xd_watched_batches_v2'));
         assert(watched.includes('四川|四川定向选调')&&!watched.includes('四川|四川基层选调'));
         assert(!watched.includes('@province|四川'));
-        assert.equal(ctx.applicationProgress['四川|四川定向选调'],'正在报名');
+        assert.equal(vm.runInContext("applicationProgress['四川|四川定向选调']",ctx),'正在报名');
         let rendered=elements.get('watchGrid').innerHTML;
         assert(rendered.includes('四川定向选调')&&!rendered.includes('四川基层选调'));
         assert(rendered.includes('笔试已过'));
@@ -162,20 +162,19 @@ class StaticUiRegressionTests(unittest.TestCase):
         rendered=elements.get('watchGrid').innerHTML;
         assert(rendered.includes('四川定向选调')&&rendered.includes('四川基层选调'));
         assert(rendered.includes('即将报名')&&rendered.includes('笔试已过'));
-        assert.equal(ctx.applicationProgress['四川|四川定向选调'],'正在报名');
-        assert.equal(ctx.applicationProgress['四川|四川基层选调'],'关注中');
+        assert.equal(vm.runInContext("applicationProgress['四川|四川定向选调']",ctx),'正在报名');
+        assert.equal(vm.runInContext("applicationProgress['四川|四川基层选调']",ctx),'关注中');
         const blocked=vm.runInContext("watchEvents(dataset.records[1],Date.parse('2026-10-30T12:00:00+08:00'))",ctx);
         assert.equal(blocked.length,0);
         vm.runInContext("toggleWatchKey('四川|四川基层选调')",ctx);
         watched=JSON.parse(storage.get('xd_watched_batches_v2'));
         assert(watched.includes('四川|四川定向选调')&&!watched.includes('四川|四川基层选调'));
         // Reloaded data must never re-migrate the old province bookmark into both batches.
-        vm.runInContext(src.replace('let watchedItems=new Set(),applicationProgress={};','watchedItems=new Set();applicationProgress={};')
-                        .replace("const WATCH_KEY='xd_watched_batches_v2',PROGRESS_KEY='xd_application_progress_batches_v2';","")
-                        .replace("const LEGACY_WATCH_KEY='xd_watched_provinces_v1',LEGACY_PROGRESS_KEY='xd_application_progress_v1';","")
-                        .replace("let customData=null;","customData=null;"),ctx);
-        watched=JSON.parse(storage.get('xd_watched_batches_v2'));
-        assert.equal(watched.filter(x=>x.startsWith('四川|')).length,1);
+        const reloaded=vm.createContext({...ctx});
+        vm.runInContext(src,reloaded);
+        const reloadedKeys=JSON.parse(vm.runInContext("JSON.stringify([...watchedItems])",reloaded));
+        assert.equal(reloadedKeys.filter(x=>x.startsWith('四川|')).length,1);
+        assert(!reloadedKeys.includes('@province|四川'));
         """
         subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True, cwd=ROOT)
 
