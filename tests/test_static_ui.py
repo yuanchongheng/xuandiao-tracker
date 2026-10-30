@@ -135,7 +135,7 @@ class StaticUiRegressionTests(unittest.TestCase):
           recordProgress:r=>r.title==='四川定向选调'?'done':r.title==='四川基层选调'?'soon':'unknown',
           isPersonalIneligible:r=>!!r&&r.personalEligibility==='ineligible_no_jlu',
           progressNote:()=> '当前批次',shortProgressDate:()=> '11月3日',
-          dateFmt:t=>t,stageLabel:x=>({done:'笔试已过',soon:'即将报名',unknown:'时间待核'})[x]||x,
+          dateFmt:t=>t,provinceStages:{done:'笔试已过',soon:'即将报名',unknown:'时间待核'},
           safeUrl:x=>x,escapeHTML:x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'),
           renderProvinces:()=>{},openDetail:()=>{},
           $:id=>{if(!elements.has(id))elements.set(id,{innerHTML:'',textContent:'',querySelectorAll:()=>[]});return elements.get(id)},
@@ -176,7 +176,8 @@ class StaticUiRegressionTests(unittest.TestCase):
         assert.equal(reloadedKeys.filter(x=>x.startsWith('四川|')).length,1);
         assert(!reloadedKeys.includes('@province|四川'));
         """
-        subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True, cwd=ROOT)
+        result = subprocess.run([node, '-e', javascript], capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
 
 
