@@ -237,6 +237,16 @@ body.xd-collapsed .xd-sidebar{width:var(--xd-sidebar-mini)}body.xd-collapsed .xd
 .score-detail-note{margin-top:9px!important;font-size:12px;line-height:1.75;color:#596e86}
 .score-detail-link{margin-top:8px!important;font-size:12px}
 .score-detail-link small{display:block;margin-top:3px;color:#8795a9;font-size:10px}
+/* Batch-specific application list: independently followed notices and exam stages. */
+#watchGrid .watch-group-heading:before{background:var(--stage-dot,#6b91ab)}
+#watchGrid .watch-batch-title{font-size:14px;font-weight:800;line-height:1.55;color:#2d496a;margin:0;overflow-wrap:anywhere}
+#watchGrid .watch-batch-full{font-size:11px;line-height:1.5;color:#637992;margin:0;overflow-wrap:anywhere}
+#watchGrid .watch-card .prov-score-pill{align-self:flex-start}
+#watchGrid .watch-quick .watch-record-open{background:#fff;border:1px solid var(--stage-line);color:var(--stage-ink);font-size:11px;font-weight:750;padding:7px 9px;border-radius:8px}
+#watchGrid .watch-pick-list{display:grid;gap:6px}
+#watchGrid .watch-pick-batch{border:1px solid #dce7f1;background:#f4f8fe;color:#305b7f;border-radius:8px;text-align:left;padding:8px 10px;font-size:11px;cursor:pointer}
+#watchGrid .watch-pick-batch:hover{background:#e8f2ff}
+#watchGrid .watch-card .watch-stage{max-width:240px;white-space:normal}
 </style>
 </head>
 <body>
@@ -264,7 +274,7 @@ body.xd-collapsed .xd-sidebar{width:var(--xd-sidebar-mini)}body.xd-collapsed .xd
 <main class="shell"><section class="stats" id="overview" aria-label="统计概览"><div class="stat"><span>覆盖省级地区</span><b id="provinceTotal">31</b><em>省、自治区、直辖市</em></div><div class="stat"><span>已录入地区</span><b id="releasedTotal">—</b><em>附有公开信息链接</em></div><div class="stat"><span>正在报名</span><b id="openTotal">—</b><em>按当前设备时间计算</em></div><div class="stat"><span>即将开放</span><b id="upcomingTotal">—</b><em>已知未来报名时段</em></div></section>
 
 <div class="notice"><strong>ⓘ</strong><div><b>时间提醒：</b>日历仅展示已录入的明确日期，尚未查全的地区不会自动补写；报名与考试安排以公告原文及准考证为准。<details class="notice-more"><summary>查看信息来源和更新方式</summary><p>来源三级顺序：政府官网优先，吉林大学就业网其次；前两者无可用公告时，检索经过域名核对的其他高校官方就业网作第三来源。第三来源必须逐条核验适用学校、原文与附件，不采用商业转载。自动发现与正式数据分开，监测失败不等于没有公告；政府来源候选需人工核验，吉林大学就业网通知按本站规则自动入库并仅提取正文明确时间。部分省份按高校、岗位和批次发布不同公告，时间及资格须按对应公告、岗位表核对。倒计时按设备时间计算。<span id="dataNotice"></span></p></details></div></div>
-<section class="watch-section" id="watchlist" aria-label="我的关注与报考清单"><div class="sectionhead"><div><span class="section-kicker">MY LIST / 个人关注</span><h2>我的关注 · 报考清单 <span class="watch-headmark">把重要省份放在最前面</span></h2><p>收藏感兴趣的地区，集中查看下一关键日期，并自行标记报考进度。</p></div><span class="hint" id="watchCount">尚未关注</span></div><div class="watch-intro"><span>★ 省份卡片右上角可添加关注；报考清单按你手动标记的「关注中、正在报名、已报名」分组。卡片颜色仍表示公告的报名/笔试阶段，两者互不影响。</span><a href="#province-section">去选择省份 →</a></div><div id="watchAlerts" class="watch-alerts" role="status" aria-live="polite"></div><div id="watchGrid" class="watch-groups"><div class="watch-empty"><b>还没有关注的地区</b><p>先在省份总览中点亮星标，这里就会显示你关心的时间安排。</p><a href="#province-section">去关注省份 →</a></div></div></section>
+<section class="watch-section" id="watchlist" aria-label="我的关注与报考清单"><div class="sectionhead"><div><span class="section-kicker">MY LIST / 个人关注</span><h2>我的关注 · 报考清单 <span class="watch-headmark">各批次独立关注</span></h2><p>按公告／批次单独收藏，分开查看报名、笔试和成绩，并分别标记个人报考进度。</p></div><span class="hint" id="watchCount">尚未关注</span></div><div class="watch-intro"><span>★ 每条公告／批次独立点星标，报考清单按实际报名、笔试阶段分组；每张卡片仍能单独标记「关注中、正在报名、已报名」。</span><a href="#province-section">去选择批次 →</a></div><div id="watchAlerts" class="watch-alerts" role="status" aria-live="polite"></div><div id="watchGrid" class="watch-groups"><div class="watch-empty"><b>还没有关注的地区</b><p>先在省份总览中点亮星标，这里就会显示你关心的时间安排。</p><a href="#province-section">去关注省份 →</a></div></div></section>
 <section aria-label="时间轴与日历" id="schedule" class="schedule-section"><div class="sectionhead"><div><span class="section-kicker">YOUR SCHEDULE / 重要节点</span><h2>报名与考试，一眼掌握<span class="heading-star" aria-hidden="true">✳</span></h2><p>所有节点均取自已经录入的公告资料；日期变动请以公告原文为准。</p></div><span class="hint" id="scheduleHint">正在整理关键节点</span></div><div class="schedule-legend" aria-label="日期类型图例"><span><i class="legend-dot start"></i>报名开始</span><span><i class="legend-dot end"></i>报名截止</span><span><i class="legend-dot exam"></i>笔试安排</span><span><i class="legend-dot deadline"></i>分岗位截止</span></div><div class="schedule-layout"><section class="schedule-panel timeline-panel"><div class="panel-head"><div><span class="panel-eyebrow">01 / MILESTONES</span><h3>近期时间轴</h3><p>临近的节点排在前面，已过节点放在后面。</p></div><span class="panel-symbol" aria-hidden="true">↗</span></div><div id="timelineList" class="timelinelist"><div class="timeline-empty">正在整理关键时间节点…</div></div></section><section class="schedule-panel calendar-panel"><div class="panel-head"><div><span class="panel-eyebrow">02 / CALENDAR</span><h3>月度日历</h3><p>彩色小圆点标注关键日期，点选日期查看安排。</p></div><span class="panel-symbol calendar-symbol" aria-hidden="true">▦</span></div><div class="calendar-toolbar"><strong id="calendarMonth">2026年9月</strong><div class="cal-nav"><button type="button" id="calPrev" aria-label="上个月">‹</button><button type="button" id="calToday">近期</button><button type="button" id="calNext" aria-label="下个月">›</button></div></div><div class="calendar-weekdays" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div id="calendarBoard" class="calendarboard" aria-label="日期表"><div class="calendar-empty">正在生成日历…</div></div><div class="day-agenda"><div class="agenda-heading"><b id="selectedDayTitle">当日安排</b><small id="selectedDayCount">请选择日期</small></div><div id="selectedDayEvents" class="day-agenda-list"><div class="agenda-empty">点击日历中有圆点的日期查看详情</div></div></div></section></div><p class="schedule-note">仅展示已录入且有明确日期的节点；未知时刻不作推测。其他高校的校内截止不能代替省级报名截止，第三来源须人工核验后才进入日历。</p></section>
 <section aria-label="地区导航" id="province-section"><div class="sectionhead"><div><h2>各省选调进度 <span class="province-headmark">定向与常规分批次</span></h2><p>同省定向、常规及不同批次分别列明高校与时间；点击省份查看各批次公告和日历。</p></div><span class="hint" id="provinceHint">选择地区筛选</span></div><div id="provinceLegend" class="province-legend" aria-label="省份进度颜色说明"></div><p class="province-disclaimer">说明：“未录入”仅表示本站没有相应已核验公告。每条公告／批次独立归组，笔试已结束统一归入“笔试已过”；成绩已出仅作附加标记，不与同省其他批次混合。</p><div id="provinceGrid" class="provinces"></div></section>
 <section id="announcements" aria-label="公告列表"><div class="sectionhead"><div><h2>公告详情与报名条件</h2><p>自动根据本机时间判断报名状态；点击卡片查看详细要求。</p></div><span class="hint" id="resultCount"></span></div><div class="filters"><label class="search"><input id="searchInput" placeholder="搜索省份 / 高校 / 专业 / 条件" aria-label="搜索公告"></label><select id="stateFilter" aria-label="报名状态"><option value="all">全部状态</option><option value="open">正在报名</option><option value="soon">即将报名</option><option value="closed">报名结束</option><option value="unknown">时间待定</option></select><select id="sortBy" aria-label="排序方式"><option value="deadline">按截止时间</option><option value="latest">按公告发布时间</option><option value="province">按省份</option></select><button class="btn" id="favFilter" type="button">☆ 仅看收藏</button><button class="btn" id="reset" type="button">清除筛选</button></div><div id="results" class="grid"></div></section>
@@ -292,12 +302,36 @@ let dataset=SEED_DATA_PLACEHOLDER;
 let state={province:'全部',filter:'all',sort:'deadline',query:'',onlyFavorites:false};
 let favorites=new Set();try{favorites=new Set(JSON.parse(localStorage.getItem('xd_favorites')||'[]'))}catch{}
 // 关注省份与个人报考进度独立于已有的公告收藏，不写入公开 JSON。
-const WATCH_KEY='xd_watched_provinces_v1',PROGRESS_KEY='xd_application_progress_v1';
-let watchedProvinces=new Set(),applicationProgress={};
-try{const saved=JSON.parse(localStorage.getItem(WATCH_KEY)||'[]');if(Array.isArray(saved))watchedProvinces=new Set(saved.filter(x=>typeof x==='string'&&SEED_DATA_PLACEHOLDER.provinces.includes(x)))}catch{}
-try{const saved=JSON.parse(localStorage.getItem(PROGRESS_KEY)||'{}');if(saved&&typeof saved==='object'&&!Array.isArray(saved))for(let [p,v] of Object.entries(saved))if(SEED_DATA_PLACEHOLDER.provinces.includes(p)&&['关注中','准备报名','正在报名','已报名'].includes(v))applicationProgress[p]=(v==='准备报名'?'正在报名':v)}catch{}
+const WATCH_KEY='xd_watched_batches_v2',PROGRESS_KEY='xd_application_progress_batches_v2';
+const LEGACY_WATCH_KEY='xd_watched_provinces_v1',LEGACY_PROGRESS_KEY='xd_application_progress_v1';
+let watchedItems=new Set(),applicationProgress={};
 let customData=null;try{customData=JSON.parse(localStorage.getItem('xd_custom_data')||'null')}catch{}
 if(validData(customData))dataset=customData;
+// Migrate only once. A legacy province with multiple batches stays as one
+// "choose a batch" placeholder; NEVER silently star all its records.
+function watchIdForProvince(province){return '@province|'+province}
+function migrateWatchStorage(){
+ let saved=null,progress=null;
+ try{saved=localStorage.getItem(WATCH_KEY);progress=localStorage.getItem(PROGRESS_KEY)}catch{}
+ if(saved!==null){
+  try{const ids=JSON.parse(saved);if(Array.isArray(ids))watchedItems=new Set(ids.filter(id=>typeof id==='string'))}catch{}
+  try{const obj=JSON.parse(progress||'{}');if(obj&&typeof obj==='object'&&!Array.isArray(obj))applicationProgress=obj}catch{}
+  return;
+ }
+ let old=[],oldProgress={};
+ try{const parsed=JSON.parse(localStorage.getItem(LEGACY_WATCH_KEY)||'[]');if(Array.isArray(parsed))old=parsed}catch{}
+ try{const parsed=JSON.parse(localStorage.getItem(LEGACY_PROGRESS_KEY)||'{}');if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed))oldProgress=parsed}catch{}
+ for(const province of old){
+  if(typeof province!=='string'||!dataset.provinces.includes(province))continue;
+  const matches=dataset.records.filter(r=>r.province===province);
+  const key=matches.length===1?keyFor(matches[0]):watchIdForProvince(province);
+  watchedItems.add(key);
+  const prior=oldProgress[province];
+  if(['关注中','准备报名','正在报名','已报名'].includes(prior))applicationProgress[key]=prior==='准备报名'?'正在报名':prior;
+ }
+ saveWatch();
+}
+migrateWatchStorage();
 function validData(d){return d&&Array.isArray(d.provinces)&&d.provinces.length>=1&&Array.isArray(d.records)&&d.records.every(r=>r.province&&r.title&&r.source&&r.verified)}
 function dateOf(t){return t?new Date(t):null}
 function dateFmt(t,withTime=true){if(!t)return '待公布';if(/T00:00:00\+08:00$/.test(t))withTime=false;let d=dateOf(t);if(Number.isNaN(+d))return '待核对';let f=new Intl.DateTimeFormat('zh-CN',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',...(withTime?{hour:'2-digit',minute:'2-digit',hour12:false}:{})});return f.format(d).replace(/\//g,'-')}
@@ -357,49 +391,91 @@ function progressNote(p,now=Date.now()){
  if(p.stage==='done')return `${shortProgressDate(r.exam,true)} 笔试已过${r.scoreStatus==='published'?' · 成绩已出':''}`;
  return '部分时间未公布或开始时刻待核';
 }
-function saveWatch(){try{localStorage.setItem(WATCH_KEY,JSON.stringify([...watchedProvinces]));localStorage.setItem(PROGRESS_KEY,JSON.stringify(applicationProgress))}catch{}}
-function toggleProvinceWatch(name){if(!dataset.provinces.includes(name))return;if(watchedProvinces.has(name)){watchedProvinces.delete(name);delete applicationProgress[name]}else{watchedProvinces.add(name);applicationProgress[name]='关注中'}saveWatch();renderProvinces();renderWatchlist()}
-function stageLabel(stage){return provinceStages[stage]||'时间待核实'}
-// 不合并不同岗位的截止时间：按各岗位独立计算提醒与下一关键节点。
-function watchEvents(province,now=Date.now()){const out=[];for(const r of dataset.records.filter(x=>x.province===province&&!isPersonalIneligible(x))){
- const add=(at,kind,label,unknown=false)=>{const ms=Date.parse(at||'');if(Number.isFinite(ms)&&ms>=now)out.push({at,ms,kind,label,record:r,unknown})};
- if(r.start&&Date.parse(r.start)>now)add(r.start,'start','报名开始',!!(r.startDateOnly||r.startTimeUnknown));
- if(Array.isArray(r.deadlines)&&r.deadlines.length){for(const d of r.deadlines)add(d.at,'end',`${d.label||'对应岗位'}报名截止`)}else add(r.end,'end','报名截止');
- if(r.exam)add(r.exam,'exam','笔试日期',/T00:00:00\+08:00$/.test(r.exam));
- }return out.sort((a,b)=>a.ms-b.ms)}
-// 个人进度由用户手动选择，与公告实际开放状态互不影响。
-const personalProgressGroups=['关注中','正在报名','已报名'];
-const personalGroupClasses={'关注中':'following','正在报名':'applying','已报名':'submitted'};
-function personalProgressOf(province){
- const value=applicationProgress[province];
- return personalProgressGroups.includes(value)?value:'关注中';
-}
-function renderWatchlist(){
- const provinces=dataset.provinces.filter(p=>watchedProvinces.has(p));
- $('watchCount').textContent=provinces.length?`已关注 ${provinces.length} 个地区`:'尚未关注';
- const now=Date.now(),reminders=[];
- const grouped=Object.fromEntries(personalProgressGroups.map(progress=>[progress,[]]));
- for(const p of provinces){
-  const rows=dataset.records.filter(r=>r.province===p),stage=provinceProgress(rows,now,true),events=watchEvents(p,now),next=events[0],userProgress=personalProgressOf(p);
-  const blockedUpcoming=rows.some(r=>isPersonalIneligible(r)&&['soon','open'].includes(recordProgress(r,now)));
-  for(const ev of events.filter(e=>e.kind==='end')){if(userProgress==='已报名')continue;const remaining=ev.ms-now;if(remaining>=0&&remaining<=7*86400000)reminders.push({province:p,event:ev,remaining})}
-  const nextTitle=next?`${next.label} ${shortProgressDate(next.at,next.unknown)}`:(blockedUpcoming?'新批次已发布 · 吉大校内公告待核':provinceUnavailable(rows)?'吉林大学当前不可报 · 等待对应公告':rows.length?'暂无后续已知日期':'公告待核验');
-  const info=next?next.record.title:(rows.length?'如有变更以原文为准':'暂无已核验公告，不代表官方未发布');
-  const displayStage=blockedUpcoming?'新批次待吉大确认':provinceUnavailable(rows)?'吉大当前不可报':rows.length?stageLabel(stage.stage):'未录入公告';
-  const direct=next?.record||stage.record;
-  const detail=rows.length?`已录入 ${rows.length} 条公告/批次 · 最近核验 ${escapeHTML(rows.map(r=>r.verified).sort().at(-1)||'未知')}`:'暂无已核验资料，留意监测覆盖情况';
-  grouped[userProgress].push(`<article class="watch-card stage-${stage.stage}"><div class="watch-card-head"><h3>${escapeHTML(p)}</h3><span class="watch-stage">${escapeHTML(displayStage)}</span><button type="button" class="watch-remove" data-province="${escapeHTML(p)}" aria-label="取消关注${escapeHTML(p)}" title="取消关注">★</button></div><div class="watch-next"><small>下一节点</small><strong title="${escapeHTML(nextTitle)}">${escapeHTML(nextTitle)}</strong></div><div class="watch-quick"><select class="watch-progress" data-province="${escapeHTML(p)}" aria-label="${escapeHTML(p)}的个人报考进度">${personalProgressGroups.map(v=>`<option value="${v}" ${userProgress===v?'selected':''}>${v}</option>`).join('')}</select><button type="button" class="watch-show" data-province="${escapeHTML(p)}">查看公告 →</button></div><details class="watch-card-details"><summary>更多信息</summary><div class="watch-detail-content"><p>${escapeHTML(info)}</p><p>${detail}。个人标记不代表报名或资格审核成功。</p>${direct?`<a href="${escapeHTML(safeUrl(direct.source))}" target="_blank" rel="noopener noreferrer">查看公告原文 ↗</a>`:''}</div></details></article>`);
+function saveWatch(){try{localStorage.setItem(WATCH_KEY,JSON.stringify([...watchedItems]));localStorage.setItem(PROGRESS_KEY,JSON.stringify(applicationProgress))}catch{}}
+function toggleWatchKey(key){
+ const record=dataset.records.find(r=>keyFor(r)===key);
+ const placeholder=key.startsWith('@province|')?key.slice('@province|'.length):'';
+ if(!record&&!(placeholder&&dataset.provinces.includes(placeholder)))return;
+ if(watchedItems.has(key)){watchedItems.delete(key);delete applicationProgress[key]}
+ else{
+  watchedItems.add(key);
+  if(record){
+   const pending=watchIdForProvince(record.province);
+   if(watchedItems.has(pending)){
+    applicationProgress[key]=applicationProgress[pending]||'关注中';
+    watchedItems.delete(pending);delete applicationProgress[pending];
+   }
+  }
+  if(!applicationProgress[key])applicationProgress[key]='关注中';
  }
- $('watchGrid').innerHTML=provinces.length?personalProgressGroups.map(progress=>{
-  const cards=grouped[progress],groupClass=personalGroupClasses[progress];
-  const emptyText=progress==='关注中'?'暂无正在关注的省份':progress==='正在报名'?'暂无标记为正在报名的省份':'暂无标记为已报名的省份';
-  return `<section class="watch-group watch-group-${groupClass}" aria-label="${progress}省份"><div class="watch-group-heading"><h3>${progress}</h3><span class="watch-group-count">${cards.length} 个地区</span></div>${cards.length?`<div class="watch-grid watch-group-grid">${cards.join('')}</div>`:`<p class="watch-group-empty">${emptyText}</p>`}</section>`;
- }).join(''):'<div class="watch-empty"><b>还没有关注的地区</b><p>在下方31个省份卡片右上角点击 ☆，即可在这里集中查看时间和进度。</p><a href="#province-section">去关注省份 →</a></div>';
+ saveWatch();renderProvinces();renderWatchlist();
+}
+function stageLabel(stage){return provinceStages[stage]||'时间待核实'}
+// Notifications are strictly scoped to one followed notice/batch and its
+// individual eligibility, not another batch in the same province.
+function watchEvents(record,now=Date.now()){
+ if(!record||isPersonalIneligible(record))return [];
+ const out=[],add=(at,kind,label,unknown=false)=>{
+  const ms=Date.parse(at||'');
+  if(Number.isFinite(ms)&&ms>=now)out.push({at,ms,kind,label,record,unknown});
+ };
+ if(record.start&&Date.parse(record.start)>now)add(record.start,'start','报名开始',!!record.startDateOnly);
+ if(Array.isArray(record.deadlines)&&record.deadlines.length){
+  for(const d of record.deadlines)add(d.at,'end',`${d.label||'对应岗位'}报名截止`);
+ }else add(record.end,'end','报名截止');
+ if(record.exam)add(record.exam,'exam','笔试日期',!!record.examDateOnly);
+ return out.sort((a,b)=>a.ms-b.ms);
+}
+const personalProgressGroups=['关注中','正在报名','已报名'];
+function personalProgressOf(key){const value=applicationProgress[key];return personalProgressGroups.includes(value)?value:'关注中'}
+function renderWatchlist(){
+ const now=Date.now(),reminders=[];
+ const groups=[['open','报名中'],['soon','即将报名'],['examday','笔试当天'],['preexam','待笔试'],['closed','已截止·笔试待定'],['unknown','时间待核'],['missing','未录入公告'],['done','笔试已过']];
+ const grouped=Object.fromEntries(groups.map(([stage])=>[stage,[]])),pending=[];
+ const recordsByKey=new Map(dataset.records.map(r=>[keyFor(r),r]));
+ let followedCount=0;
+ for(const key of watchedItems){
+  const record=recordsByKey.get(key);
+  const isPending=key.startsWith('@province|'),province=isPending?key.slice('@province|'.length):record?.province||key.split('|')[0];
+  if(!dataset.provinces.includes(province))continue;
+  const encoded=escapeHTML(encodeURIComponent(key));
+  if(!record){
+   const choices=dataset.records.filter(r=>r.province===province);
+   const label=isPending?(choices.length?'旧版省份收藏 · 请选择具体批次':'该省暂无已核验公告'):'原收藏公告可能已更新 · 请重新选择';
+   const choose=choices.map(r=>`<button type="button" class="watch-pick-batch" data-watch-key="${escapeHTML(encodeURIComponent(keyFor(r)))}">＋ 关注 ${escapeHTML(r.type)}</button>`).join('');
+   const body=`<article class="watch-card stage-${choices.length?'unknown':'missing'}"><div class="watch-card-head"><h3>${escapeHTML(province)}</h3><span class="watch-stage">${escapeHTML(label)}</span><button type="button" class="watch-remove" data-watch-key="${encoded}" aria-label="取消旧版关注${escapeHTML(province)}" title="取消此关注">★</button></div><p class="watch-muted">原先按省份收藏，现已按公告批次区分；不会自动把该省所有批次一起收藏。</p><div class="watch-pick-list">${choose||'<span class="watch-muted">该地区后续公布公告后再选择批次。</span>'}</div></article>`;
+   pending.push(body);continue;
+  }
+  followedCount++;
+  const stage=recordProgress(record,now),events=watchEvents(record,now),next=events[0],progress=personalProgressOf(key);
+  for(const event of events.filter(e=>e.kind==='end')){
+   if(progress==='已报名')continue;
+   const remaining=event.ms-now;
+   if(remaining>=0&&remaining<=7*86400000)reminders.push({record,key,event,remaining});
+  }
+  const notEligible=isPersonalIneligible(record);
+  const eligibility=record.personalEligibility==='ineligible_school_scope'?'官方高校范围不含吉大':notEligible?'吉大当前不可报 · 对应批次校内公告待核':'';
+  const nextTitle=notEligible?'当前不推送报名提醒':next?`${next.label} ${shortProgressDate(next.at,next.unknown)}`:stage==='done'?'笔试已过 · 留意成绩和后续流程':'暂无已核验的后续日期';
+  const score=stage==='done'&&record.scoreStatus==='published'?`<span class="prov-score-pill">成绩已出${record.scorePublishedAt?' · '+escapeHTML(record.scorePublishedAt):''}</span>`:'';
+  const detail=[eligibility,progressNote({record,stage},now)].filter(Boolean).join(' · ');
+  grouped[stage].push(`<article class="watch-card stage-${stage}"><div class="watch-card-head"><h3>${escapeHTML(record.province)}</h3><span class="watch-stage">${escapeHTML(stageLabel(stage))}</span><button type="button" class="watch-remove" data-watch-key="${encoded}" aria-label="取消关注${escapeHTML(record.title)}" title="只取消这个批次的关注">★</button></div><p class="watch-batch-title">${escapeHTML(record.type)}</p><p class="watch-batch-full" title="${escapeHTML(record.title)}">${escapeHTML(record.title)}</p>${score}<div class="watch-next"><small>该批次下一节点</small><strong title="${escapeHTML(nextTitle)}">${escapeHTML(nextTitle)}</strong></div><div class="watch-quick"><select class="watch-progress" data-watch-key="${encoded}" aria-label="${escapeHTML(record.title)}的个人报考进度">${personalProgressGroups.map(v=>`<option value="${v}" ${progress===v?'selected':''}>${v}</option>`).join('')}</select><button type="button" class="watch-record-open" data-record="${encoded}">查看该批公告 →</button></div><details class="watch-card-details"><summary>更多信息</summary><div class="watch-detail-content"><p>${escapeHTML(detail)}</p><p>个人进度不代表报名或资格审核成功；其他批次不影响本批次的节点。</p><a href="${escapeHTML(safeUrl(record.source))}" target="_blank" rel="noopener noreferrer">查看该批次公告原文 ↗</a></div></details></article>`);
+ }
+ $('watchCount').textContent=watchedItems.size?`已关注 ${followedCount} 个批次${pending.length?' · '+pending.length+' 项待选批次':''}`:'尚未关注';
+ const visible=groups.map(([stage,label])=>{
+  const cards=grouped[stage];if(!cards.length)return '';
+  return `<section class="watch-group stage-${stage}" aria-label="${label}的关注批次"><div class="watch-group-heading"><h3>${label}</h3><span class="watch-group-count">${cards.length} 条公告/批次</span></div><div class="watch-grid watch-group-grid">${cards.join('')}</div></section>`;
+ }).join('');
+ const pendingGroup=pending.length?`<section class="watch-group stage-unknown" aria-label="旧版省份收藏待选批次"><div class="watch-group-heading"><h3>旧收藏 · 待选择批次</h3><span class="watch-group-count">${pending.length} 项</span></div><div class="watch-grid watch-group-grid">${pending.join('')}</div></section>`:'';
+ $('watchGrid').innerHTML=visible+pendingGroup||'<div class="watch-empty"><b>还没有关注的批次</b><p>到下方选调进度里，点击每个公告／批次卡片右上角的 ☆ 单独关注。</p><a href="#province-section">去选择批次 →</a></div>';
  reminders.sort((a,b)=>a.event.ms-b.event.ms);
- $('watchAlerts').innerHTML=reminders.slice(0,5).map(x=>{const days=x.remaining/86400000;const threshold=days<=1?'24小时内':days<=3?'3天内':'7天内';return `<div class="watch-alert"><span class="alert-label">${threshold}</span><span><strong>${escapeHTML(x.province)}</strong> · ${escapeHTML(x.event.label)}：${escapeHTML(dateFmt(x.event.at))}（北京时间）</span><button type="button" data-province="${escapeHTML(x.province)}" class="watch-show">查看公告</button></div>`}).join('');
- $('watchGrid').querySelectorAll('.watch-remove').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.province));
- $('watchGrid').querySelectorAll('.watch-progress').forEach(s=>s.onchange=()=>{applicationProgress[s.dataset.province]=s.value;saveWatch();renderWatchlist()});
- document.querySelectorAll('.watch-show').forEach(b=>b.onclick=()=>showProvinceFromWatch(b.dataset.province));
+ $('watchAlerts').innerHTML=reminders.slice(0,5).map(x=>{
+  const days=x.remaining/86400000,threshold=days<=1?'24小时内':days<=3?'3天内':'7天内';
+  return `<div class="watch-alert"><span class="alert-label">${threshold}</span><span><strong>${escapeHTML(x.record.province)} · ${escapeHTML(x.record.type)}</strong> · ${escapeHTML(x.event.label)}：${escapeHTML(dateFmt(x.event.at))}（北京时间）</span><button type="button" data-record="${escapeHTML(encodeURIComponent(x.key))}" class="watch-record-open">查看该批次</button></div>`;
+ }).join('');
+ $('watchGrid').querySelectorAll('.watch-remove').forEach(b=>b.onclick=()=>toggleWatchKey(decodeURIComponent(b.dataset.watchKey)));
+ $('watchGrid').querySelectorAll('.watch-progress').forEach(s=>s.onchange=()=>{applicationProgress[decodeURIComponent(s.dataset.watchKey)]=s.value;saveWatch();renderWatchlist()});
+ $('watchGrid').querySelectorAll('.watch-pick-batch').forEach(b=>b.onclick=()=>toggleWatchKey(decodeURIComponent(b.dataset.watchKey)));
+ document.querySelectorAll('.watch-record-open').forEach(b=>b.onclick=()=>openDetail(decodeURIComponent(b.dataset.record)));
 }
 function showProvinceFromWatch(p){state.province=p;state.filter='all';state.query='';state.onlyFavorites=false;$('searchInput').value='';$('stateFilter').value='all';calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#results').scrollIntoView({behavior:'smooth',block:'start'})}
 let provinceDoneExpanded=true;
@@ -414,7 +490,7 @@ function renderProvinces(){
  const count=stage=>entries.filter(item=>item.stage===stage).length;
  $('provinceLegend').innerHTML=stages.map(([stage,label])=>`<span class="prov-legend-chip stage-${stage}"><i aria-hidden="true"></i>${label}<b>${count(stage)}</b></span>`).join('');
  const card=item=>{
-  const {province,record:r,stage}=item,watched=watchedProvinces.has(province),selected=state.province===province;
+  const {province,record:r,stage}=item,watchKey=r?keyFor(r):watchIdForProvince(province),watched=watchedItems.has(watchKey),selected=state.province===province;
   const eligibility=r?.personalEligibility==='ineligible_school_scope'?'吉大不在本批高校范围':isPersonalIneligible(r)?'吉大当前不可报':'';
   const info=r?progressNote({record:r,stage},now):'暂无已核验公告';
   const detail=[eligibility,info].filter(Boolean).join(' · ');
@@ -422,7 +498,7 @@ function renderProvinces(){
   const batch=r?`<span class="prov-batch">${escapeHTML(r.type)}</span>`:'';
   const score=r?.scoreStatus==='published'&&stage==='done'?`<span class="prov-score-pill">成绩已出${r.scorePublishedAt?' · '+escapeHTML(r.scorePublishedAt):''}</span>`:'';
   const locator=r?`data-record="${escapeHTML(encodeURIComponent(keyFor(r)))}"`:`data-province="${escapeHTML(province)}"`;
-  return `<div class="prov-wrap"><button type="button" ${locator} class="prov prov-record stage-${stage} ${selected?'active':''}" aria-pressed="${selected}" aria-label="${escapeHTML(name+'，'+stageLabel(stage)+'，'+detail)}" title="${escapeHTML(name+' · '+detail)}"><span class="prov-name">${escapeHTML(province)}</span>${batch}<span class="prov-label">${escapeHTML(stageLabel(stage))}</span>${score}<small class="prov-meta">${escapeHTML(detail)}</small></button><button type="button" class="prov-star ${watched?'watched':''}" data-watch="${escapeHTML(province)}" aria-label="${watched?'取消关注':'关注'}${escapeHTML(province)}" aria-pressed="${watched}" title="${watched?'取消关注':'加入我的关注'}">${watched?'★':'☆'}</button></div>`;
+  return `<div class="prov-wrap"><button type="button" ${locator} class="prov prov-record stage-${stage} ${selected?'active':''}" aria-pressed="${selected}" aria-label="${escapeHTML(name+'，'+stageLabel(stage)+'，'+detail)}" title="${escapeHTML(name+' · '+detail)}"><span class="prov-name">${escapeHTML(province)}</span>${batch}<span class="prov-label">${escapeHTML(stageLabel(stage))}</span>${score}<small class="prov-meta">${escapeHTML(detail)}</small></button><button type="button" class="prov-star ${watched?'watched':''}" data-watch-key="${escapeHTML(encodeURIComponent(watchKey))}" aria-label="${watched?'取消关注':'关注'}${escapeHTML(r?r.title:province)}" aria-pressed="${watched}" title="${watched?'取消关注':'加入我的关注'}">${watched?'★':'☆'}</button></div>`;
  };
  const groups=stages.map(([stage,label])=>{
   const items=entries.filter(item=>item.stage===stage);
@@ -440,7 +516,7 @@ function renderProvinces(){
  $('provinceGrid').innerHTML=`<div class="province-overview-tools"><button type="button" data-province="全部" class="prov prov-all ${state.province==='全部'?'active':''}" aria-pressed="${state.province==='全部'}" aria-label="查看全国31个省级地区"><span class="prov-name">全部地区</span><span class="prov-label">查看总览</span><small class="prov-meta">${dataset.provinces.length} 个省级地区</small></button><span class="province-overview-help">每条公告和批次独立归组；已考完统一进入“笔试已过”，成绩已出仅在卡片上标记。</span></div>${groups}`;
  $('provinceGrid').querySelectorAll('.prov-record[data-record]').forEach(b=>b.onclick=()=>openDetail(decodeURIComponent(b.dataset.record)));
  $('provinceGrid').querySelectorAll('.prov[data-province]').forEach(b=>b.onclick=()=>{state.province=b.dataset.province;calendarMonthKey='';selectedDateKey='';renderAll();document.querySelector('#schedule').scrollIntoView({behavior:'smooth',block:'start'})});
- $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleProvinceWatch(b.dataset.watch));
+ $('provinceGrid').querySelectorAll('.prov-star').forEach(b=>b.onclick=()=>toggleWatchKey(decodeURIComponent(b.dataset.watchKey)));
  const stackToggle=$('provinceGrid').querySelector('.province-stack-toggle');
  if(stackToggle)stackToggle.onclick=()=>{provinceDoneExpanded=!provinceDoneExpanded;renderProvinces();};
  $('provinceHint').textContent=state.province==='全部'?'按每条公告/批次独立分组':'当前：'+state.province+'（各批次分别归组）';
