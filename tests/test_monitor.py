@@ -244,10 +244,10 @@ class MonitorOfflineTests(unittest.TestCase):
     def test_guizhou_article_failure_uses_index_as_degraded_fallback(self):
         list_url = 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441'
         html = ('<article>' + '2027年定向选调公告报名资格 ' * 12 + '</article>').encode()
-        listing = ('<html><a href="/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00">'
+        listing = ('<html><a href="/portal/article/details?id=7e49102ce2324d3ebd3c5ff24502892d">'
                    '贵州省2027年度定向部分高校选调优秀毕业生公告</a></html>').encode()
         def stub(url):
-            if 'id=1f6b210e15d944a6988d7af33b88cc00' in url:
+            if 'id=7e49102ce2324d3ebd3c5ff24502892d' in url:
                 raise ValueError('unsupported content-type: (missing); bytes=0')
             return listing if url == list_url else html
         with patch.object(monitor, 'fetch_bytes', side_effect=stub):
@@ -256,14 +256,14 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(status['sourceHealth'][self.monitor_index['贵州']]['used']['kind'], 'listing')
         self.assertEqual(status['fallbacksUsed'], 1)
         self.assertIn('公告正文及附件仍未读取', status['errors'][-1])
-        self.assertNotIn('https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00',
+        self.assertNotIn('https://jdjyw.jlu.edu.cn/portal/article/details?id=7e49102ce2324d3ebd3c5ff24502892d',
                          json.loads((self.root / 'watch_state.json').read_text())['articles'])
 
     def test_guizhou_empty_index_does_not_hide_failure(self):
         list_url = 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441'
         html = ('<article>' + '2027定向选调信息 ' * 12 + '</article>').encode()
         def stub(url):
-            if 'id=1f6b210e15d944a6988d7af33b88cc00' in url:
+            if 'id=7e49102ce2324d3ebd3c5ff24502892d' in url:
                 raise ValueError('empty article')
             if url == list_url:
                 return '<html><body><a href="/notice">2027四川选调公告</a></body></html>'.encode()
