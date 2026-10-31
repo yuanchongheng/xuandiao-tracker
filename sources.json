@@ -243,6 +243,12 @@
       ]
     },
     {
+      "province": "江苏",
+      "kind": "article",
+      "name": "吉林大学就业网：江苏2027乡镇（街道）选调第二批公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=889b9aa325ed486092cc16c598f7f2a3"
+    },
+    {
       "province": "四川",
       "kind": "article",
       "name": "吉林大学备用：四川面向吉林大学2027选调公告",
@@ -270,12 +276,12 @@
       "province": "贵州",
       "kind": "article",
       "name": "吉林大学就业网：贵州2027定向选调公告（政府原文未核验时备用）",
-      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502892d",
       "fallbacks": [
         {
-          "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=1f6b210e15d944a6988d7af33b88cc00",
+          "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=7e49102ce2324d3ebd3c5ff24502892d",
           "kind": "article",
-          "name": "吉林大学选调专栏：贵州2027同篇公告（第二入口）"
+          "name": "吉林大学就业网：贵州2027同篇公告（备用域名）"
         },
         {
           "url": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",

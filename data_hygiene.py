@@ -8,6 +8,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from province_utils import province_from_title
+from source_policy import source_tier
 
 ROOT = Path(__file__).resolve().parent
 TZ = timezone(timedelta(hours=8))
@@ -264,7 +265,7 @@ def base_eligibility(text):
     return text
 
 
-def reconcile_other_school_coverage(data, third):
+def reconcile_other_school_coverage(data, third, queue=None):
     """Keep nationwide publication coverage separate from the user's JLU eligibility.
 
     If an approved third-tier university source has a 2027 notice but there is no
@@ -286,7 +287,18 @@ def reconcile_other_school_coverage(data, third):
     # soon as a government/JLU/human-reviewed formal record exists.
     records[:] = [record for record in records if not record.get('coverageOnly')]
     jlu_records = [record for record in records if record.get('sourceTier') == 'jlu_fallback']
-    jlu_provinces = {record.get('province') for record in jlu_records}
+    # A JLU notice can corroborate a government-sourced record without becoming
+    # a duplicate formal card. Preserve the JLU evidence from auto-covered queue
+    # entries so a later matching batch revokes only its missing-JLU marker.
+    jlu_notices = [(r.get('province'), r.get('title', '')) for r in jlu_records]
+    for candidate in (queue or {}).get('candidates', []):
+        title = str(candidate.get('title') or '')
+        if (candidate.get('status') in ('auto_covered', 'auto_published')
+                and source_tier(candidate.get('url', '')) == 'jlu_fallback'
+                and '2027' in title
+                and not re.search(r'宣传片|宣传视频|选调宣讲会|政策宣讲会', title)):
+            jlu_notices.append((candidate.get('province'), title))
+    jlu_provinces = {province for province, _ in jlu_notices}
     formal_provinces = {record.get('province') for record in records}
 
     for province, items in by_province.items():
@@ -346,13 +358,20 @@ def reconcile_other_school_coverage(data, third):
         # A province-wide JLU notice may cover both batches, but a batch-specific
         # notice must only clear the corresponding batch's personal marker.
         shared_title = record.get('personalMatchSharedTitle') or ''
-        matching_jlu = (
-            any(j.get('province') == province and (
-                all(word in j.get('title', '') for word in keywords)
-                or (shared_title and shared_title in j.get('title', ''))
-            ) for j in jlu_records)
-            if keywords else province in jlu_provinces
+        # Explicitly verified JLU corroboration keeps the government URL as
+        # the primary source, while queue evidence handles future auto-coverage.
+        matching_jlu = bool(
+            record.get('jluNoticeUrl')
+            and source_tier(record['jluNoticeUrl']) == 'jlu_fallback'
         )
+        if not matching_jlu:
+            matching_jlu = (
+                any(jprovince == province and (
+                    all(word in title for word in keywords)
+                    or (shared_title and shared_title in title)
+                ) for jprovince, title in jlu_notices)
+                if keywords else province in jlu_provinces
+            )
         should_mark = (province in third_provinces or bool(keywords)) and not matching_jlu
         if should_mark:
             record['personalEligibility'] = 'ineligible_no_jlu'
@@ -400,7 +419,7 @@ def main():
 
     changed += ensure_recent_jlu_notices(data, queue)
     changed += merge_guizhou_duplicate(data, queue)
-    changed += reconcile_other_school_coverage(data, third)
+    changed += reconcile_other_school_coverage(data, third, queue)
 
     third_cfg = sources.get('discovery', {}).get('third_source', {})
     wanted_policy = '每次仅检索一个批次，每3小时轮换，共4个批次；连续4轮约12小时覆盖全部17校搜索批次；直连索引每轮单独检查。'

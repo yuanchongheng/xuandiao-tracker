@@ -85,6 +85,8 @@ def build(check=False):
                 raise ValueError('Other-university notice requires human source and school-scope review')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
                 raise ValueError('Other-university notice requires explicit applicability and notes')
+        if entry.get('jluNoticeUrl') and source_tier(entry['jluNoticeUrl']) != 'jlu_fallback':
+            raise ValueError('Corroborating JLU notice must use an approved JLU host: ' + entry['title'])
         if entry.get('autoPublished') and tier != 'jlu_fallback':
             raise ValueError('autoPublished is only permitted for Jilin University sources')
         if entry.get('publishedEstimated') and not (entry.get('autoPublished') or entry.get('coverageOnly')):

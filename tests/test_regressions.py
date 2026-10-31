@@ -123,6 +123,28 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertNotIn('personalEligibility', records[0])
         self.assertNotIn('personalEligibility', records[1])
 
+    def test_jlu_corrob_reverses_only_matching_batch_without_duplicate_card(self):
+        first = {'province': '江苏', 'title': '江苏省2027年第一批县级名校优生',
+                 'sourceTier': 'government', 'eligibility': '第一批条件',
+                 'personalMatchKeywords': ['县级']}
+        second = {'province': '江苏', 'title': '江苏省2027年乡镇（街道）第二批',
+                  'sourceTier': 'government', 'eligibility': '【你的资格】当前不可报。【公告条件】第二批条件',
+                  'personalEligibility': 'ineligible_no_jlu',
+                  'personalMatchKeywords': ['乡镇']}
+        data = {'records': [first, second]}
+        queue = {'candidates': [{
+            'province': '江苏', 'title': '江苏省2027年乡镇（街道）职位报名公告',
+            'url': 'https://jdjyw.jlu.edu.cn/portal/article/details?id=example',
+            'status': 'auto_covered',
+        }]}
+        data_hygiene.reconcile_other_school_coverage(data, {'items': []}, queue)
+        self.assertEqual(first['personalEligibility'], 'ineligible_no_jlu')
+        self.assertNotIn('personalEligibility', second)
+        self.assertEqual(second['eligibility'], '第二批条件')
+        self.assertEqual(len(data['records']), 2)
+        data_hygiene.reconcile_other_school_coverage(data, {'items': []}, queue)
+        self.assertNotIn('personalEligibility', second)
+
     def test_jiangsu_second_batch_official_timing_and_scope(self):
         from pathlib import Path
         import json
@@ -138,13 +160,9 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertEqual(second['end'], '2026-11-09T16:00:00+08:00')
         self.assertEqual(second['exam'], '2026-12-06T09:00:00+08:00')
         self.assertEqual(second['examEnd'], '2026-12-06T16:30:00+08:00')
-        jlu_titles = [r['title'] for r in data['records']
-                      if r['province'] == '江苏' and r['sourceTier'] == 'jlu_fallback']
-        if any('乡镇' in title or second['personalMatchSharedTitle'] in title
-               for title in jlu_titles):
-            self.assertNotIn('personalEligibility', second)
-        else:
-            self.assertEqual(second['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(second['jluNoticeUrl'],
+                         'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=889b9aa325ed486092cc16c598f7f2a3')
+        self.assertNotIn('personalEligibility', second)
         self.assertEqual(second['personalMatchKeywords'], ['乡镇'])
         self.assertIn('吉林大学', second['school'])
         self.assertIn('校内', second['notes'])
