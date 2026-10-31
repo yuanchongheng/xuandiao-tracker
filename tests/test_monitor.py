@@ -131,7 +131,7 @@ class ParsingTests(unittest.TestCase):
     def test_guizhou_uses_jlu_section_url(self):
         config = json.loads((Path(monitor.__file__).resolve().parent / 'sources.json').read_text(encoding='utf8'))
         gz = next(x for x in config['monitors'] if x['province'] == '贵州')
-        self.assertEqual(gz['url'], 'https://jdjyw.jlu.edu.cn/portal/article/details?id=1f6b210e15d944a6988d7af33b88cc00')
+        self.assertEqual(gz['url'], 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=7e49102ce2324d3ebd3c5ff24502892d')
         self.assertEqual(len({gz['url'], *(x['url'] for x in gz['fallbacks'])}), 3)
         self.assertEqual(gz['fallbacks'][-1]['kind'], 'listing')
         self.assertEqual(gz['fallbacks'][-1]['url'], 'https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441')
