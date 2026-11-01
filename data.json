@@ -80,7 +80,8 @@
       "sourceName": "吉林大学就业网转载公告（备用）",
       "sourceType": "吉林大学备用",
       "verified": "2026-09-21",
-      "sourceTier": "jlu_fallback"
+      "sourceTier": "jlu_fallback",
+      "examDateOnly": true
     },
     {
       "province": "湖北",
@@ -138,7 +139,8 @@
       "scorePublishedAt": "2026-10-19",
       "personalMatchKeywords": [
         "定向"
-      ]
+      ],
+      "examDateOnly": true
     },
     {
       "province": "四川",
@@ -324,7 +326,8 @@
       "verified": "2026-10-31",
       "sourceTier": "jlu_fallback",
       "autoPublished": true,
-      "discoveredAt": "2026-10-08T15:47:58+08:00"
+      "discoveredAt": "2026-10-08T15:47:58+08:00",
+      "examDateOnly": true
     },
     {
       "province": "浙江",
