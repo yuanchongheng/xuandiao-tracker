@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-01T08:09:35+08:00",
+  "updated": "2026-11-01T12:08:30+08:00",
   "items": [
+    {
+      "id": "8381e7ec5c78c842ae6c",
+      "province": "青海",
+      "title": "【选调生】青海省2027年度选调应届优秀大学毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205180/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-01T12:04:52+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "9c84195ce00cf3eab82e",
       "province": "广西",
