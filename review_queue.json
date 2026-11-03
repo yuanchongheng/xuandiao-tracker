@@ -1,6 +1,19 @@
 {
-  "updated": "2026-11-03T14:55:02+08:00",
+  "updated": "2026-11-03T19:40:49+08:00",
   "candidates": [
+    {
+      "id": "8ac7b0c3f8afa7569ceb",
+      "province": "江苏",
+      "title": "已收录公告原文内容变化：江苏省委组织部2027乡镇（街道）选调报名补充公告（监测后续更正）",
+      "url": "https://www.jszzb.gov.cn/tzgg/art/2026/art_e57bbc5ce42c49c288cbec425f749986.html",
+      "kind": "article_change",
+      "source": "江苏省委组织部2027乡镇（街道）选调报名补充公告（监测后续更正）",
+      "discovered": "2026-11-03T19:39:22+08:00",
+      "status": "pending",
+      "sourceTier": "government",
+      "sourceLabel": "政府官网",
+      "note": "未核验政府线索：请人工核对招录对象、公告原文、附件、具体报名时刻及岗位差异后再更新正式数据。"
+    },
     {
       "id": "0aa5cb382ac321c23ee6",
       "province": "天津",
