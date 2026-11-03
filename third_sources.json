@@ -1,6 +1,54 @@
 {
-  "updated": "2026-11-03T05:44:23+08:00",
+  "updated": "2026-11-03T12:03:29+08:00",
   "items": [
+    {
+      "id": "5de94143050a4888b1c9",
+      "province": "天津",
+      "title": "【选调19】天津市2027年度定向招录选调生公告 发布日期：2026-11-03 点击数：7 作者：戚霁",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/g35e1uo75536",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-03T12:03:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "e27045de80d6a99ed2f4",
+      "province": "天津",
+      "title": "天津市2027年度定向招录选调生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11390",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-03T12:03:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b0dde94bce37e9aebb07",
+      "province": "天津",
+      "title": "天津市2027年度定向招录选调生公告（华中科技大学）",
+      "url": "https://job.hust.edu.cn/jcfw/2465397.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-03T12:03:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "e9e1430b38d6412b7108",
+      "province": "天津",
+      "title": "天津市2027年度定向招录选调生公告",
+      "url": "https://job.sdu.edu.cn/info/1130/34034.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-03T12:03:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "8381e7ec5c78c842ae6c",
       "province": "青海",
