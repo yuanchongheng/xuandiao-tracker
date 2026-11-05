@@ -13,7 +13,7 @@ import json
 import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -78,22 +78,42 @@ def iso_dt(year: int, month: int, day: int, hour: int = 0, minute: int = 0) -> s
 
 
 def fetch_article_text(url: str) -> str:
+    """Try the JLU article URL, then the other approved university hostname.
+
+    A timeout or TLS error is not evidence that an announcement is absent.
+    Keep certificate verification enabled; use only the two trusted JLU hosts.
+    """
     if not is_jlu(url):
         raise ValueError("not a JLU employment URL")
-    response = requests.get(url, headers=HEADERS, timeout=(8, 18), allow_redirects=True)
-    response.raise_for_status()
-    if urlsplit(response.url).hostname not in JLU_HOSTS:
-        raise ValueError("JLU article redirected outside approved hosts")
-    soup = BeautifulSoup(response.content, "html.parser")
-    for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
-        tag.decompose()
-    text = soup.get_text(" ", strip=True)
-    text = re.sub(r"(?<=\d)\s+(?=\d)", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    if len(text) < 100:
-        raise ValueError("article text too short")
-    return text
-
+    parsed = urlsplit(url)
+    alternate_host = next(host for host in sorted(JLU_HOSTS) if host != parsed.hostname)
+    alternate = urlunsplit(("https", alternate_host, parsed.path, parsed.query, ""))
+    errors = []
+    for candidate in (url, alternate):
+        try:
+            response = requests.get(
+                candidate, headers=HEADERS, timeout=(8, 18),
+                allow_redirects=True, verify=True,
+            )
+            response.raise_for_status()
+            target = urlsplit(response.url)
+            if (target.scheme != "https" or target.hostname not in JLU_HOSTS
+                    or target.username or target.password or target.port not in (None, 443)):
+                raise ValueError("JLU article redirected outside approved HTTPS hosts")
+            soup = BeautifulSoup(response.content, "html.parser")
+            for tag in soup.select("script,style,nav,header,footer,aside,form,iframe,svg,noscript"):
+                tag.decompose()
+            text = soup.get_text(" ", strip=True)
+            text = re.sub(r"(?<=\d)\s+(?=\d)", "", text)
+            text = re.sub(r"\s+", " ", text).strip()
+            if len(text) < 100:
+                raise ValueError("article text too short")
+            return text
+        except (requests.RequestException, ValueError) as exc:
+            errors.append(f"{urlsplit(candidate).hostname}: {type(exc).__name__}: {str(exc)[:120]}")
+    raise RuntimeError(
+        "JLU article could not be fetched on either approved host; " + " | ".join(errors)
+    )
 
 def interval_score(text: str, match: re.Match) -> int:
     context = text[max(0, match.start() - 140): min(len(text), match.end() + 130)]

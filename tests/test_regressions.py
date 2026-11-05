@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock, patch
 
 import jlu_auto_publish
 import jlu_timing_fix
@@ -31,6 +32,37 @@ class AuditRegressionTests(unittest.TestCase):
         rss = """<rss><channel><item><title>重庆2027定向选调公告</title><link>https://www.cq.gov.cn/a</link></item><item><title>重庆2027面向吉林大学定向选调公告</title><link>https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=x</link></item></channel></rss>"""
         urls = [item['url'] for item in monitor.parse_rss(rss.encode(), '重庆', '2027')]
         self.assertEqual(urls, ['https://www.cq.gov.cn/a', 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=x'])
+
+    def test_jlu_article_retries_other_approved_host_after_timeout(self):
+        original = "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=test"
+        backup = "https://jdjyw.jlu.edu.cn/portal/xdsgz/article/details?id=test"
+        response = Mock()
+        response.url = backup
+        response.content = (
+            "<html><body><h1>云南省2027年面向吉林大学选调优秀毕业生公告</h1>"
+            "<p>网上报名时间和笔试安排应以省委组织部门正式公告为准。</p>"
+            "<p>此处仅用于离线模拟文章正文，不提供任何实际日期。</p>"
+            "</body></html>"
+        ).encode("utf-8")
+        with patch.object(jlu_auto_publish.requests, "get", side_effect=[
+            jlu_auto_publish.requests.exceptions.ReadTimeout("simulated timeout"), response
+        ]) as get:
+            article_text = jlu_auto_publish.fetch_article_text(original)
+        self.assertIn("云南省2027年", article_text)
+        self.assertEqual(get.call_count, 2)
+        self.assertEqual(get.call_args_list[1].args[0], backup)
+        self.assertTrue(get.call_args_list[1].kwargs["verify"])
+
+    def test_jlu_article_external_redirect_is_rejected_without_disabling_ssl(self):
+        original = "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=test"
+        response = Mock()
+        response.url = "https://attacker.example/notice"
+        response.content = b"<html><body>" + (b"An official article " * 20) + b"</body></html>"
+        with patch.object(jlu_auto_publish.requests, "get", return_value=response) as get:
+            with self.assertRaises(RuntimeError):
+                jlu_auto_publish.fetch_article_text(original)
+        self.assertEqual(get.call_count, 2)
+        self.assertTrue(all(c.kwargs["verify"] for c in get.call_args_list))
 
     def test_auto_publish_uses_date_only_flag_without_legacy_field(self):
         timing = jlu_auto_publish.extract_timing(
