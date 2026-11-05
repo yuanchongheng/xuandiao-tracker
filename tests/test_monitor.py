@@ -331,6 +331,7 @@ class MonitorOfflineTests(unittest.TestCase):
             (self.fixture/f'third-search-{i}.xml').write_text('<rss><channel></channel></rss>',encoding='utf8')
         (self.fixture/'third-index-0.html').write_text(
             '<a href="/career/news/recruitment/test">云南省2027年定向选调公告</a>',encoding='utf8')
+        formal_data_before=(self.root/'data.json').read_text(encoding='utf8')
         status=monitor.run(discovery=True,fixture_dir=self.fixture)
         index_total = len(config['discovery']['third_source']['indexes'])
         self.assertEqual(status['thirdIndexesSucceeded'], index_total)
@@ -342,7 +343,7 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(c['province'],'云南')
         self.assertEqual(c['sourceTier'],'university_third')
         self.assertEqual(c['kind'],'listing')
-        self.assertNotIn('云南', [r['province'] for r in json.loads((self.root/'data.json').read_text())['records']])
+        # A third-university index adds a supplemental lead, never changes\n        # existing formal data (including a now-published JLU Yunnan notice).\n        self.assertEqual((self.root/'data.json').read_text(encoding='utf8'), formal_data_before)
 
     def test_failed_official_can_get_third_lead_without_claiming_success(self):
         config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
