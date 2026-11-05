@@ -1,6 +1,30 @@
 {
-  "updated": "2026-11-05T07:42:54+08:00",
+  "updated": "2026-11-05T10:59:24+08:00",
   "items": [
+    {
+      "id": "822ba11758368cd40896",
+      "province": "云南",
+      "title": "云南省2027年面向华中科技大学选调优秀毕业生公告",
+      "url": "https://job.hust.edu.cn/jcfw/2465919.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T10:59:24+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "1cb1578f6929d2871d55",
+      "province": "云南",
+      "title": "云南省2027年面向山东大学选调优秀毕业生公告",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=34037",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T10:59:24+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "2c19d8ef99eabe22f8d0",
       "province": "天津",

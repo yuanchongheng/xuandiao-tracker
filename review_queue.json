@@ -1,6 +1,19 @@
 {
-  "updated": "2026-11-05T07:44:44+08:00",
+  "updated": "2026-11-05T11:00:51+08:00",
   "candidates": [
+    {
+      "id": "4edb68e264978b445ea2",
+      "province": "云南",
+      "title": "云南省2027年面向吉林大学选调优秀毕业生公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=4ca4c1d5fc98456891cbff312c5f3b2c",
+      "kind": "listing",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "discovered": "2026-11-05T10:59:24+08:00",
+      "status": "auto_published",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
+    },
     {
       "id": "8ac7b0c3f8afa7569ceb",
       "province": "江苏",
