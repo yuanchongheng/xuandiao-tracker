@@ -1,6 +1,42 @@
 {
-  "updated": "2026-11-05T11:17:35+08:00",
+  "updated": "2026-11-05T14:53:29+08:00",
   "items": [
+    {
+      "id": "2720c6a95a2c611eb0b7",
+      "province": "山东",
+      "title": "关于公布山东省2027年度第一批选调生招录笔试成绩的通知",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11393",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T14:53:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "d7d34b15032964a66534",
+      "province": "云南",
+      "title": "云南省2027年面向中国科学技术大学选调优秀毕业生公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11392",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T14:53:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "b1163495da230a53904a",
+      "province": "山东",
+      "title": "关于公布山东省2027年度第一批选调生招录笔试成绩的通知",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=34038",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T14:53:29+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "379023b6af1daded7911",
       "province": "云南",
