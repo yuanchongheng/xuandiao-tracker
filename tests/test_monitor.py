@@ -343,7 +343,9 @@ class MonitorOfflineTests(unittest.TestCase):
         self.assertEqual(c['province'],'云南')
         self.assertEqual(c['sourceTier'],'university_third')
         self.assertEqual(c['kind'],'listing')
-        # A third-university index adds a supplemental lead, never changes\n        # existing formal data (including a now-published JLU Yunnan notice).\n        self.assertEqual((self.root/'data.json').read_text(encoding='utf8'), formal_data_before)
+        # A third-university index adds a supplemental lead, never changes
+        # existing formal data (including a now-published JLU Yunnan notice).
+        self.assertEqual((self.root/'data.json').read_text(encoding='utf8'), formal_data_before)
 
     def test_failed_official_can_get_third_lead_without_claiming_success(self):
         config=json.loads((self.root/'sources.json').read_text(encoding='utf8'))
