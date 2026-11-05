@@ -41,7 +41,8 @@ class AuditRegressionTests(unittest.TestCase):
         response.content = (
             "<html><body><h1>云南省2027年面向吉林大学选调优秀毕业生公告</h1>"
             "<p>网上报名时间和笔试安排应以省委组织部门正式公告为准。</p>"
-            "<p>此处仅用于离线模拟文章正文，不提供任何实际日期。</p>"
+            "<p>此处仅用于离线模拟文章正文，不提供任何实际日期。离线测试文字需要足够长以模拟完整公告。</p>"
+            "<p>公告正文还会包括选调对象、申请流程、学校推荐、报名与考试注意事项。</p>"
             "</body></html>"
         ).encode("utf-8")
         with patch.object(jlu_auto_publish.requests, "get", side_effect=[
