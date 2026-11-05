@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-05T11:09:54+08:00",
+  "updated": "2026-11-05T11:17:35+08:00",
   "items": [
+    {
+      "id": "379023b6af1daded7911",
+      "province": "云南",
+      "title": "【选调生】云南省2027年面向中南大学选调优秀毕业生公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205231/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-05T11:17:35+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "822ba11758368cd40896",
       "province": "云南",
