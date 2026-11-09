@@ -103,6 +103,50 @@ class StaticUiRegressionTests(unittest.TestCase):
         """
         subprocess.run([node, '-e', javascript], check=True, capture_output=True, text=True)
 
+    def test_schedule_renders_pending_and_excluded_scope_labels(self):
+        import shutil
+        import subprocess
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is not installed')
+        javascript = r"""
+        const fs=require('fs'),vm=require('vm'),assert=require('assert');
+        const html=fs.readFileSync('index.html','utf8');
+        const schedule=html.slice(html.indexOf('const cDateFmt='),html.indexOf('function scoreProgress('));
+        const labels=html.match(/function personalEligibilityLabel\(r\).*$/m)[0];
+        const unavailable=html.match(/function isPersonalIneligible\(record\).*$/m)[0];
+        const elements=new Map(),opened=[];
+        const records=[
+          {province:'山东',title:'待核实批次',start:'2100-11-09T09:00:00+08:00',personalEligibility:'ineligible_no_jlu'},
+          {province:'贵州',title:'不在范围批次',start:'2100-11-09T10:00:00+08:00',personalEligibility:'ineligible_school_scope'},
+          {province:'天津',title:'已核实批次',start:'2100-11-09T11:00:00+08:00',personalEligibility:'eligible_jlu'}
+        ];
+        const ctx={TZ:'Asia/Shanghai',getResults:()=>records,keyFor:r=>r.title,
+          escapeHTML:x=>String(x),openDetail:key=>opened.push(key),
+          $:id=>{if(!elements.has(id))elements.set(id,{innerHTML:'',textContent:'',querySelectorAll:()=>[]});return elements.get(id)}
+        };
+        vm.createContext(ctx);
+        vm.runInContext(labels+'\n'+unavailable+'\n'+schedule,ctx);
+        vm.runInContext('renderSchedule()',ctx);
+        const timeline=elements.get('timelineList').innerHTML;
+        assert(timeline.includes('吉大高校范围待核实'));
+        assert(timeline.includes('吉大不在本批高校范围'));
+        assert.equal((timeline.match(/class="timeline-item"/g)||[]).length,3);
+        assert.equal((timeline.match(/class="timeline-detail"/g)||[]).length,3);
+        assert(elements.get('calendarBoard').innerHTML.includes('2100-11-09'));
+        const agenda=elements.get('selectedDayEvents').innerHTML;
+        assert(agenda.includes('吉大高校范围待核实'));
+        assert(agenda.includes('吉大不在本批高校范围'));
+        // Rendering also binds each timeline button to its own notice.
+        const button={dataset:{key:encodeURIComponent(records[0].title)}};
+        elements.get('timelineList').querySelectorAll=()=>[button];
+        vm.runInContext('renderSchedule()',ctx);
+        button.onclick();
+        assert.deepEqual(opened,[records[0].title]);
+        """
+        result = subprocess.run([node, '-e', javascript], capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
     def test_batch_watch_migration_and_isolated_toggle_in_node(self):
         import shutil
         import subprocess
