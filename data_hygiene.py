@@ -20,9 +20,9 @@ JL_URL = 'https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=d1f6aa165da
 PERSONAL_MARKER = '【你的资格】'
 NOTICE_MARKER = '【公告条件】'
 PERSONAL_POLICY = (
-    '其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；'
-    '后续吉林大学出现对应公告时自动撤销该标记。'
+    '省级政府官方公告、附件或经逐条人工核验的可信高校官方材料明确吉林大学属于对应批次高校范围时，即可标记吉大高校范围符合，无需等待吉林大学就业网发布；学历、专业、职位及学校推荐等仍须逐项满足。后续吉林大学对应公告仅补充来源、校内流程和时间。高校范围未确认的批次继续列入全国总表并标记待核实、暂停个人提醒；官方明确排除吉林大学的批次标记不可报。不得把其他高校校内截止时间当作吉林大学时间。'
 )
+LEGACY_PERSONAL_POLICY = '其他高校已发布但吉林大学暂未发现对应公告的省份仍进入总选调信息，并按个人口径标记为当前不可报；后续吉林大学出现对应公告时自动撤销该标记。'
 
 RECENT_JLU_FIXES = {
     JX_URL: {
@@ -320,9 +320,9 @@ def reconcile_other_school_coverage(data, third, queue=None):
             'exam': '',
             'examEnd': '',
             'examText': '不套用其他高校校内报名/推荐或考试安排；仅作为全国选调发布进度展示',
-            'school': '其他高校官方就业网已出现该省2027选调信息；吉林大学就业网暂未发现对应公告。',
+            'school': '其他高校官方就业网已出现该省2027选调信息；是否包含吉林大学尚待核实，不以吉林大学就业网是否转载作资格判断。',
             'eligibility': (
-                '【你的资格】当前不可报（个人跟踪口径）：吉林大学就业网暂未发现对应公告；此标记不代表官方高校名单排除吉林大学。'
+                '【你的资格】本批次吉林大学是否在高校范围内待核实，个人提醒暂不启用；不能仅凭吉大就业网未转载认定不可报。'
                 '【公告条件】其他高校公告仅用于全国选调信息收录，不代表你可按其校内流程报名。'
             ),
             'notes': '全国总信息保留该省发布进度；来源为其他高校官方就业网。不会把该校校内报名、推荐、盖章或考试时间当作你的时间。',
@@ -372,15 +372,27 @@ def reconcile_other_school_coverage(data, third, queue=None):
                 ) for jprovince, title in jlu_notices)
                 if keywords else province in jlu_provinces
             )
-        should_mark = (province in third_provinces or bool(keywords)) and not matching_jlu
-        if should_mark:
+        # Confirmed scope of THIS batch takes precedence over an absent JLU repost.
+        # jluScopeVerified is set only after checking an exact official notice,
+        # attachment or human-reviewed university evidence; never infer it from
+        # a province match, unreviewed third-party index or another batch.
+        verified_scope = record.get('jluScopeVerified') is True
+        should_mark = (province in third_provinces or bool(keywords) or
+                       record.get('personalEligibility') == 'ineligible_no_jlu') and not matching_jlu and not verified_scope
+        if verified_scope:
+            record['personalEligibility'] = 'eligible_jlu'
+            record['eligibility'] = (
+                '【你的资格】已核实吉林大学属于本批次高校范围；具体学历、专业、职位及学校推荐条件仍须满足。'
+                '吉林大学校内时间未核实时不采用其他高校时间。'
+                + f'{NOTICE_MARKER}{base}'
+            )
+        elif should_mark:
+            # Legacy name retained for existing clients: this denotes an
+            # unverified university scope, NOT a confirmed exclusion.
             record['personalEligibility'] = 'ineligible_no_jlu'
             record['eligibility'] = (
-                ('【你的资格】当前不可报（个人跟踪口径）：'
-                 + ('本批次吉林大学就业网暂未发现对应公告；同省其他批次的吉林大学公告不代表本批次已开放。'
-                    if keywords else
-                    '其他高校已有该省2027届选调信息，但吉林大学就业网暂未发现对应公告；')
-                 + '不代表官方明确排除吉林大学。')
+                '【你的资格】吉林大学是否符合本批次高校范围尚待核实，暂停个人报名提醒；'
+                '吉大未转载不是不可报证据，同省其他批次也不能互相套用。'
                 + f'{NOTICE_MARKER}{base}'
             )
         else:
@@ -388,8 +400,11 @@ def reconcile_other_school_coverage(data, third, queue=None):
                 record.pop('personalEligibility', None)
             record['eligibility'] = base
 
-    if PERSONAL_POLICY not in data.get('notice', ''):
-        data['notice'] = (data.get('notice', '').rstrip('。') + '。' + PERSONAL_POLICY).lstrip('。')
+    existing_notice = data.get('notice', '')
+    if LEGACY_PERSONAL_POLICY in existing_notice:
+        data['notice'] = existing_notice.replace(LEGACY_PERSONAL_POLICY, PERSONAL_POLICY)
+    elif PERSONAL_POLICY not in existing_notice:
+        data['notice'] = (existing_notice.rstrip('。') + '。' + PERSONAL_POLICY).lstrip('。')
 
     after = json.dumps(records, ensure_ascii=False, sort_keys=True)
     return int(before != after)

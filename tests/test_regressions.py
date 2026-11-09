@@ -125,8 +125,9 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertIn('吉林大学', record['school'])
         self.assertIn('类别III', record['school'])
         self.assertIn('类别I', record['school'])
-        self.assertEqual(record['personalEligibility'], 'ineligible_no_jlu')
-        self.assertIn('不代表官方明确排除吉林大学', record['eligibility'])
+        self.assertEqual(record['personalEligibility'], 'eligible_jlu')
+        self.assertTrue(record['jluScopeVerified'])
+        self.assertIn('类别III', record['jluScopeEvidenceNote'])
         self.assertTrue(record['startDateOnly'])
         self.assertTrue(record['examDateOnly'])
 
@@ -238,7 +239,8 @@ class AuditRegressionTests(unittest.TestCase):
         self.assertEqual(grassroots['exam'], '2026-12-06T00:00:00+08:00')
         self.assertTrue(grassroots['examDateOnly'])
         self.assertEqual(grassroots['personalMatchKeywords'], ['基层'])
-        self.assertEqual(grassroots['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(grassroots['personalEligibility'], 'eligible_jlu')
+        self.assertTrue(grassroots['jluScopeVerified'])
         self.assertIn('原文直连无法打开', grassroots['notes'])
 
 
@@ -256,7 +258,7 @@ class AuditRegressionTests(unittest.TestCase):
         for r in records:
             if r.get('province') == '山东' and r.get('batchId', '').startswith('second-'):
                 self.assertFalse(any(r.get(f) for f in ('start', 'end', 'exam', 'examEnd')))
-                self.assertEqual(r['personalEligibility'], 'ineligible_no_jlu')
+                self.assertEqual(r['personalEligibility'], 'eligible_jlu' if r['batchId'] == 'second-general' else 'ineligible_no_jlu')
                 self.assertIn('待官方后续通知', r['examText'])
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='浙江'), 850)
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='甘肃'), 600)
@@ -276,13 +278,38 @@ class AuditRegressionTests(unittest.TestCase):
         data_hygiene.reconcile_other_school_coverage({'records': rows}, {'items': []})
         self.assertEqual(first['personalEligibility'], 'ineligible_school_scope')
         self.assertEqual(targeted['personalEligibility'], 'ineligible_no_jlu')
-        self.assertEqual(general['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(general['personalEligibility'], 'eligible_jlu')
         rows.append({'province': '山东', 'title': '山东省2027年度第二批定向选调面向吉林大学公告',
                      'sourceTier': 'jlu_fallback', 'eligibility': '第二批定向可核对'})
         data_hygiene.reconcile_other_school_coverage({'records': rows}, {'items': []})
         self.assertNotIn('personalEligibility', targeted)
-        self.assertEqual(general['personalEligibility'], 'ineligible_no_jlu')
+        self.assertEqual(general['personalEligibility'], 'eligible_jlu')
         self.assertEqual(first['personalEligibility'], 'ineligible_school_scope')
+
+    def test_government_verified_school_scope_overrides_missing_jlu_notice(self):
+        records = [
+            {'province': '青海', 'title': '青海2027定向选调',
+             'sourceTier': 'government', 'eligibility': '定向职位条件',
+             'personalEligibility': 'ineligible_no_jlu',
+             'personalMatchKeywords': ['定向'],
+             'jluScopeVerified': True,
+             'jluScopeEvidenceUrl': 'https://www.qhsdj.gov.cn/cmsx/p894/tzgg/38576.html',
+             'jluScopeEvidenceNote': '本批附件明确包含吉林大学',
+             'jluScopeCheckedAt': '2026-11-09'},
+            {'province': '青海', 'title': '青海2027常规选调',
+             'sourceTier': 'government', 'eligibility': '常规岗位条件',
+             'personalMatchKeywords': ['常规']},
+        ]
+        third = {'items': [{'province': '青海', 'title': '青海2027公告',
+                            'url': 'https://career.ruc.edu.cn/example',
+                            'discovered': '2026-11-04'}]}
+        for _ in range(2):
+            data_hygiene.reconcile_other_school_coverage({'records': records}, third)
+            self.assertEqual(records[0]['personalEligibility'], 'eligible_jlu')
+            self.assertIn('高校范围', records[0]['eligibility'])
+            self.assertEqual(records[1]['personalEligibility'], 'ineligible_no_jlu')
+            self.assertIn('待核实', records[1]['eligibility'])
+        self.assertNotIn('其他高校校内', records[0]['eligibility'])
 
 
 if __name__ == '__main__':

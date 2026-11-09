@@ -85,6 +85,21 @@ def build(check=False):
                 raise ValueError('Other-university notice requires human source and school-scope review')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
                 raise ValueError('Other-university notice requires explicit applicability and notes')
+        if entry.get('jluScopeVerified') is True:
+            evidence = entry.get('jluScopeEvidenceUrl', '')
+            evidence_tier = source_tier(evidence)
+            if evidence_tier not in ('government', 'jlu_fallback', 'university_third'):
+                raise ValueError('Verified JLU scope needs an approved evidence URL: ' + entry['title'])
+            if evidence_tier == 'university_third' and entry.get('jluScopeEvidenceReviewed') is not True:
+                raise ValueError('Third-university scope evidence requires human review: ' + entry['title'])
+            if not str(entry.get('jluScopeEvidenceNote', '')).strip():
+                raise ValueError('Verified JLU scope needs a batch-specific evidence note: ' + entry['title'])
+            checked_day(entry.get('jluScopeCheckedAt'), 'jluScopeCheckedAt')
+            if entry.get('personalEligibility') == 'ineligible_school_scope':
+                raise ValueError('Verified JLU scope contradicts explicit exclusion: ' + entry['title'])
+        if entry.get('personalEligibility') == 'eligible_jlu' and not (
+                entry.get('jluScopeVerified') is True or entry.get('jluNoticeUrl') or tier == 'jlu_fallback'):
+            raise ValueError('Eligible JLU status requires a verified matching scope or JLU notice: ' + entry['title'])
         if entry.get('jluNoticeUrl') and source_tier(entry['jluNoticeUrl']) != 'jlu_fallback':
             raise ValueError('Corroborating JLU notice must use an approved JLU host: ' + entry['title'])
         if entry.get('autoPublished') and tier != 'jlu_fallback':
