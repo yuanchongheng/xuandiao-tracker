@@ -252,14 +252,26 @@ class AuditRegressionTests(unittest.TestCase):
         for province, batches in expected.items():
             rows = [r for r in records if r['province'] == province]
             self.assertEqual({r['batchId'] for r in rows}, batches)
-            self.assertEqual(len({r['source'] for r in rows}), 1)
+            # Shandong published a separate notice for its second batch.
+            # Tracks sharing one notice must agree on their source, while
+            # independent batches keep their own announcement URLs.
+            source_groups = ({'first-targeted'}, {'second-targeted', 'second-general'}) if province == '山东' else (batches,)
+            for group in source_groups:
+                self.assertEqual(len({r['source'] for r in rows if r['batchId'] in group}), 1)
+            if province == '山东':
+                by_batch = {r['batchId']: r for r in rows}
+                self.assertNotEqual(by_batch['first-targeted']['source'], by_batch['second-targeted']['source'])
             self.assertEqual(len({r['noticeGroup'] for r in rows}), 1)
             self.assertEqual(len({r['title'] for r in rows}), len(rows))
         for r in records:
             if r.get('province') == '山东' and r.get('batchId', '').startswith('second-'):
-                self.assertFalse(any(r.get(f) for f in ('start', 'end', 'exam', 'examEnd')))
+                self.assertEqual(r['start'], '2026-11-09T09:00:00+08:00')
+                self.assertEqual(r['end'], '2026-11-13T16:00:00+08:00')
+                self.assertEqual(r['exam'], '2026-12-05T09:00:00+08:00')
+                self.assertEqual(r['examEnd'], '2026-12-05T12:00:00+08:00')
                 self.assertEqual(r['personalEligibility'], 'eligible_jlu' if r['batchId'] == 'second-general' else 'ineligible_no_jlu')
-                self.assertIn('待官方后续通知', r['examText'])
+                self.assertIn('第二批', r['examText'])
+                self.assertIn('12月5日', r['examText'])
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='浙江'), 850)
         self.assertEqual(sum(int(r['count'].split('名')[0]) for r in records if r['province']=='甘肃'), 600)
 
