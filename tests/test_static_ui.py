@@ -134,6 +134,7 @@ class StaticUiRegressionTests(unittest.TestCase):
           validData:()=>false,keyFor:r=>r.province+'|'+r.title,
           recordProgress:r=>r.title==='四川定向选调'?'done':r.title==='四川基层选调'?'soon':'unknown',
           isPersonalIneligible:r=>!!r&&r.personalEligibility==='ineligible_no_jlu',
+          personalEligibilityLabel:r=>r.personalEligibility==='ineligible_no_jlu'?'吉大高校范围待核实':'',
           progressNote:()=> '当前批次',shortProgressDate:()=> '11月3日',
           dateFmt:t=>t,provinceStages:{done:'笔试已过',soon:'即将报名',unknown:'时间待核'},
           safeUrl:x=>x,escapeHTML:x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;'),
