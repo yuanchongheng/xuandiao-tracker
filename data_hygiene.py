@@ -392,7 +392,7 @@ def reconcile_other_school_coverage(data, third, queue=None):
             record['personalEligibility'] = 'ineligible_no_jlu'
             record['eligibility'] = (
                 '【你的资格】吉林大学是否符合本批次高校范围尚待核实，暂停个人报名提醒；'
-                '吉大未转载不是不可报证据，同省其他批次也不能互相套用。'
+                '吉大就业网未转载不是不可报证据，同省其他批次也不能互相套用。'
                 + f'{NOTICE_MARKER}{base}'
             )
         else:
