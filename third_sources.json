@@ -1,6 +1,30 @@
 {
-  "updated": "2026-11-09T11:05:45+08:00",
+  "updated": "2026-11-09T19:39:13+08:00",
   "items": [
+    {
+      "id": "d3ddf164c80351e3e06e",
+      "province": "山东",
+      "title": "山东省2027年度第一批定向选调面试通知",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11397",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-09T19:39:13+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "35c30c04313402677a40",
+      "province": "山东",
+      "title": "山东省2027年度第一批定向选调面试通知",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=34039",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-09T19:39:13+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "011b45401cb9ec0e5e51",
       "province": "新疆",
