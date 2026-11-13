@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-13T09:51:30+08:00",
+  "checkedAt": "2026-11-13T19:05:12+08:00",
   "monitorsConfigured": 10,
   "monitorsSucceeded": 8,
   "provincesConfigured": 31,
@@ -9,23 +9,23 @@
   "thirdLinksFound": 0,
   "thirdIndexesSucceeded": 8,
   "thirdIndexesAttempted": 8,
-  "thirdIndexLinksFound": 23,
+  "thirdIndexLinksFound": 26,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
-  "thirdBatchActive": 4,
+  "thirdBatchActive": 3,
   "thirdHostsInThisRun": [
-    "career.csu.edu.cn",
-    "career.fudan.edu.cn",
-    "job.sdu.edu.cn",
-    "job.lzu.edu.cn"
+    "job.hust.edu.cn",
+    "career.ruc.edu.cn",
+    "career.nankai.edu.cn",
+    "jy.scu.edu.cn"
   ],
   "newCandidates": 0,
-  "supplementalNew": 0,
-  "supplementalTotal": 70,
+  "supplementalNew": 3,
+  "supplementalTotal": 73,
   "pendingCandidates": 0,
   "errors": [
-    "湖南省人事考试机构2027选调公告: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
-    "湖南人事考试网考试通知目录（仅政府官方索引）: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
+    "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
+    "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
     "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，原定页面仍未成功检查"
   ],
   "fallbacksUsed": 1,
@@ -53,8 +53,8 @@
       "state": "failed",
       "primaryUrl": "https://rst.hunan.gov.cn/rst/hnrsksw/c103127/c103096/202609/t20260918_34067738.html",
       "failures": [
-        "湖南省人事考试机构2027选调公告: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
-        "湖南人事考试网考试通知目录（仅政府官方索引）: ConnectionError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b"
+        "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
+        "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b"
       ]
     },
     {
@@ -103,15 +103,10 @@
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
   "jluTimingErrors": [
-    "广西 广西2027年定向吉林大学招录选调生公告: RuntimeError: JLU article could not be fetched on either approved host; jdjywpt.jlu.edu.cn: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max ",
-    "吉林 吉林省面向吉林大学定向招录2027届选调生公告: RuntimeError: JLU article could not be fetched on either approved host; jdjywpt.jlu.edu.cn: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max ",
-    "江西 江西省2027年度面向吉林大学选调应届优秀大学毕业生公告: RuntimeError: JLU article could not be fetched on either approved host; jdjywpt.jlu.edu.cn: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max "
+    "安徽 安徽省2027年度面向吉林大学定向招录选调生公告: RuntimeError: JLU article could not be fetched on either approved host; jdjywpt.jlu.edu.cn: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max "
   ],
   "jluTimingBackfilledThisRun": 0,
-  "jluTimingBackfillErrors": [
-    "重庆 重庆市面向吉林大学定向选调 2027届急需紧缺专业应届优秀大学毕业生公告: RuntimeError: https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=8cec6f02aeb2456686a4865bc6c691dd: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceede",
-    "江西 江西省2027年度面向吉林大学选调应届优秀大学毕业生公告: RuntimeError: https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=c9a25f39746844109e664b0393355256: SSLError: HTTPSConnectionPool(host='jdjywpt.jlu.edu.cn', port=443): Max retries exceede"
-  ],
+  "jluTimingBackfillErrors": [],
   "jluTimingFallbackUsed": [
     "黑龙江 黑龙江省2027年度定向选调应届优秀大学毕业生公告",
     "安徽 安徽省2027年度面向吉林大学定向招录选调生公告"
