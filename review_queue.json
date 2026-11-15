@@ -1,6 +1,19 @@
 {
-  "updated": "2026-11-15T14:41:22+08:00",
+  "updated": "2026-11-15T19:48:23+08:00",
   "candidates": [
+    {
+      "id": "4ddd8a9804246223a80e",
+      "province": "宁夏",
+      "title": "2027年度宁夏招录选调生公告",
+      "url": "https://jdjyw.jlu.edu.cn/portal/article/details?id=a85ccd30bccf488a9d20fb9434f76cc8",
+      "kind": "listing",
+      "source": "https://jdjyw.jlu.edu.cn/portal/article/list?cid=797ed1b0210f4f15937da33309184441",
+      "discovered": "2026-11-15T19:46:39+08:00",
+      "status": "auto_covered",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；正式数据中已有同链接或同标题记录，无需人工二次核验。"
+    },
     {
       "id": "9adfb8812278d2ff7988",
       "province": "宁夏",
