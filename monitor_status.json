@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-14T09:27:48+08:00",
+  "checkedAt": "2026-11-15T11:57:02+08:00",
   "monitorsConfigured": 10,
   "monitorsSucceeded": 8,
   "provincesConfigured": 31,
@@ -7,9 +7,9 @@
   "thirdSearchesAttempted": 23,
   "thirdSearchesSucceeded": 23,
   "thirdLinksFound": 0,
-  "thirdIndexesSucceeded": 7,
+  "thirdIndexesSucceeded": 8,
   "thirdIndexesAttempted": 8,
-  "thirdIndexLinksFound": 22,
+  "thirdIndexLinksFound": 26,
   "thirdSchoolsConfigured": 17,
   "thirdBatchCount": 4,
   "thirdBatchActive": 4,
@@ -26,8 +26,7 @@
   "errors": [
     "湖南省人事考试机构2027选调公告: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/202609/t20260918_3406773",
     "湖南人事考试网考试通知目录（仅政府官方索引）: SSLError: HTTPSConnectionPool(host='rst.hunan.gov.cn', port=443): Max retries exceeded with url: /rst/hnrsksw/c103127/c103096/rskswlist.html (Caused b",
-    "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，原定页面仍未成功检查",
-    "第三来源目录 华中科技大学就业网基层招聘目录: 404 Client Error:  for url: https://job.hust.edu.cn/searchJob.do?fbsj=&type=6"
+    "甘肃组工网2027选调公告: ConnectTimeout: HTTPSConnectionPool(host='www.gszg.gov.cn', port=443): Max retries exceeded with url: /20260920/ed5b9eee0bf34865afa9f09d30c9d9a4/c.html (Cau；已启用备用来源，原定页面仍未成功检查"
   ],
   "fallbacksUsed": 1,
   "fallbackDetails": [
@@ -103,9 +102,7 @@
   "jluAutoPublishedThisRun": 0,
   "jluAutoCoveredThisRun": 0,
   "jluTimingUpdatedThisRun": 0,
-  "jluTimingErrors": [
-    "辽宁 辽宁省2027年度选调应届优秀大学毕业生公告: RuntimeError: JLU article could not be fetched on either approved host; jdjyw.jlu.edu.cn: ReadTimeout: HTTPSConnectionPool(host='jdjyw.jlu.edu.cn', port=443): Read "
-  ],
+  "jluTimingErrors": [],
   "jluTimingBackfilledThisRun": 0,
   "jluTimingBackfillErrors": [],
   "jluTimingFallbackUsed": [
