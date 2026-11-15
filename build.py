@@ -79,8 +79,11 @@ def build(check=False):
             if entry.get('coverageOnly'):
                 if entry.get('personalEligibility') != 'ineligible_no_jlu':
                     raise ValueError('Coverage-only card must be marked ineligible_no_jlu')
-                if any(entry.get(field) for field in ('start', 'end', 'exam', 'examEnd')):
-                    raise ValueError('Coverage-only card must not copy other-school timing fields')
+                # Province-wide dates verified from a full official university repost
+                # may be displayed nationally, without asserting JLU eligibility.
+                # Never transfer university-specific internal deadlines.
+                if any(entry.get(field) for field in ('start', 'end', 'exam', 'examEnd')) and entry.get('reviewedSource') is not True:
+                    raise ValueError('Coverage-only dates require reviewed full notice text')
             elif entry.get('reviewedSource') is not True or entry.get('reviewedScope') is not True:
                 raise ValueError('Other-university notice requires human source and school-scope review')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
