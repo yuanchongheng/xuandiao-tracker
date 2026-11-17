@@ -1,6 +1,19 @@
 {
-  "updated": "2026-11-17T10:51:15+08:00",
+  "updated": "2026-11-17T11:58:14+08:00",
   "candidates": [
+    {
+      "id": "2c5f9c1fdfd43d6f6236",
+      "province": "福建",
+      "title": "福建省2027年度选调生选拔工作公告",
+      "url": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/details?id=f039000c61f143afa19d0a3dd8626403",
+      "kind": "listing",
+      "source": "https://jdjywpt.jlu.edu.cn/portal/xdsgz/article/list?cid=8cd0593255b342a7b1912bd3484bf95c",
+      "discovered": "2026-11-17T11:56:24+08:00",
+      "status": "auto_published",
+      "sourceTier": "jlu_fallback",
+      "sourceLabel": "吉林大学备用来源",
+      "note": "吉林大学就业网来源；已自动加入正式数据。报名和考试时间会从正文自动提取，未明确字段以原文及附件为准。"
+    },
     {
       "id": "4ddd8a9804246223a80e",
       "province": "宁夏",

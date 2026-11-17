@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-17T10:48:50+08:00",
+  "updated": "2026-11-17T11:56:24+08:00",
   "items": [
+    {
+      "id": "a6751abce9bc46492e45",
+      "province": "福建",
+      "title": "福建省2027年度选调生选拔工作公告",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11400",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-17T11:56:24+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "fee35f1848432c625836",
       "province": "四川",
