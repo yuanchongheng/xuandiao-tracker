@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-16T06:52:27+08:00",
+  "updated": "2026-11-17T10:48:50+08:00",
   "items": [
+    {
+      "id": "fee35f1848432c625836",
+      "province": "四川",
+      "title": "【选调生】四川省2027年度选调优秀大学毕业生到基层工作公告",
+      "url": "https://career.csu.edu.cn/news/view/aid/205185/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-17T10:48:50+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "d2dafbf4df56b9fe78f7",
       "province": "宁夏",
