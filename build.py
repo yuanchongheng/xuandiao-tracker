@@ -86,7 +86,7 @@ def build(check=False):
                     raise ValueError('Coverage-only dates require reviewed full notice text')
             else:
                 if entry.get('reviewedSource') is not True:
-                    raise ValueError('Other-university formal notice requires full-text source review')
+                    raise ValueError('Other-university notice requires human source and school-scope review')
                 # A fully reviewed university repost may establish province-wide dates
                 # without establishing that JLU is on the attached university list.
                 if entry.get('reviewedScope') is not True:
