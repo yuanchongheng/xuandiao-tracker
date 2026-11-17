@@ -12,6 +12,7 @@ GOVERNMENT_EXAM_HOSTS = frozenset({'www.scpta.com.cn'})
 JLU_HOSTS = frozenset({'jdjywpt.jlu.edu.cn', 'jdjyw.jlu.edu.cn'})
 OTHER_UNIVERSITY_HOSTS = frozenset({
     'career.csu.edu.cn',
+    'jyzx.chd.edu.cn',  # Chang'an University official career centre; 2027 Hainan provincial repost.
     'dj.gzu.edu.cn',  # Reviewed provincial-university official notice mirror; not a monitored search channel.
     'career.fudan.edu.cn',
     'career.nankai.edu.cn',

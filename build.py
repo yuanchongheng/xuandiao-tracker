@@ -84,10 +84,21 @@ def build(check=False):
                 # Never transfer university-specific internal deadlines.
                 if any(entry.get(field) for field in ('start', 'end', 'exam', 'examEnd')) and entry.get('reviewedSource') is not True:
                     raise ValueError('Coverage-only dates require reviewed full notice text')
-            elif entry.get('reviewedSource') is not True or entry.get('reviewedScope') is not True:
-                raise ValueError('Other-university notice requires human source and school-scope review')
+            else:
+                if entry.get('reviewedSource') is not True:
+                    raise ValueError('Other-university formal notice requires full-text source review')
+                # A fully reviewed university repost may establish province-wide dates
+                # without establishing that JLU is on the attached university list.
+                if entry.get('reviewedScope') is not True:
+                    if not (entry.get('reviewedProvinceWideTiming') is True
+                            and entry.get('personalEligibility') in ('ineligible_no_jlu', 'pending_school_scope')):
+                        raise ValueError('Unverified school scope requires reviewed province-wide dates and pending personal eligibility')
+                    if entry.get('deadlines'):
+                        raise ValueError('Unverified school-scope record must not import campus-specific deadlines')
             if not entry.get('notes', '').strip() or not entry.get('school', '').strip():
                 raise ValueError('Other-university notice requires explicit applicability and notes')
+        if entry.get('personalEligibility') == 'pending_school_scope' and entry.get('jluScopeVerified') is True:
+            raise ValueError('Pending school scope contradicts verified JLU scope: ' + entry['title'])
         if entry.get('jluScopeVerified') is True:
             evidence = entry.get('jluScopeEvidenceUrl', '')
             evidence_tier = source_tier(evidence)

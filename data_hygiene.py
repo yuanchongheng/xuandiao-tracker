@@ -386,6 +386,15 @@ def reconcile_other_school_coverage(data, third, queue=None):
                 '吉林大学校内时间未核实时不采用其他高校时间。'
                 + f'{NOTICE_MARKER}{base}'
             )
+        elif record.get('personalEligibility') == 'pending_school_scope':
+            # A school's repost does not prove the student's programme/position
+            # fits the province's attachment. Keep the explicit pending status
+            # until the exact cohort and position scope has been verified.
+            record['eligibility'] = (
+                '【你的资格】吉林大学是否符合本批次高校范围尚待核实；个人报名提醒暂不启用。'
+                '吉大就业网转载与否不能替代附件高校及岗位核验。'
+                + f'{NOTICE_MARKER}{base}'
+            )
         elif should_mark:
             # Legacy name retained for existing clients: this denotes an
             # unverified university scope, NOT a confirmed exclusion.

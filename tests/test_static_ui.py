@@ -35,6 +35,7 @@ class StaticUiRegressionTests(unittest.TestCase):
         text = (ROOT / 'index.html').read_text(encoding='utf-8')
         self.assertIn("function isPersonalIneligible(record)", text)
         self.assertIn("ineligible_no_jlu", text)
+        self.assertIn("pending_school_scope", text)
         self.assertIn("ineligible_school_scope", text)
         self.assertIn('tag personal-unavailable', text)
 

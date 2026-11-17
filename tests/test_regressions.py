@@ -323,6 +323,49 @@ class AuditRegressionTests(unittest.TestCase):
             self.assertIn('待核实', records[1]['eligibility'])
         self.assertNotIn('其他高校校内', records[0]['eligibility'])
 
+    def test_hainan_and_ningxia_scope_pending_survives_jlu_repost(self):
+        import json
+        from pathlib import Path
+        from copy import deepcopy
+        from source_policy import source_tier
+        document = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
+        for province in ('海南', '宁夏'):
+            record = next(r for r in document['records'] if r['province'] == province)
+            self.assertEqual(record['personalEligibility'], 'pending_school_scope')
+            self.assertIn('待核实', record['eligibility'])
+            self.assertFalse(record.get('jluScopeVerified', False))
+            self.assertNotIn('校内截止：', record['notes'])
+        hainan = next(r for r in document['records'] if r['province'] == '海南')
+        self.assertEqual(source_tier(hainan['source']), 'university_third')
+        self.assertTrue(hainan['reviewedProvinceWideTiming'])
+        self.assertTrue(hainan['reviewedSource'])
+        self.assertFalse(hainan['reviewedScope'])
+        ningxia = deepcopy(next(r for r in document['records'] if r['province'] == '宁夏'))
+        data = {'records': [ningxia]}
+        queue = {'candidates': [{'province': '宁夏', 'title': ningxia['title'],
+                                 'url': 'https://jdjyw.jlu.edu.cn/portal/article/details?id=a85ccd30bccf488a9d20fb9434f76cc8',
+                                 'status': 'auto_covered'}]}
+        third = {'items': [{'province': '宁夏', 'title': ningxia['title'],
+                           'url': 'https://career.csu.edu.cn/news/view/aid/205296/tag/jcxm'}]}
+        for _ in range(2):
+            data_hygiene.reconcile_other_school_coverage(data, third, queue)
+            self.assertEqual(ningxia['personalEligibility'], 'pending_school_scope')
+            self.assertIn('附件高校及岗位核验', ningxia['eligibility'])
+
+    def test_hainan_and_ningxia_province_wide_deadlines_are_not_campus_deadlines(self):
+        from pathlib import Path
+        import json
+        data = json.loads((Path(__file__).resolve().parents[1] / 'data.json').read_text(encoding='utf-8'))
+        hainan = next(r for r in data['records'] if r['province'] == '海南')
+        ningxia = next(r for r in data['records'] if r['province'] == '宁夏')
+        self.assertEqual(hainan['start'], '2026-11-16T08:00:00+08:00')
+        self.assertEqual(hainan['end'], '2026-11-20T16:00:00+08:00')
+        self.assertTrue(hainan['examDateOnly'])
+        self.assertEqual(ningxia['start'], '2026-11-23T09:00:00+08:00')
+        self.assertEqual(ningxia['end'], '2026-11-27T18:00:00+08:00')
+        self.assertEqual(ningxia['exam'], '2026-12-15T14:30:00+08:00')
+        self.assertIn('校内时间待核实', hainan['eligibility'])
+        self.assertIn('未公布单独校内截止时间', ningxia['notes'])
 
 if __name__ == '__main__':
     unittest.main()
