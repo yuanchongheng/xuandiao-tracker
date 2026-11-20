@@ -226,6 +226,83 @@ class StaticUiRegressionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
 
 
+    def test_announcement_search_prioritizes_actionable_batches(self):
+        import shutil
+        import subprocess
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is not installed')
+        javascript = r"""
+        const assert=require('assert/strict'),fs=require('fs'),vm=require('vm');
+        const html=fs.readFileSync('index.html','utf8');
+        const start=html.indexOf('function getResults()');
+        const end=html.indexOf('// All calendar days',start);
+        const status=html.match(/^function statusOf\(r\).*$/m)[0];
+        const fixedTime=Date.parse('2026-11-20T12:00:00+08:00');
+        const record=(title,province,start,end,published)=>({
+          title,province,start:start&&start+'T09:00:00+08:00',
+          end:end&&end+'T18:00:00+08:00',published
+        });
+        const records=[
+          record('旧批次','吉林','2026-09-01','2026-09-08','2026-09-01'),
+          record('近日截止','山东','2026-11-19','2026-11-21','2026-11-18'),
+          record('暂未定','广东','','','2026-11-20'),
+          record('即将报名','山东','2026-11-23','2026-11-24','2026-11-19'),
+          record('近期结束','北京','2026-11-13','2026-11-19','2026-11-11'),
+          record('稍后截止','辽宁','2026-11-18','2026-11-22','2026-11-14')
+        ];
+        const ctx={Date:{now:()=>fixedTime},dateOf:value=>value?new Date(value):null,
+          dataset:{records},state:{province:'全部',sort:'deadline',filter:'all',query:'',onlyFavorites:false}};
+        vm.createContext(ctx);
+        vm.runInContext(status+'\n'+html.slice(start,end),ctx);
+        const titles=()=>vm.runInContext("getResults().map(item=>item.title).join(',')",ctx);
+        assert.equal(titles(),'近日截止,稍后截止,即将报名,暂未定,近期结束,旧批次');
+        ctx.state.province='山东';
+        assert.equal(titles(),'近日截止,即将报名');
+        ctx.state.filter='soon';
+        assert.equal(titles(),'即将报名');
+        ctx.state.filter='all';
+        ctx.state.sort='latest';
+        assert.equal(titles(),'即将报名,近日截止');
+        """
+        result = subprocess.run([node, '-e', javascript], capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
+    def test_reference_links_load_when_monitoring_data_is_unavailable(self):
+        import shutil
+        import subprocess
+        node = shutil.which('node')
+        if not node:
+            self.skipTest('Node.js is not installed')
+        javascript = r"""
+        const assert=require('assert/strict'),fs=require('fs'),vm=require('vm');
+        const html=fs.readFileSync('index.html','utf8');
+        const start=html.indexOf('async function loadSource(');
+        const end=html.indexOf('\nrenderAll();',start);
+        const scripts=html.slice(start,end);
+        const feed={items:[{title:'高校通知'}]};
+        const calls=[];
+        const ctx={monitoring:null,candidates:null,thirdFeed:null,
+          fetch:async url=>{
+            if(url.includes('monitor_status'))throw new Error('unavailable');
+            if(url.includes('review_queue'))return {ok:true,json:async()=>({candidates:[]})};
+            return {ok:true,json:async()=>feed};
+          },
+          renderCandidates:()=>calls.push('candidates'),
+          renderSupplement:()=>calls.push('supplement'),
+          renderMonitoring:()=>calls.push('monitor')
+        };
+        vm.createContext(ctx);
+        vm.runInContext(scripts+'\nloadMonitoring()',ctx).then(()=>{
+          assert.equal(ctx.monitoring,null);
+          assert.equal(ctx.candidates.length,0);
+          assert.equal(ctx.thirdFeed,feed);
+          assert.deepEqual(calls.sort(),['candidates','monitor','supplement']);
+        }).catch(error=>{console.error(error);process.exitCode=1});
+        """
+        result = subprocess.run([node, '-e', javascript], capture_output=True, text=True, cwd=ROOT)
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()
