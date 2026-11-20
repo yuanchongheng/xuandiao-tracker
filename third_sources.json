@@ -1,6 +1,54 @@
 {
-  "updated": "2026-11-20T04:41:47+08:00",
+  "updated": "2026-11-20T10:21:34+08:00",
   "items": [
+    {
+      "id": "2c9a392411290fc0edc3",
+      "province": "辽宁",
+      "title": "关于查询辽宁省2027年度定向选调应届 优秀大学毕业生笔试成绩的通知 发布日期：2026-11-20 点击数：16 作者：王夏雨",
+      "url": "https://jiuye.uestc.edu.cn/career/news/recruitment/g4tnpd73o5c2",
+      "source": "电子科技大学就业网选调专栏（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-20T10:21:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "d4c5e9cbbb392431d1e6",
+      "province": "辽宁",
+      "title": "关于查询辽宁省2027年度定向选调应届优秀大学毕业生笔试成绩的通知",
+      "url": "https://job.hust.edu.cn/jcfw/2469996.htm",
+      "source": "华中科技大学就业网基层招聘目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-20T10:21:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "7c0b44370ad4b2a3aa57",
+      "province": "辽宁",
+      "title": "【选调生】关于查询辽宁省2027年度定向选调应届优秀大学毕业生笔试成绩的通知",
+      "url": "https://career.csu.edu.cn/news/view/aid/205322/tag/jcxm",
+      "source": "中南大学就业信息网选调公告入口（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-20T10:21:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
+    {
+      "id": "f5fb89aeed0f1f803c5d",
+      "province": "辽宁",
+      "title": "关于查询辽宁省2027年度定向选调应届优秀大学毕业生笔试成绩的通知",
+      "url": "https://job.sdu.edu.cn/info/1130/34083.htm",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-20T10:21:34+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "cd5638b779581de41110",
       "province": "福建",
