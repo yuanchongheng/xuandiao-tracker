@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-25T16:41:49+08:00",
+  "updated": "2026-11-25T21:54:22+08:00",
   "items": [
+    {
+      "id": "00b3c7615f9e4483a474",
+      "province": "山东",
+      "title": "关于公布山东省2027年度第一批选调生招录体检考察人选名单的通知",
+      "url": "https://job.sdu.edu.cn/nry.jsp?urltype=news.NewsContentUrl&wbtreeid=1130&wbnewsid=34088",
+      "source": "山东大学学生就业创业指导中心选调公考（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-25T21:54:22+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "b68d557f405dfa3423e6",
       "province": "山东",
