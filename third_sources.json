@@ -1,6 +1,18 @@
 {
-  "updated": "2026-11-27T09:45:40+08:00",
+  "updated": "2026-11-27T20:30:40+08:00",
   "items": [
+    {
+      "id": "4692535b6fc3373f0f3d",
+      "province": "安徽",
+      "title": "安徽省2027年度定向招录选调生T类职位资格复审笔试分数线",
+      "url": "https://job.ustc.edu.cn/SelectedTrainee/info.aspx?itemid=11408",
+      "source": "中国科学技术大学就业网选调生目录（高校公告索引，仅供补充参考）",
+      "kind": "listing",
+      "discovered": "2026-11-27T20:30:40+08:00",
+      "sourceTier": "university_third",
+      "sourceLabel": "其他高校官方就业网 · 补充参考（未核实）",
+      "note": "其他高校发布的补充参考，仅确认搜索到该链接；尚未核实正文、附件、适用高校、报名及考试时间。不要套用其他学校的校内截止时间。"
+    },
     {
       "id": "00b3c7615f9e4483a474",
       "province": "山东",
